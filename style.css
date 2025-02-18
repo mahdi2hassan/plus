@@ -682,16 +682,16 @@ footer{
     .col{
         display: flex;
         justify-content: center;
-        width: 100%;
+        width: 200%;
     }
     .about-info, .contact-info{
-        width: 100%;
+        width: 200%;
     }
     .project-container{
         justify-content: center;
     }
     .project-box{
-        width: 80%;
+        width: 100%;
     }
 
 }
@@ -703,7 +703,7 @@ p samp {
 }
 /* ----- MEDIA QUERY == 540px / RESPONSIVE ----- */
 
-@media only screen and (max-width: 540px){
+@media only screen and (max-width: 640px){
     .featured-name{
         font-size: 40px;
     }
