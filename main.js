@@ -34,7 +34,7 @@ function myMenuFunction(){
 /* ----- TYPING EFFECT ----- */
 /* ----- HAZOOOOOOMA ----- */
  var typingEffect = new Typed(".typedText",{
-    strings : ["Designer .","Youtuber .","Developer .", "Cyber security Engineering .",],
+    strings : ["Teacher .","Youtuber .","Developer .", "Designer .",],
     loop : true,
     typeSpeed : 100, 
     backSpeed : 80,
@@ -123,10 +123,10 @@ let isorigin = true;
 re.addEventListener('click',()=>{
   if(isorigin){
     re4.setAttribute('href',newHref);
-    re.textContent='Enable light Mode ☀️';
+    re.textContent=' ☀️';
   }else{
     re4.setAttribute('href',origin);
-    re.textContent ='Enable Dark Mode 🌚'
+    re.textContent ='🌘'
   }
   isorigin = !isorigin
 })
