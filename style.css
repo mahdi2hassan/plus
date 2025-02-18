@@ -312,7 +312,7 @@ nav{
 .row{
     display: flex;
     justify-content: space-between;
-    width: 1000%;
+    width: 100%;
     gap: 250px;
 }
 .col{
@@ -321,7 +321,7 @@ nav{
     
 }
 .saraha{
-    width:1000% ;
+    width:100% ;
     height: 300px;
     border-radius: 250px;
     display: none;
@@ -329,7 +329,7 @@ nav{
     border: 2px solid #AAA
 }
 .saraha2{
-    width:1000% ;
+    width:100% ;
     height: 300px;
     border-radius: 300px;
     display: flex;
@@ -343,7 +343,7 @@ nav{
     margin-bottom: 5em;
 }
 .top-header h1{
-    font-weight: 1000;
+    font-weight: 800;
     color: var(--text-color-second);
     margin-bottom: 10px;
 }
@@ -352,7 +352,7 @@ nav{
 }
 h3{
     font-size: 20px;
-    font-weight: 1000;
+    font-weight: 800;
     color: var(--text-color-second);
     margin-bottom: 15px;
 }
