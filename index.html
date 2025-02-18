@@ -19,11 +19,11 @@
         <div class="nav-menu" id="myNavMenu">
             <ul class="nav_menu_list">
                 <li class="nav_list">
-                    <a href="#home" class="nav-link active-link">الصفحة الرسمية</a>
+                    <a href="#home" class="nav-link active-link">الرئيسية</a>
                     <div class="circle"></div>
                 </li>
                 <li class="nav_list">
-                    <a href="#about" class="nav-link">عن بلس</a>
+                    <a href="#about" class="nav-link">عنا</a>
                     <div class="circle"></div>
                 </li>
                 <li class="nav_list">
@@ -86,7 +86,7 @@
        <!-- -------------- ABOUT BOX ---------------- -->
        <section class="section" id="about">
           <div class="top-header">
-            <h1>عن بلس</h1>
+            <h1>عنا</h1>
           </div>
           <div class="row">
             <div class="col">
@@ -176,11 +176,13 @@
         const message = document.getElementById("message1");
         function sendEmail(){
             const bodyMessage =`<h3>Full Name : ${name.value}</h3><br><br><h3> Email : ${email.value}</h3> <br><br>
-            <h3>Phone Number : ${phone.value }</h3> <br><br><h3> Message :</h3><h3 style="text-align:right; color:#0078AA; font-weight:bolder; font-size:19px"<${message1.value}</h3>`
-            Email.send({
+            <h3>Phone Number : ${phone.value }</h3> <br><br><h3> Message :</h3><h3 style="text-align:right; color:#0078AA; font-weight:bolder; font-size:19px"
+            ${message1.value}> </h3>`
+         
+               Email.send({
     Host : "smtp.elasticemail.com",
     Username : "mahdi2152005@gmail.com",
-    Password : "791974FE9F27A802124DE71A9D112E201CFE",
+    Password : "",
     To : 'mahdi2152005@gmail.com',
     From :'mahdi2152005@gmail.com' ,
     Subject : "This New Message From",
@@ -215,13 +217,13 @@
         <div class="middle-footer">
             <ul class="footer-menu">
                 <li class="footer_menu_list">
-                    <a href="#home">الصفحه الرسميه</a>
+                    <a href="#home">الرئيسية</a>
                 </li>
                 <li class="footer_menu_list">
-                    <a href="#about">عن بلس</a>
+                    <a href="#about">عنا</a>
                 </li>
                 <li class="footer_menu_list">
-                    <a href="#projects">الصفوف الدراسية</a>
+                    <a href="#projects">الصفوف </a>
                 </li>
                 <li class="footer_menu_list">
                     <a href="#contact">التواصل</a>
