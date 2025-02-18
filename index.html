@@ -169,27 +169,29 @@
        </section>
        <script>
         
-        let form = document.querySelectorAll('form');
+        <let form = document.querySelectorAll('form');
         const name = document.getElementById("name");
         const phone = document.getElementById("phone");
         const email = document.getElementById("email");
         const message = document.getElementById("message1");
         function sendEmail(){
-            const bodyMessage =`<h3>Full Name : ${name.value}</h3><br><br><h3> Email : ${email.value}</h3> <br><br>
-            <h3>Phone Number : ${phone.value }</h3> <br><br><h3> Message :</h3><h3 style="text-align:right; color:#0078AA; font-weight:bolder; font-size:19px"
-            ${message1.value}> </h3>`
+            const bodyMessage =`<h3> Full Name :<${name.value}</h3><br><br><h3> Email :<${email.value}</h3> <br><br>
+            <h3> Phone Number :<${phone.value }
+            </h3> <br><br>
+            <h3> Message :</h3>
+            <h3 style="text-align:right; color:#0078AA; font-weight:bolder; font-size:19px"><${message1.value}</h3>
          
-               Email.send({
+               <Email.send({
     Host : "smtp.elasticemail.com",
     Username : "mahdi2152005@gmail.com",
     Password : "",
     To : 'mahdi2152005@gmail.com',
     From :'mahdi2152005@gmail.com' ,
     Subject : "This New Message From",
-    Body : `${bodyMessage}`
+    Body :>`${bodyMessage}`
 }).then(
   message => {
-    if (message =="OK"){
+    <if (message =="OK"){
         Swal.fire({
   title: "Success!",
   text: "Your Message Sent Success!",
