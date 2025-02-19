@@ -685,13 +685,13 @@ footer{
         width: 120%;
     }
     .about-info, .contact-info{
-        width: 120%;
+        width: 150%;
     }
     .project-container{
         justify-content: center;
     }
     .project-box{
-        width: 100%;
+        width: 150%;
     }
 
 }
