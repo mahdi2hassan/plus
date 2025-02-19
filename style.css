@@ -400,7 +400,7 @@ h3{
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 100%;
+    width: 70%;
     height: 350px;
     background: var(--color-white);
     border-radius: 20px;
@@ -408,7 +408,7 @@ h3{
     overflow: hidden;
 }
 .project-box>i{
-    font-size: 150px;
+    font-size: 110px;
     color: #00B5E7;
     margin-bottom: 25px;
 }
