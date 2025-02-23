@@ -433,7 +433,7 @@ h3{
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 30%;
+    width: 70%;
     height: 250px;
     background: var(--color-white);
     border-radius: 20px;
