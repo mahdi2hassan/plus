@@ -21,7 +21,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -68,6 +68,13 @@
             color: var(--color-white);
             border-radius: 5px;
             margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .course-item button, .question-item button {
+            background: #ff204e;
+            padding: 5px 10px;
         }
     </style>
 </head>
@@ -87,15 +94,23 @@
         <h2>لوحة تحكم الأدمن</h2>
         <h3>إدارة المقررات</h3>
         <input type="text" id="courseName" placeholder="اسم المقرر">
-        <button onclick="addCourse()">إضافة مقرر</button>
+        <input type="text" id="courseId" placeholder="معرف المقرر (مثل course9)">
+        <input type="text" id="courseUrl" placeholder="رابط صفحة المقرر (مثل course9.html)">
+        <button onclick="addCourse()">إضافة مقرر جديد</button>
         <div class="course-list" id="courseList"></div>
 
         <h3>إضافة فيديوهات</h3>
+        <select id="videoCourse">
+            <option value="">اختر المقرر</option>
+        </select>
         <input type="text" id="videoUrl" placeholder="رابط الفيديو (يوتيوب أو هاتف)">
         <button onclick="addVideo()">إضافة فيديو</button>
         <div class="video-list" id="videoList"></div>
 
         <h3>إضافة أسئلة</h3>
+        <select id="questionCourse">
+            <option value="">اختر المقرر</option>
+        </select>
         <textarea id="questionText" placeholder="اكتب السؤال هنا"></textarea>
         <button onclick="addQuestion()">إضافة سؤال</button>
         <div class="question-list" id="questionList"></div>
@@ -107,7 +122,16 @@
         const ADMIN_USERNAME = "mahdi2hassan";
         const ADMIN_PASSWORD = "01007586279";
 
-        let courses = JSON.parse(localStorage.getItem('courses')) || [];
+        let courses = JSON.parse(localStorage.getItem('courses')) || [
+            { id: "course1", name: "مقرر الصف الأول الإعدادي", url: "course1.html" },
+            { id: "course2", name: "مقرر الصف الثاني الإعدادي", url: "course2.html" },
+            { id: "course3", name: "مقرر الصف الثالث الإعدادي", url: "course3.html" },
+            { id: "course4", name: "مقرر الصف الأول الثانوي", url: "course4.html" },
+            { id: "course5", name: "مقرر الصف الثاني الثانوي علمي", url: "course5.html" },
+            { id: "course6", name: "مقرر الصف الثاني الثانوي أدبي", url: "course6.html" },
+            { id: "course7", name: "مقرر الصف الثالث الثانوي علمي", url: "course7.html" },
+            { id: "course8", name: "مقرر الصف الثالث الثانوي أدبي إحصاء", url: "course8.html" }
+        ];
         let videos = JSON.parse(localStorage.getItem('videos')) || [];
         let questions = JSON.parse(localStorage.getItem('questions')) || [];
 
@@ -123,6 +147,7 @@
                 renderCourses();
                 renderVideos();
                 renderQuestions();
+                populateCourseSelects();
                 return false;
             } else {
                 errorMessage.style.display = "block";
@@ -130,34 +155,73 @@
             }
         }
 
+        function populateCourseSelects() {
+            const videoSelect = document.getElementById("videoCourse");
+            const questionSelect = document.getElementById("questionCourse");
+            videoSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            questionSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            courses.forEach(course => {
+                const option1 = document.createElement("option");
+                option1.value = course.id;
+                option1.textContent = course.name;
+                videoSelect.appendChild(option1);
+                const option2 = document.createElement("option");
+                option2.value = course.id;
+                option2.textContent = course.name;
+                questionSelect.appendChild(option2);
+            });
+        }
+
         function addCourse() {
             const courseName = document.getElementById("courseName").value;
-            if (courseName) {
-                courses.push(courseName);
+            const courseId = document.getElementById("courseId").value;
+            const courseUrl = document.getElementById("courseUrl").value;
+            if (courseName && courseId && courseUrl) {
+                courses.push({ id: courseId, name: courseName, url: courseUrl });
                 localStorage.setItem('courses', JSON.stringify(courses));
                 renderCourses();
+                populateCourseSelects();
                 document.getElementById("courseName").value = "";
+                document.getElementById("courseId").value = "";
+                document.getElementById("courseUrl").value = "";
             }
+        }
+
+        function deleteCourse(index) {
+            courses.splice(index, 1);
+            localStorage.setItem('courses', JSON.stringify(courses));
+            renderCourses();
+            populateCourseSelects();
         }
 
         function addVideo() {
             const videoUrl = document.getElementById("videoUrl").value;
-            if (videoUrl) {
-                videos.push(videoUrl);
+            const courseId = document.getElementById("videoCourse").value;
+            if (videoUrl && courseId) {
+                videos.push({ courseId, url: videoUrl });
                 localStorage.setItem('videos', JSON.stringify(videos));
                 renderVideos();
                 document.getElementById("videoUrl").value = "";
+                document.getElementById("videoCourse").value = "";
             }
         }
 
         function addQuestion() {
             const questionText = document.getElementById("questionText").value;
-            if (questionText) {
-                questions.push(questionText);
+            const courseId = document.getElementById("questionCourse").value;
+            if (questionText && courseId) {
+                questions.push({ courseId, text: questionText });
                 localStorage.setItem('questions', JSON.stringify(questions));
                 renderQuestions();
                 document.getElementById("questionText").value = "";
+                document.getElementById("questionCourse").value = "";
             }
+        }
+
+        function deleteQuestion(index) {
+            questions.splice(index, 1);
+            localStorage.setItem('questions', JSON.stringify(questions));
+            renderQuestions();
         }
 
         function renderCourses() {
@@ -166,7 +230,10 @@
             courses.forEach((course, index) => {
                 const div = document.createElement("div");
                 div.className = "course-item";
-                div.textContent = course;
+                div.innerHTML = `
+                    ${course.name}
+                    <button onclick="deleteCourse(${index})">حذف</button>
+                `;
                 courseList.appendChild(div);
             });
         }
@@ -175,9 +242,10 @@
             const videoList = document.getElementById("videoList");
             videoList.innerHTML = "";
             videos.forEach((video, index) => {
+                const course = courses.find(c => c.id === video.courseId);
                 const div = document.createElement("div");
                 div.className = "video-item";
-                div.innerHTML = `<a href="${video}" target="_blank">فيديو ${index + 1}</a>`;
+                div.innerHTML = `<a href="${video.url}" target="_blank">فيديو ${index + 1} (${course ? course.name : 'غير مرتبط'})</a>`;
                 videoList.appendChild(div);
             });
         }
@@ -186,9 +254,13 @@
             const questionList = document.getElementById("questionList");
             questionList.innerHTML = "";
             questions.forEach((question, index) => {
+                const course = courses.find(c => c.id === question.courseId);
                 const div = document.createElement("div");
                 div.className = "question-item";
-                div.textContent = `سؤال ${index + 1}: ${question}`;
+                div.innerHTML = `
+                    سؤال ${index + 1}: ${question.text} (${course ? course.name : 'غير مرتبط'})
+                    <button onclick="deleteQuestion(${index})">حذف</button>
+                `;
                 questionList.appendChild(div);
             });
         }

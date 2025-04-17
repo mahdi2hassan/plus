@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المقرر الأول</title>
+    <title>مقرر الصف الأول الإعدادي</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -47,7 +47,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>المقرر الأول</h1>
+        <h1>مقرر الصف الأول الإعدادي</h1>
         <h3>الفيديوهات</h3>
         <div class="video-list" id="videoList"></div>
         <h3>الأسئلة</h3>
@@ -59,14 +59,15 @@
         // تحميل الفيديوهات والأسئلة من localStorage
         const videos = JSON.parse(localStorage.getItem('videos')) || [];
         const questions = JSON.parse(localStorage.getItem('questions')) || [];
+        const courseId = "course1"; // معرف المقرر (غيّره لكل صفحة: course2, course3, إلخ)
 
         function renderVideos() {
             const videoList = document.getElementById("videoList");
             videoList.innerHTML = "";
-            videos.forEach((video, index) => {
+            videos.filter(video => video.courseId === courseId).forEach((video, index) => {
                 const div = document.createElement("div");
                 div.className = "video-item";
-                div.innerHTML = `<a href="${video}" target="_blank">فيديو ${index + 1}</a>`;
+                div.innerHTML = `<a href="${video.url}" target="_blank">فيديو ${index + 1}</a>`;
                 videoList.appendChild(div);
             });
         }
@@ -74,10 +75,10 @@
         function renderQuestions() {
             const questionList = document.getElementById("questionList");
             questionList.innerHTML = "";
-            questions.forEach((question, index) => {
+            questions.filter(question => question.courseId === courseId).forEach((question, index) => {
                 const div = document.createElement("div");
                 div.className = "question-item";
-                div.textContent = `سؤال ${index + 1}: ${question}`;
+                div.textContent = `سؤال ${index + 1}: ${question.text}`;
                 questionList.appendChild(div);
             });
         }
