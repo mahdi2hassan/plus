@@ -3,53 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول إلى الفصول الدراسية</title>
-    <link rel="stylesheet" href="style.css"> <!-- رابط ملف CSS السابق -->
+    <title>المقررات الدراسية</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            text-align: center;
             padding: 50px;
             background: var(--body-color);
             color: var(--text-color-second);
         }
-        .form-container {
-            max-width: 400px;
+        .container {
+            max-width: 800px;
             margin: auto;
             background: var(--color-white);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 2px solid var(--text-color-second);
-            border-radius: 5px;
-            font-family: 'Cairo', sans-serif;
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        button {
-            padding: 10px 20px;
+        .course-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .course-item {
+            padding: 15px;
             background: var(--first-color);
             color: var(--color-white);
-            border: none;
             border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
+            text-decoration: none;
+            text-align: center;
         }
-        button:hover {
+        .course-item:hover {
             background: var(--first-color-hover);
-        }
-        .error {
-            color: red;
-            display: none;
-            margin: 10px 0;
-        }
-        .subscribe-btn {
-            background: #ff204e;
-            color: var(--color-white);
-            margin-top: 20px;
         }
         .admin-link {
             margin-top: 20px;
@@ -60,56 +49,30 @@
         .admin-link:hover {
             text-decoration: underline;
         }
+        .subscribe-btn {
+            background: #ff204e;
+            color: var(--color-white);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>تسجيل الدخول إلى الفصول الدراسية</h2>
-        <form id="loginForm" onsubmit="return validateLogin()">
-            <input type="number" id="studentCode" placeholder="كود الطالب" required>
-            <input type="password" id="password" placeholder="كلمة المرور" required>
-            <p id="errorMessage" class="error">كود الطالب أو كلمة المرور غير صحيحة!</p>
-            <button type="submit">تسجيل الدخول</button>
-        </form>
+    <div class="container">
+        <h1>المقررات الدراسية</h1>
+        <div class="course-list">
+            <a href="password.html?course=course1" class="course-item">المقرر الأول</a>
+            <a href="password.html?course=course2" class="course-item">المقرر الثاني</a>
+            <a href="password.html?course=course3" class="course-item">المقرر الثالث</a>
+        </div>
         <button class="subscribe-btn" onclick="sendWhatsApp()">اشترك الآن</button>
         <a href="admin.html" class="admin-link">تسجيل دخول الأدمن</a>
     </div>
 
     <script>
-        // قاعدة بيانات وهمية للكود وكلمات المرور
-        const classPages = {
-            12345: { password: "class1pass", url: "class1.html" }, // فصل أول
-            67890: { password: "class2pass", url: "class2.html" }, // فصل ثانٍ
-            54321: { password: "class3pass", url: "class3.html" }  // فصل ثالث
-        };
-
-        function validateLogin() {
-            const code = parseInt(document.getElementById("studentCode").value);
-            const password = document.getElementById("password").value;
-            const errorMessage = document.getElementById("errorMessage");
-
-            // التحقق من الكود
-            const condition1 = (code * code - 9) % 2 === 0;
-            const condition2 = (2 * code + 5) % 3 === 0;
-            const condition3 = (3 * code + 6) % 3 === 0;
-
-            if (!condition1 || !condition2 || !condition3 || code < 100 || code > 187544) {
-                errorMessage.style.display = "block";
-                return false;
-            }
-
-            // التحقق من كلمة المرور
-            if (classPages[code] && classPages[code].password === password) {
-                alert("تم تسجيل الدخول بنجاح!");
-                errorMessage.style.display = "none";
-                window.location.href = classPages[code].url; // توجيه إلى الصفحة المناسبة
-                return false;
-            } else {
-                errorMessage.style.display = "block";
-                return false;
-            }
-        }
-
         function sendWhatsApp() {
             const phoneNumber = "+201558870907";
             const message = "أسعار الاشتراك";

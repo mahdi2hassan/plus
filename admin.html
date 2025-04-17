@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل دخول الأدمن</title>
-    <link rel="stylesheet" href="style.css"> <!-- رابط ملف CSS السابق -->
+    <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: 'Cairo', sans-serif;
@@ -13,15 +13,15 @@
             background: var(--body-color);
             color: var(--text-color-second);
         }
-        .form-container {
-            max-width: 400px;
+        .form-container, .admin-panel {
+            max-width: 600px;
             margin: auto;
             background: var(--color-white);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
-        input {
+        input, textarea {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -37,6 +37,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-family: 'Cairo', sans-serif;
+            margin: 10px;
         }
         button:hover {
             background: var(--first-color-hover);
@@ -55,36 +56,146 @@
         .back-link:hover {
             text-decoration: underline;
         }
+        .admin-panel {
+            display: none;
+        }
+        .course-list, .video-list, .question-list {
+            margin-top: 20px;
+        }
+        .course-item, .video-item, .question-item {
+            padding: 10px;
+            background: var(--second-color);
+            color: var(--color-white);
+            border-radius: 5px;
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
-    <div class="form-container">
+    <div class="form-container" id="loginForm">
         <h2>تسجيل دخول الأدمن</h2>
-        <form id="adminForm" onsubmit="return validateAdmin()">
-            <input type="password" id="adminPassword" placeholder="كلمة مرور الأدمن" required>
-            <p id="errorMessage" class="error">كلمة المرور غير صحيحة!</p>
+        <form onsubmit="return validateAdmin()">
+            <input type="text" id="username" placeholder="اسم المستخدم" required>
+            <input type="password" id="password" placeholder="كلمة المرور" required>
+            <p id="errorMessage" class="error">اسم المستخدم أو كلمة المرور غير صحيحة!</p>
             <button type="submit">تسجيل الدخول</button>
         </form>
-        <a href="index.html" class="back-link">العودة إلى تسجيل الدخول</a>
+        <a href="index.html" class="back-link">العودة إلى المقررات</a>
+    </div>
+
+    <div class="admin-panel" id="adminPanel">
+        <h2>لوحة تحكم الأدمن</h2>
+        <h3>إدارة المقررات</h3>
+        <input type="text" id="courseName" placeholder="اسم المقرر">
+        <button onclick="addCourse()">إضافة مقرر</button>
+        <div class="course-list" id="courseList"></div>
+
+        <h3>إضافة فيديوهات</h3>
+        <input type="text" id="videoUrl" placeholder="رابط الفيديو (يوتيوب أو هاتف)">
+        <button onclick="addVideo()">إضافة فيديو</button>
+        <div class="video-list" id="videoList"></div>
+
+        <h3>إضافة أسئلة</h3>
+        <textarea id="questionText" placeholder="اكتب السؤال هنا"></textarea>
+        <button onclick="addQuestion()">إضافة سؤال</button>
+        <div class="question-list" id="questionList"></div>
+
+        <button onclick="logout()">تسجيل الخروج</button>
     </div>
 
     <script>
-        const ADMIN_PASSWORD = "admin123"; // كلمة مرور الأدمن (يمكن تغييرها)
+        const ADMIN_USERNAME = "mahdi2hassan";
+        const ADMIN_PASSWORD = "01007586279";
+
+        let courses = JSON.parse(localStorage.getItem('courses')) || [];
+        let videos = JSON.parse(localStorage.getItem('videos')) || [];
+        let questions = JSON.parse(localStorage.getItem('questions')) || [];
 
         function validateAdmin() {
-            const password = document.getElementById("adminPassword").value;
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
             const errorMessage = document.getElementById("errorMessage");
 
-            if (password === ADMIN_PASSWORD) {
-                alert("تم تسجيل دخول الأدمن بنجاح!");
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                document.getElementById("loginForm").style.display = "none";
+                document.getElementById("adminPanel").style.display = "block";
                 errorMessage.style.display = "none";
-                // توجيه إلى صفحة إدارية أو وظيفة إدارية
-                window.location.href = "admin_dashboard.html";
+                renderCourses();
+                renderVideos();
+                renderQuestions();
                 return false;
             } else {
                 errorMessage.style.display = "block";
                 return false;
             }
+        }
+
+        function addCourse() {
+            const courseName = document.getElementById("courseName").value;
+            if (courseName) {
+                courses.push(courseName);
+                localStorage.setItem('courses', JSON.stringify(courses));
+                renderCourses();
+                document.getElementById("courseName").value = "";
+            }
+        }
+
+        function addVideo() {
+            const videoUrl = document.getElementById("videoUrl").value;
+            if (videoUrl) {
+                videos.push(videoUrl);
+                localStorage.setItem('videos', JSON.stringify(videos));
+                renderVideos();
+                document.getElementById("videoUrl").value = "";
+            }
+        }
+
+        function addQuestion() {
+            const questionText = document.getElementById("questionText").value;
+            if (questionText) {
+                questions.push(questionText);
+                localStorage.setItem('questions', JSON.stringify(questions));
+                renderQuestions();
+                document.getElementById("questionText").value = "";
+            }
+        }
+
+        function renderCourses() {
+            const courseList = document.getElementById("courseList");
+            courseList.innerHTML = "";
+            courses.forEach((course, index) => {
+                const div = document.createElement("div");
+                div.className = "course-item";
+                div.textContent = course;
+                courseList.appendChild(div);
+            });
+        }
+
+        function renderVideos() {
+            const videoList = document.getElementById("videoList");
+            videoList.innerHTML = "";
+            videos.forEach((video, index) => {
+                const div = document.createElement("div");
+                div.className = "video-item";
+                div.innerHTML = `<a href="${video}" target="_blank">فيديو ${index + 1}</a>`;
+                videoList.appendChild(div);
+            });
+        }
+
+        function renderQuestions() {
+            const questionList = document.getElementById("questionList");
+            questionList.innerHTML = "";
+            questions.forEach((question, index) => {
+                const div = document.createElement("div");
+                div.className = "question-item";
+                div.textContent = `سؤال ${index + 1}: ${question}`;
+                questionList.appendChild(div);
+            });
+        }
+
+        function logout() {
+            document.getElementById("loginForm").style.display = "block";
+            document.getElementById("adminPanel").style.display = "none";
         }
 
         // تبديل الوضع الغامق
