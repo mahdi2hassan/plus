@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/filename.jpg" type="image/x-icon">
+    <title>بلس 360 - لوحة التحكم</title>
+</head>
+<body id="bd">
+   <div class="container">
+      <nav id="header">
+         <div class="nav-logo">
+            <p class="nav-name">بلس في الرياضيات</p>
+            <span></span>
+         </div>
+         <div class="nav-menu-btn">
+            <i class="fa-solid fa-bars" onclick="myMenuFunction()"></i>
+         </div>
+      </nav>
+
+      <main class="wrapper">
+         <section class="section">
+            <div class="top-header">
+               <h1>لوحة التحكم</h1>
+               <a href="index.html" class="btn blue-btn">العودة للرئيسية</a>
+            </div>
+            <div class="row">
+               <!-- إضافة فيديو -->
+               <div class="col">
+                  <h3>إضافة فيديو</h3>
+                  <form id="video-form">
+                     <div class="form-group">
+                        <label for="video-grade">الفصل الدراسي:</label>
+                        <select id="video-grade" required>
+                           <option value="grade1-prep">الصف الأول الإعدادي</option>
+                           <option value="grade2-prep">الصف الثاني الإعدادي</option>
+                           <option value="grade3-prep">الصف الثالث الإعدادي</option>
+                           <option value="grade1-sec">الصف الأول الثانوي</option>
+                           <option value="grade2-sec-sci">الصف الثاني الثانوي - علمي</option>
+                           <option value="grade2-sec-lit">الصف الثاني الثانوي - أدبي</option>
+                           <option value="grade3-sec-math">الصف الثالث الثانوي - علمي رياضيات</option>
+                           <option value="grade3-sec-stat">الصف الثالث الثانوي - إحصاء أدبي</option>
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="video-title">عنوان الفيديو:</label>
+                        <input type="text" id="video-title" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="video-url">رابط الفيديو (يوتيوب):</label>
+                        <input type="url" id="video-url" required>
+                     </div>
+                     <button type="submit" class="btn blue-btn">إضافة الفيديو</button>
+                  </form>
+               </div>
+               <!-- إضافة سؤال -->
+               <div class="col">
+                  <h3>إضافة سؤال</h3>
+                  <form id="question-form">
+                     <div class="form-group">
+                        <label for="question-grade">الفصل الدراسي:</label>
+                        <select id="question-grade" required>
+                           <option value="grade1-prep">الصف الأول الإعدادي</option>
+                           <option value="grade2-prep">الصف الثاني الإعدادي</option>
+                           <option value="grade3-prep">الصف الثالث الإعدادي</option>
+                           <option value="grade1-sec">الصف الأول الثانوي</option>
+                           <option value="grade2-sec-sci">الصف الثاني الثانوي - علمي</option>
+                           <option value="grade2-sec-lit">الصف الثاني الثانوي - أدبي</option>
+                           <option value="grade3-sec-math">الصف الثالث الثانوي - علمي رياضيات</option>
+                           <option value="grade3-sec-stat">الصف الثالث الثانوي - إحصاء أدبي</option>
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="question-text">نص السؤال:</label>
+                        <textarea id="question-text" required></textarea>
+                     </div>
+                     <div class="form-group">
+                        <label for="option1">الخيار 1:</label>
+                        <input type="text" id="option1" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="option2">الخيار 2:</label>
+                        <input type="text" id="option2" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="option3">الخيار 3:</label>
+                        <input type="text" id="option3" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="option4">الخيار 4:</label>
+                        <input type="text" id="option4" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="correct">الإجابة الصحيحة:</label>
+                        <select id="correct" required>
+                           <option value="0">الخيار 1</option>
+                           <option value="1">الخيار 2</option>
+                           <option value="2">الخيار 3</option>
+                           <option value="3">الخيار 4</option>
+                        </select>
+                     </div>
+                     <button type="submit" class="btn blue-btn">إضافة السؤال</button>
+                  </form>
+               </div>
+               <!-- عرض المحتوى -->
+               <div class="col">
+                  <h3>المحتوى الحالي</h3>
+                  <div id="content-list"></div>
+               </div>
+            </div>
+         </section>
+      </main>
+   </div>
+
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script>
+      function renderContent() {
+         const contentList = document.getElementById('content-list');
+         contentList.innerHTML = '';
+         const grades = [
+            'grade1-prep', 'grade2-prep', 'grade3-prep', 'grade1-sec',
+            'grade2-sec-sci', 'grade2-sec-lit', 'grade3-sec-math', 'grade3-sec-stat'
+         ];
+         grades.forEach(grade => {
+            const data = JSON.parse(localStorage.getItem(grade)) || { videos: [], questions: [] };
+            contentList.innerHTML += `
+               <h4>${grade.replace(/-/g, ' ')}</h4>
+               <h5>الفيديوهات:</h5>
+               <ul>
+                  ${data.videos.map((v, i) => `
+                     <li>${v.title} <button class="btn" onclick="deleteVideo('${grade}', ${i})">حذف</button></li>
+                  `).join('')}
+               </ul>
+               <h5>الأسئلة:</h5>
+               <ul>
+                  ${data.questions.map((q, i) => `
+                     <li>${q.text} <button class="btn" onclick="deleteQuestion('${grade}', ${i})">حذف</button></li>
+                  `).join('')}
+               </ul>`;
+         });
+      }
+
+      document.getElementById('video-form').addEventListener('submit', e => {
+         e.preventDefault();
+         const grade = document.getElementById('video-grade').value;
+         const title = document.getElementById('video-title').value;
+         const url = document.getElementById('video-url').value;
+         let data = JSON.parse(localStorage.getItem(grade)) || { videos: [], questions: [] };
+         data.videos.push({ title, url });
+         localStorage.setItem(grade, JSON.stringify(data));
+         renderContent();
+         e.target.reset();
+         Swal.fire('تم', 'تم إضافة الفيديو', 'success');
+      });
+
+      document.getElementById('question-form').addEventListener('submit', e => {
+         e.preventDefault();
+         const grade = document.getElementById('question-grade').value;
+         const text = document.getElementById('question-text').value;
+         const options = [
+            document.getElementById('option1').value,
+            document.getElementById('option2').value,
+            document.getElementById('option3').value,
+            document.getElementById('option4').value
+         ];
+         const correct = parseInt(document.getElementById('correct').value);
+         let data = JSON.parse(localStorage.getItem(grade)) || { videos: [], questions: [] };
+         data.questions.push({ text, options, correct });
+         localStorage.setItem(grade, JSON.stringify(data));
+         renderContent();
+         e.target.reset();
+         Swal.fire('تم', 'تم إضافة السؤال', 'success');
+      });
+
+      function deleteVideo(grade, index) {
+         let data = JSON.parse(localStorage.getItem(grade));
+         data.videos.splice(index, 1);
+         localStorage.setItem(grade, JSON.stringify(data));
+         renderContent();
+         Swal.fire('تم', 'تم حذف الفيديو', 'success');
+      }
+
+      function deleteQuestion(grade, index) {
+         let data = JSON.parse(localStorage.getItem(grade));
+         data.questions.splice(index, 1);
+         localStorage.setItem(grade, JSON.stringify(data));
+         renderContent();
+         Swal.fire('تم', 'تم حذف السؤال', 'success');
+      }
+
+      renderContent();
+   </script>
+   <script src="main.js"></script>
+</body>
+</html>
