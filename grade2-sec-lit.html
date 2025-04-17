@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/filename.jpg" type="image/x-icon">
+    <title>بلس 360 - الصف الأول الإعدادي</title>
+</head>
+<body id="bd">
+   <div class="container">
+      <nav id="header">
+         <div class="nav-logo">
+            <p class="nav-name">بلس في الرياضيات</p>
+            <span></span>
+         </div>
+         <div class="nav-menu-btn">
+            <i class="fa-solid fa-bars" onclick="myMenuFunction()"></i>
+         </div>
+      </nav>
+
+      <main class="wrapper">
+         <section class="section">
+            <div class="top-header">
+               <h1>الصف الأول الإعدادي</h1>
+               <a href="index.html" class="btn blue-btn">العودة للرئيسية</a>
+            </div>
+            <div class="row">
+               <div class="col">
+                  <h3>الفيديوهات التعليمية</h3>
+                  <div id="videos" class="videos-container"></div>
+               </div>
+               <div class="col">
+                  <h3>الأسئلة الكتابية</h3>
+                  <div id="questions" class="questions-container"></div>
+               </div>
+            </div>
+         </section>
+      </main>
+   </div>
+
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script>
+      const grade = "grade1-prep";
+      let content = JSON.parse(localStorage.getItem(grade)) || { videos: [], questions: [] };
+
+      function renderContent() {
+         // عرض الفيديوهات
+         const videosContainer = document.getElementById('videos');
+         videosContainer.innerHTML = '';
+         content.videos.forEach(video => {
+            videosContainer.innerHTML += `
+               <div class="video-box">
+                  <h4>${video.title}</h4>
+                  <iframe width="100%" height="200" src="${video.url}" frameborder="0" allowfullscreen></iframe>
+               </div>`;
+         });
+
+         // عرض الأسئلة
+         const questionsContainer = document.getElementById('questions');
+         questionsContainer.innerHTML = '';
+         content.questions.forEach((question, index) => {
+            questionsContainer.innerHTML += `
+               <div class="question-box">
+                  <p>${index + 1}. ${question.text}</p>
+                  <form class="question-form" data-index="${index}">
+                     <label><input type="radio" name="answer${index}" value="0"> ${question.options[0]}</label><br>
+                     <label><input type="radio" name="answer${index}" value="1"> ${question.options[1]}</label><br>
+                     <label><input type="radio" name="answer${index}" value="2"> ${question.options[2]}</label><br>
+                     <label><input type="radio" name="answer${index}" value="3"> ${question.options[3]}</label><br>
+                     <button type="submit" class="btn blue-btn">إرسال</button>
+                  </form>
+               </div>`;
+         });
+
+         // إضافة مستمعات للأسئلة
+         document.querySelectorAll('.question-form').forEach(form => {
+            form.addEventListener('submit', e => {
+               e.preventDefault();
+               const index = e.target.dataset.index;
+               const selected = e.target.querySelector(`input[name="answer${index}"]:checked`);
+               if (!selected) {
+                  Swal.fire('خطأ', 'يرجى اختيار إجابة', 'error');
+                  return;
+               }
+               const answer = parseInt(selected.value);
+               if (answer === content.questions[index].correct) {
+                  Swal.fire('صحيح!', 'إجابتك صحيحة', 'success');
+               } else {
+                  Swal.fire('خطأ', `الإجابة الصحيحة هي: ${content.questions[index].options[content.questions[index].correct]}`, 'error');
+               }
+            });
+         });
+      }
+
+      renderContent();
+   </script>
+   <script src="main.js"></script>
+</body>
+</html>
