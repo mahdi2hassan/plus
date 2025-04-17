@@ -3,214 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="/filename.jpg" type="image/x-icon">
-    <title>بلس 360</title>
+    <title>تسجيل الدخول إلى الفصول الدراسية</title>
+    <link rel="stylesheet" href="style.css"> <!-- رابط ملف CSS السابق -->
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: var(--body-color);
+            color: var(--text-color-second);
+        }
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid var(--text-color-second);
+            border-radius: 5px;
+            font-family: 'Cairo', sans-serif;
+        }
+        button {
+            padding: 10px 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+        }
+        button:hover {
+            background: var(--first-color-hover);
+        }
+        .error {
+            color: red;
+            display: none;
+            margin: 10px 0;
+        }
+        .subscribe-btn {
+            background: #ff204e;
+            color: var(--color-white);
+            margin-top: 20px;
+        }
+        .admin-link {
+            margin-top: 20px;
+            display: inline-block;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .admin-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<body id="bd">
-   <div class="container">
-      <nav id="header">
-        <div class="nav-logo">
-            <p class="nav-name">بلس في الرياضيات</p>
-            <span></span>
-        </div>
-        <div class="nav-menu" id="myNavMenu">
-            <ul class="nav_menu_list">
-                <li class="nav_list">
-                    <a href="#home" class="nav-link active-link">الرئيسية</a>
-                    <div class="circle"></div>
-                </li>
-                <li class="nav_list">
-                    <a href="#about" class="nav-link">الصفوف الدراسية</a>
-                    <div class="circle"></div>
-                </li>
-                <li class="nav_list">
-                    <a href="#projects" class="nav-link">الكورسات</a>
-                    <div class="circle"></div>
-                </li>
-                <li class="nav_list">
-                    <a href="#about" class="nav-link">عنا</a>
-                    <div class="circle"></div>
-                </li>
-                <li class="nav_list">
-                    <a href="#contact" class="nav-link">التواصل</a>
-                    <div class="circle"></div>
-                </li>
-            </ul>
-        </div>
-        <div class="nav-menu-btn">
-            <i class="fa-solid fa-bars" onclick="myMenuFunction()"></i>
-        </div>
-      </nav>
+<body>
+    <div class="form-container">
+        <h2>تسجيل الدخول إلى الفصول الدراسية</h2>
+        <form id="loginForm" onsubmit="return validateLogin()">
+            <input type="number" id="studentCode" placeholder="كود الطالب" required>
+            <input type="password" id="password" placeholder="كلمة المرور" required>
+            <p id="errorMessage" class="error">كود الطالب أو كلمة المرور غير صحيحة!</p>
+            <button type="submit">تسجيل الدخول</button>
+        </form>
+        <button class="subscribe-btn" onclick="sendWhatsApp()">اشترك الآن</button>
+        <a href="admin.html" class="admin-link">تسجيل دخول الأدمن</a>
+    </div>
 
-      <!-- MAIN -->
-      <main class="wrapper">
-         <!-- FEATURED BOX -->
-         <section class="featured-box" id="home">
-            <div class="featured-text">
-               <div class="featured-text-card">
-                   <span>لنبدأ من جديد كما لو أن شيئًا لم يحدث 🫀🤍</span>
-               </div>
-               <div class="featured-name">
-                   <p>الأستاذ مهدي حسن <span class="typedText"></span></p>
-               </div>
-               <div class="featured-text-info">
-                   <p>بلس موقع وتطبيق مخصص لتعليم الرياضيات لكل المراحل ♥<br>
-                      مع بلس، التعليم الإلكتروني كما يجب أن يكون 🫡<br>
-                      بلس سابق بكثير 🫣.</p>
-               </div> 
-               <div class="featured-text-btn">
-                   <a href="https://api.whatsapp.com/send?phone=201558870907">
-                       <button class="btn blue-btn">تفعيل الحساب</button>
-                   </a>
-                   <button id="dar" class="btn">🌘</button>
-               </div>
-               <div class="social_icons">
-                   <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="uil uil-whatsapp" style="color: #005eff;"></i></a></div>
-                   <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="uil uil-telegram" style="color: #005eff;"></i></a></div>
-                   <div class="icon"><a target="_blank" href="tel:01558870907"><i class="uil uil-phone" style="color: #005eff;"></i></a></div>
-                   <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fa-brands fa-facebook-f" style="color: #005eff;"></i></a></div>
-                   <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="uil uil-instagram" style="color: #005eff;"></i></a></div>
-                   <div class="icon"><a target="_blank" href="https://ipn.eg/S/mahdihassan/instapay/51rzLz"><i class="uil uil-paypal" style="color: #005eff;"></i></a></div>
-               </div> 
-            </div>
-            <div class="featured-image">
-               <div class="image">
-                   <img src="/453152206_2236262380057993_1651408421360244697_n.jpg" alt="الأستاذ مهدي حسن">
-               </div>
-            </div>
-            <div class="scroll-icon-box">
-               <a href="#about" class="scroll-btn">
-                   <i class="uil uil-mouse-alt"></i>
-                   <p>مرر للأسفل</p>
-               </a>
-            </div>
-         </section>
+    <script>
+        // قاعدة بيانات وهمية للكود وكلمات المرور
+        const classPages = {
+            12345: { password: "class1pass", url: "class1.html" }, // فصل أول
+            67890: { password: "class2pass", url: "class2.html" }, // فصل ثانٍ
+            54321: { password: "class3pass", url: "class3.html" }  // فصل ثالث
+        };
 
-         <!-- ABOUT BOX (الصفوف الدراسية) -->
-         <section class="section" id="about">
-            <div class="top-header">
-               <h1>المقررات المتوفرة</h1>
-            </div>
-            <div class="row">
-               <div class="col">
-                   <div class="about-info">
-                       <h3>الصفوف الدراسية</h3>
-                       <div class="project-container">
-                           <div class="project-box">
-                               <i class="uil uil-briefcase-alt"></i>
-                               <h3><a href="grade1-prep.html">الصف الأول الإعدادي</a></h3>
-                               <label>عام وأزهر - منهج جديد</label>
-                           </div>
-                           <div class="project-box">
-                               <i class="uil uil-briefcase-alt"></i>
-                               <h3><a href="grade2-prep.html">الصف الثاني الإعدادي</a></h3>
-                               <label>عام وأزهر</label>
-                           </div>
-                           <div class="project-box">
-                               <i class="uil uil-briefcase-alt"></i>
-                               <h3><a href="grade3-prep.html">الصف الثالث الإعدادي</a></h3>
-                               <label>عام وأزهر</label>
-                           </div>
-                           <div class="project-box">
-                               <i class="uil uil-briefcase-alt"></i>
-                               <h3><a href="grade1-sec.html">الصف الأول الثانوي</a></h3>
-                               <label>عام وأزهر</label>
-                           </div>
-                           <div class="project-box">
-                               <i class="uil uil-briefcase-alt"></i>
-                               <h3><a href="grade2-sec-sci.html">الصف الثاني الثانوي - علمي</a></h3>
-                               <label>علمي</label>
-                           </div>
-                           <div class="project-box">
-                               <i class="uil uil-briefcase-alt"></i>
-                               <h3><a href="grade2-sec-lit.html">الصف الثاني الثانوي - أدبي</a></h3>
-                               <label>أدبي</label>
-                           </div>
-                           <div class="project-box">
-                               <i class="uil uil-briefcase-alt"></i>
-                               <h3><a href="grade3-sec-math.html">الصف الثالث الثانوي - علمي رياضيات</a></h3>
-                               <label>علمي رياضيات</label>
-                           </div>
-                           <div class="project-box">
-                               <i class="uil uil-briefcase-alt"></i>
-                               <h3><a href="grade3-sec-stat.html">الصف الثالث الثانوي - إحصاء أدبي</a></h3>
-                               <label>إحصاء أدبي</label>
-                           </div>
-                       </div>
-                   </div>
-               </div>
-            </div>
-         </section>
+        function validateLogin() {
+            const code = parseInt(document.getElementById("studentCode").value);
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("errorMessage");
 
-         <!-- CONTACT SECTION -->
-         <section class="section" id="contact">
-            <div class="top-header">
-               <h1>خدمات بلس</h1>
-            </div>
-            <div class="row">
-               <div class="col">
-                   <div class="contact-info">
-                       <div class="scroll-icon-box">
-                           <a href="t.me/plusinmathbot" class="scroll-btn">
-                               <i class="uil uil-mouse-alt"></i>
-                               <p>ولي الأمر</p>
-                           </a>
-                       </div>
-                       <div class="scroll-icon-box">
-                           <a href="https://www.mediafire.com/folder/hqkokukbao3vl/Plus+360+App" class="scroll-btn">
-                               <i class="uil uil-mouse-alt"></i>
-                               <p>تحميل التطبيق</p>
-                           </a>
-                       </div>
-                       <div class="scroll-icon-box">
-                           <a href="https://api.whatsapp.com/send?phone=201558870907" class="scroll-btn">
-                               <i class="uil uil-mouse-alt"></i>
-                               <p>اطلب كتاب بلس</p>
-                           </a>
-                       </div>
-                   </div>
-               </div>
-            </div>
-         </section>
-      </main>
+            // التحقق من الكود
+            const condition1 = (code * code - 9) % 2 === 0;
+            const condition2 = (2 * code + 5) % 3 === 0;
+            const condition3 = (3 * code + 6) % 3 === 0;
 
-      <!-- FOOTER -->
-      <footer>
-         <div class="top-footer">
-            <p><span>مهدي</span> <span>حسن</span></p>
-         </div>
-         <div class="middle-footer">
-            <ul class="footer-menu">
-                <li class="footer_menu_list"><a href="#home">الرئيسية</a></li>
-                <li class="footer_menu_list"><a href="#about">الصفوف</a></li>
-                <li class="footer_menu_list"><a href="#about">الكورسات</a></li>
-                <li class="footer_menu_list"><a href="#contact">التواصل</a></li>
-            </ul>
-         </div>
-         <div class="footer-social-icons">
-            <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="uil uil-whatsapp" style="color: #005eff;"></i></a></div>
-            <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="uil uil-telegram" style="color: #005eff;"></i></a></div>
-            <div class="icon"><a target="_blank" href="tel:01558870907"><i class="uil uil-phone" style="color: #005eff;"></i></a></div>
-            <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fa-brands fa-facebook-f" style="color: #005eff;"></i></a></div>
-            <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="uil uil-instagram" style="color: #005eff;"></i></a></div>
-            <div class="icon"><a target="_blank" href="https://ipn.eg/S/mahdihassan/instapay/51rzLz"><i class="uil uil-paypal" style="color: #005eff;"></i></a></div>
-            <div class="icon"><a target="_blank" href="https://ipn.eg/S/mahdihassan/instapay/51rzLz"><i class="uil uil-website" style="color: #005eff;"></i></a></div>
-            <div class="icon"><a target="_blank" href="tel:*9*7*01007586279*250#"><i class="uil uil-web" style="color: #005eff;"></i></a></div>
-         </div>
-         <div class="bottom-footer">
-            <center>
-               <p>حقوق الطبع والنشر © <a href="https://www.facebook.com/ma7di2hassan" style="text-decoration: none;">مهدي حسن</a> - هذه المنصة لتهيئة الطالب للجوانب المعرفية</p>
-            </center>
-         </div>
-      </footer>
-   </div>
+            if (!condition1 || !condition2 || !condition3 || code < 100 || code > 187544) {
+                errorMessage.style.display = "block";
+                return false;
+            }
 
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-   <script src="https://unpkg.com/scrollreveal"></script>
-   <script src="main.js"></script>
+            // التحقق من كلمة المرور
+            if (classPages[code] && classPages[code].password === password) {
+                alert("تم تسجيل الدخول بنجاح!");
+                errorMessage.style.display = "none";
+                window.location.href = classPages[code].url; // توجيه إلى الصفحة المناسبة
+                return false;
+            } else {
+                errorMessage.style.display = "block";
+                return false;
+            }
+        }
+
+        function sendWhatsApp() {
+            const phoneNumber = "+201558870907";
+            const message = "أسعار الاشتراك";
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, "_blank");
+        }
+
+        // تبديل الوضع الغامق
+        document.getElementById('dar')?.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.removeItem('theme');
+            }
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
 </body>
 </html>
