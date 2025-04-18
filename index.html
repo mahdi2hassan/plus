@@ -1,71 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
- <link id="mylink" rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="/filename.jpg" type="image/x-icon">
-    <title>Plus 360</title>
-</head>
-<body id="bd">
-   <div class="container">
-      <nav id="header">
-        <div class="nav-logo">
-           
-    <!-- -------------- MAIN ---------------- -->
-    <main class="wrapper">
-       <!-- -------------- FEATURED BOX ---------------- -->
-       <section class="featured-box" id="home">
-          <div class="featured-text">
-            <div class="featured-text-card">
-                <span>Let's start over as if nothing happened." 🫀🤍</span>
-            </div>
-            <div class="featured-name">
-                <p>Mr.Mahdi Hassan <span class="typedText"></span></p>
-            </div>
-            <div class="featured-text-info">
-                <p> بلس موقع وتطبيق خاصة بالرياضيات  لكل المراحل ♥
-مع بلس التعليم الإلكتروني كما يجب ان تكون🫡
-بلس سابق بكتير 🫣. 
-                </p>
-            </div> 
-                                       
-       <!-- -------------- ABOUT BOX ---------------- -->
-       <section class="section" id="about">
-          <div class="top-header">
-            <h1>المقررات المتوفرة</h1>
-          </div>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المقررات الدراسية</title>
+    <title>Plus 360</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            padding: 50px;
             background: var(--body-color);
             color: var(--text-color-second);
+            margin: 0;
+            padding: 0;
         }
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: auto;
-            background: var(--color-white);
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px var(--first-shadow-color);
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
         }
         .course-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
+            margin-top: 20px;
         }
         .course-item {
             padding: 15px;
@@ -78,15 +38,6 @@
         .course-item:hover {
             background: var(--first-color-hover);
         }
-        .admin-link {
-            margin-top: 20px;
-            display: inline-block;
-            color: var(--first-color);
-            text-decoration: none;
-        }
-        .admin-link:hover {
-            text-decoration: underline;
-        }
         .subscribe-btn {
             background: #ff204e;
             color: var(--color-white);
@@ -96,25 +47,123 @@
             cursor: pointer;
             margin-top: 20px;
         }
+        .admin-link {
+            margin-top: 20px;
+            display: inline-block;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .admin-link:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+        }
+        .footer-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .footer-menu {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 0;
+        }
+        .footer-menu a {
+            color: var(--color-white);
+            text-decoration: none;
+        }
     </style>
 </head>
-<body>
+<body id="bd">
     <div class="container">
-        <h1>المقررات الدراسية</h1>
-        <div class="course-list">
-            <a href="password.html?course=course1" class="course-item">مقرر الصف الأول الإعدادي</a>
-            <a href="password.html?course=course2" class="course-item">مقرر الصف الثاني الإعدادي</a>
-            <a href="password.html?course=course3" class="course-item">مقرر الصف الثالث الإعدادي</a>
-            <a href="password.html?course=course4" class="course-item">مقرر الصف الأول الثانوي</a>
-            <a href="password.html?course=course5" class="course-item">مقرر الصف الثاني الثانوي علمي</a>
-            <a href="password.html?course=course6" class="course-item">مقرر الصف الثاني الثانوي أدبي</a>
-            <a href="password.html?course=course7" class="course-item">مقرر الصف الثالث الثانوي علمي</a>
-            <a href="password.html?course=course8" class="course-item">مقرر الصف الثالث الثانوي أدبي إحصاء</a>
-        </div>
-        <button class="subscribe-btn" onclick="sendWhatsApp()">اشترك الآن</button>
-        <a href="admin.html" class="admin-link">تسجيل دخول الأدمن</a>
+        <!-- التنقل -->
+        <nav id="header">
+            <div class="nav-logo">
+                <p>Plus 360</p>
+            </div>
+        </nav>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="wrapper">
+            <!-- القسم المميز -->
+            <section class="featured-box" id="home">
+                <div class="featured-text">
+                    <div class="featured-text-card">
+                        <span>Let's start over as if nothing happened." 🫀🤍</span>
+                    </div>
+                    <div class="featured-name">
+                        <p>Mr. Mahdi Hassan <span class="typedText"></span></p>
+                    </div>
+                    <div class="featured-text-info">
+                        <p>
+                            بلس موقع وتطبيق خاص بالرياضيات لكل المراحل ♥<br>
+                            مع بلس التعليم الإلكتروني كما يجب أن يكون 🫡<br>
+                            بلس سابق بكتير 🫣.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- قسم المقررات -->
+            <section class="section" id="about">
+                <div class="top-header">
+                    <h1>المقررات المتوفرة</h1>
+                </div>
+                <div class="course-list">
+                    <a href="password.html?course=course1" class="course-item">مقرر الصف الأول الإعدادي</a>
+                    <a href="password.html?course=course2" class="course-item">مقرر الصف الثاني الإعدادي</a>
+                    <a href="password.html?course=course3" class="course-item">مقرر الصف الثالث الإعدادي</a>
+                    <a href="password.html?course=course4" class="course-item">مقرر الصف الأول الثانوي</a>
+                    <a href="password.html?course=course5" class="course-item">مقرر الصف الثاني الثانوي علمي</a>
+                    <a href="password.html?course=course6" class="course-item">مقرر الصف الثاني الثانوي أدبي</a>
+                    <a href="password.html?course=course7" class="course-item">مقرر الصف الثالث الثانوي علمي</a>
+                    <a href="password.html?course=course8" class="course-item">مقرر الصف الثالث الثانوي أدبي إحصاء</a>
+                </div>
+                <button class="subscribe-btn" onclick="sendWhatsApp()">اشترك الآن</button>
+                <a href="admin.html" class="admin-link">تسجيل دخول الأدمن</a>
+            </section>
+        </main>
+
+        <!-- التذييل -->
+        <footer>
+            <div class="top-footer">
+                <p><span>Mahdi</span> <span>Hassan</span></p>
+            </div>
+            <div class="middle-footer">
+                <ul class="footer-menu">
+                    <li class="footer_menu_list"><a href="#home">الرئيسية</a></li>
+                    <li class="footer_menu_list"><a href="#about">الصفوف</a></li>
+                    <li class="footer_menu_list"><a href="#projects">الكورسات</a></li>
+                    <li class="footer_menu_list"><a href="#contact">التواصل</a></li>
+                </ul>
+            </div>
+            <div class="footer-social-icons">
+                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="uil uil-whatsapp" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="uil uil-telegram" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="tel:01558870907"><i class="uil uil-phone" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fa-brands fa-facebook-f" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="uil uil-instagram" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://ipn.eg/S/mahdihassan/instapay/51rzLz"><i class="uil uil-paypal" style="color: #005eff;"></i></a></div>
+            </div>
+            <div class="bottom-footer">
+                <p>Copyright © <a href="https://www.facebook.com/ma7di2hassan" style="text-decoration: none;">Mahdi Hassan</a> - هذه المنصة من أجل تهيئة الطالب للجوانب المعرفية</p>
+            </div>
+        </footer>
     </div>
 
+    <!-- السكربتات -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="main.js"></script>
     <script>
         function sendWhatsApp() {
             const phoneNumber = "+201558870907";
@@ -122,70 +171,6 @@
             const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             window.open(url, "_blank");
         }
-
-        // تبديل الوضع الغامق
-        document.getElementById('dar')?.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.removeItem('theme');
-            }
-        });
-
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
     </script>
-</body>
-</html>
-
-    <!-- --------------- FOOTER --------------- -->
-    <footer>
-        <div class="top-footer">
-            <p><span>Mahdi</span> <samp> Hassan</samp></p>
-        </div>
-        <div class="middle-footer">
-            <ul class="footer-menu">
-                <li class="footer_menu_list">
-                    <a href="#home">الرئيسية</a>
-                </li>
-                <li class="footer_menu_list">
-                    <a href="#about">الصفوف</a>
-                </li>
-                <li class="footer_menu_list">
-                    <a href="#projects">الكورسات </a>
-                </li>
-                <li class="footer_menu_list">
-                    <a href="#contact">التواصل</a>
-                </li>
-            </ul>
-        </div>
-        <div class="footer-social-icons">
-         
-                               <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="uil uil-whatsapp" style="color: #005eff;"></i></a></div>
-                                     <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="uil uil-telegram" style="color: #005eff;"></i></a></div>
-                                                 <div class="icon"><a target="_blank" href="tel:01558870907"><i class="uil uil-phone" style="color: #005eff;"></i></a></div>
-                                                    <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fa-brands fa-facebook-f" style="color: #005eff;"></i></a></i></div>
-            <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="uil uil-instagram" style="color: #005eff;"></i></a></div>
-            <div class="icon"><a target="_blank" href="https://ipn.eg/S/mahdihassan/instapay/51rzLz"><i class="uil uil-paypal" style="color: #005eff;"></i></a></div>
-             <div class="icon"><a target="_blank" href="https://ipn.eg/S/mahdihassan/instapay/51rzLz"><i class="uil uil-website" style="color: #005eff;"></i></a></div>
-              <div class="icon"><a target="_blank" href="tel:*9*7*01007586279*250#"><i class="uil uil-web" style="color: #005eff;"></i></a></div>
-        </div> 
-        </div>
-        <div class="bottom-footer">
-            <center>
-            <p>Copyright &copy; <a href="https://www.facebook.com/ma7di2hassan" style="text-decoration: none;"> <span>Mahdi</span><span>Hassan</span></a> - هذة المنصة من اجل تهيئة الطالب للجوانب المعرفية  - </p>
-        </center>
-        </div>
-    </footer>
-
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://smtpjs.com/v3/smtp.js"></script>
-    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-    <script src="https://unpkg.com/scrollreveal"></script>
-
-    <script src="main.js"></script>
 </body>
 </html>
