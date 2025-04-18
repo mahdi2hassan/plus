@@ -3,100 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <title>مقرر الصف الثاني الثانوي ادبي</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="/filename.jpg" type="image/x-icon">
-    <title>بلس 360 - الصف الأول الإعدادي</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            padding: 50px;
+            background: var(--body-color);
+            color: var(--text-color-second);
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .video-list, .question-list {
+            margin-top: 20px;
+        }
+        .video-item, .question-item {
+            padding: 10px;
+            background: var(--second-color);
+            color: var(--color-white);
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<body id="bd">
-   <div class="container">
-      <nav id="header">
-         <div class="nav-logo">
-            <p class="nav-name">بلس في الرياضيات</p>
-            <span></span>
-         </div>
-         <div class="nav-menu-btn">
-            <i class="fa-solid fa-bars" onclick="myMenuFunction()"></i>
-         </div>
-      </nav>
+<body>
+    <div class="container">
+        <h1>مقرر الصف الثاني الثانوي ادبي</h1>
+        <h3>الفيديوهات</h3>
+        <div class="video-list" id="videoList"></div>
+        <h3>الأسئلة</h3>
+        <div class="question-list" id="questionList"></div>
+        <a href="index.html" class="back-link">العودة إلى المقررات</a>
+    </div>
 
-      <main class="wrapper">
-         <section class="section">
-            <div class="top-header">
-               <h1>الصف الأول الإعدادي</h1>
-               <a href="index.html" class="btn blue-btn">العودة للرئيسية</a>
-            </div>
-            <div class="row">
-               <div class="col">
-                  <h3>الفيديوهات التعليمية</h3>
-                  <div id="videos" class="videos-container"></div>
-               </div>
-               <div class="col">
-                  <h3>الأسئلة الكتابية</h3>
-                  <div id="questions" class="questions-container"></div>
-               </div>
-            </div>
-         </section>
-      </main>
-   </div>
+    <script>
+        // تحميل الفيديوهات والأسئلة من localStorage
+        const videos = JSON.parse(localStorage.getItem('videos')) || [];
+        const questions = JSON.parse(localStorage.getItem('questions')) || [];
+        const courseId = "course1"; // معرف المقرر (غيّره لكل صفحة: course2, course3, إلخ)
 
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   <script>
-      const grade = "grade1-prep";
-      let content = JSON.parse(localStorage.getItem(grade)) || { videos: [], questions: [] };
-
-      function renderContent() {
-         // عرض الفيديوهات
-         const videosContainer = document.getElementById('videos');
-         videosContainer.innerHTML = '';
-         content.videos.forEach(video => {
-            videosContainer.innerHTML += `
-               <div class="video-box">
-                  <h4>${video.title}</h4>
-                  <iframe width="100%" height="200" src="${video.url}" frameborder="0" allowfullscreen></iframe>
-               </div>`;
-         });
-
-         // عرض الأسئلة
-         const questionsContainer = document.getElementById('questions');
-         questionsContainer.innerHTML = '';
-         content.questions.forEach((question, index) => {
-            questionsContainer.innerHTML += `
-               <div class="question-box">
-                  <p>${index + 1}. ${question.text}</p>
-                  <form class="question-form" data-index="${index}">
-                     <label><input type="radio" name="answer${index}" value="0"> ${question.options[0]}</label><br>
-                     <label><input type="radio" name="answer${index}" value="1"> ${question.options[1]}</label><br>
-                     <label><input type="radio" name="answer${index}" value="2"> ${question.options[2]}</label><br>
-                     <label><input type="radio" name="answer${index}" value="3"> ${question.options[3]}</label><br>
-                     <button type="submit" class="btn blue-btn">إرسال</button>
-                  </form>
-               </div>`;
-         });
-
-         // إضافة مستمعات للأسئلة
-         document.querySelectorAll('.question-form').forEach(form => {
-            form.addEventListener('submit', e => {
-               e.preventDefault();
-               const index = e.target.dataset.index;
-               const selected = e.target.querySelector(`input[name="answer${index}"]:checked`);
-               if (!selected) {
-                  Swal.fire('خطأ', 'يرجى اختيار إجابة', 'error');
-                  return;
-               }
-               const answer = parseInt(selected.value);
-               if (answer === content.questions[index].correct) {
-                  Swal.fire('صحيح!', 'إجابتك صحيحة', 'success');
-               } else {
-                  Swal.fire('خطأ', `الإجابة الصحيحة هي: ${content.questions[index].options[content.questions[index].correct]}`, 'error');
-               }
+        function renderVideos() {
+            const videoList = document.getElementById("videoList");
+            videoList.innerHTML = "";
+            videos.filter(video => video.courseId === courseId).forEach((video, index) => {
+                const div = document.createElement("div");
+                div.className = "video-item";
+                div.innerHTML = `<a href="${video.url}" target="_blank">فيديو ${index + 1}</a>`;
+                videoList.appendChild(div);
             });
-         });
-      }
+        }
 
-      renderContent();
-   </script>
-   <script src="main.js"></script>
+        function renderQuestions() {
+            const questionList = document.getElementById("questionList");
+            questionList.innerHTML = "";
+            questions.filter(question => question.courseId === courseId).forEach((question, index) => {
+                const div = document.createElement("div");
+                div.className = "question-item";
+                div.textContent = `سؤال ${index + 1}: ${question.text}`;
+                questionList.appendChild(div);
+            });
+        }
+
+        renderVideos();
+        renderQuestions();
+
+        // تبديل الوضع الغامق
+        document.getElementById('dar')?.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.removeItem('theme');
+            }
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
 </body>
 </html>
