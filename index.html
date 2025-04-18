@@ -20,6 +20,25 @@
             max-width: 1200px;
             margin: auto;
             padding: 20px;
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        header {
+            background-image: url('/images/n.png');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .nav-logo p {
+            font-size: 2rem;
+            font-weight: bold;
         }
         .course-list {
             display: flex;
@@ -56,11 +75,30 @@
         .admin-link:hover {
             text-decoration: underline;
         }
+        .featured-box {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .featured-text-card span {
+            background: var(--first-color);
+            padding: 10px;
+            border-radius: 5px;
+            color: var(--color-white);
+        }
+        .featured-name p {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+        .featured-text-info p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
         footer {
             text-align: center;
             padding: 20px;
             background: var(--first-color);
             color: var(--color-white);
+            margin-top: 20px;
         }
         .footer-social-icons {
             display: flex;
@@ -79,16 +117,19 @@
             color: var(--color-white);
             text-decoration: none;
         }
+        .footer-menu a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body id="bd">
     <div class="container">
         <!-- التنقل -->
-        <nav id="header">
+        <header id="header">
             <div class="nav-logo">
                 <p>Plus 360</p>
             </div>
-        </nav>
+        </header>
 
         <!-- المحتوى الرئيسي -->
         <main class="wrapper">
@@ -109,78 +150,44 @@
                         </p>
                     </div>
                 </div>
+                <h1>المقررات الدراسية</h1>
+                <div class="course-list" id="courseList"></div>
+                <button class="subscribe-btn" onclick="sendWhatsApp()">اشترك الآن</button>
+                <a href="admin.html" class="admin-link">تسجيل دخول الأدمن</a>
             </section>
+        </main>
 
-<<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المقررات الدراسية</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            padding: 50px;
-            background: var(--body-color);
-            color: var(--text-color-second);
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: var(--color-white);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px var(--first-shadow-color);
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .course-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .course-item {
-            padding: 15px;
-            background: var(--first-color);
-            color: var(--color-white);
-            border-radius: 5px;
-            text-decoration: none;
-            text-align: center;
-        }
-        .course-item:hover {
-            background: var(--first-color-hover);
-        }
-        .admin-link {
-            margin-top: 20px;
-            display: inline-block;
-            color: var(--first-color);
-            text-decoration: none;
-        }
-        .admin-link:hover {
-            text-decoration: underline;
-        }
-        .subscribe-btn {
-            background: #ff204e;
-            color: var(--color-white);
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>المقررات الدراسية</h1>
-        <div class="course-list" id="courseList"></div>
-        <button class="subscribe-btn" onclick="sendWhatsApp()">اشترك الآن</button>
-        <a href="admin.html" class="admin-link">تسجيل دخول الأدمن</a>
+        <!-- التذييل -->
+        <footer>
+            <div class="top-footer">
+                <p><span>Mahdi</span> <span>Hassan</span></p>
+            </div>
+            <div class="middle-footer">
+                <ul class="footer-menu">
+                    <li class="footer_menu_list"><a href="#home">الرئيسية</a></li>
+                    <li class="footer_menu_list"><a href="#courses">الصفوف</a></li>
+                    <li class="footer_menu_list"><a href="#courses">الكورسات</a></li>
+                    <li class="footer_menu_list"><a href="#contact">التواصل</a></li>
+                </ul>
+            </div>
+            <div class="footer-social-icons">
+                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="uil uil-whatsapp" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="uil uil-telegram" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="tel:01558870907"><i class="uil uil-phone" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fa-brands fa-facebook-f" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="uil uil-instagram" style="color: #005eff;"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://ipn.eg/S/mahdihassan/instapay/51rzLz"><i class="uil uil-paypal" style="color: #005eff;"></i></a></div>
+            </div>
+            <div class="bottom-footer">
+                <p>Copyright © <a href="https://www.facebook.com/ma7di2hassan" style="text-decoration: none;">Mahdi Hassan</a> - هذه المنصة من أجل تهيئة الطالب للجوانب المعرفية</p>
+            </div>
+        </footer>
     </div>
 
+    <!-- السكربتات -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
     <script>
         // تحميل المقررات من localStorage
         const courses = JSON.parse(localStorage.getItem('courses')) || [
@@ -215,6 +222,23 @@
             window.open(url, "_blank");
         }
 
+        // تأثير الكتابة باستخدام Typed.js
+        if (typeof Typed !== 'undefined') {
+            new Typed('.typedText', {
+                strings: ["معلم رياضيات", "مبتكر تعليمي", "بلس 360"],
+                loop: true,
+                typeSpeed: 100,
+                backSpeed: 80,
+                backDelay: 2000
+            });
+        }
+
+        // تأثيرات التمرير باستخدام ScrollReveal
+        if (typeof ScrollReveal !== 'undefined') {
+            ScrollReveal().reveal('.featured-text', { delay: 200 });
+            ScrollReveal().reveal('.course-list', { delay: 400 });
+        }
+
         // تبديل الوضع الغامق
         document.getElementById('dar')?.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
@@ -227,49 +251,6 @@
 
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
-        }
-    </script>
-</body>
-</html>
-        <!-- التذييل -->
-        <footer>
-            <div class="top-footer">
-                <p><span>Mahdi</span> <span>Hassan</span></p>
-            </div>
-            <div class="middle-footer">
-                <ul class="footer-menu">
-                    <li class="footer_menu_list"><a href="#home">الرئيسية</a></li>
-                    <li class="footer_menu_list"><a href="#about">الصفوف</a></li>
-                    <li class="footer_menu_list"><a href="#projects">الكورسات</a></li>
-                    <li class="footer_menu_list"><a href="#contact">التواصل</a></li>
-                </ul>
-            </div>
-            <div class="footer-social-icons">
-                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="uil uil-whatsapp" style="color: #005eff;"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="uil uil-telegram" style="color: #005eff;"></i></a></div>
-                <div class="icon"><a target="_blank" href="tel:01558870907"><i class="uil uil-phone" style="color: #005eff;"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fa-brands fa-facebook-f" style="color: #005eff;"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="uil uil-instagram" style="color: #005eff;"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://ipn.eg/S/mahdihassan/instapay/51rzLz"><i class="uil uil-paypal" style="color: #005eff;"></i></a></div>
-            </div>
-            <div class="bottom-footer">
-                <p>Copyright © <a href="https://www.facebook.com/ma7di2hassan" style="text-decoration: none;">Mahdi Hassan</a> - هذه المنصة من أجل تهيئة الطالب للجوانب المعرفية</p>
-            </div>
-        </footer>
-    </div>
-
-    <!-- السكربتات -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://smtpjs.com/v3/smtp.js"></script>
-    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-    <script src="https://unpkg.com/scrollreveal"></script>
-    <script src="main.js"></script>
-    <script>
-        function sendWhatsApp() {
-            const phoneNumber = "+201558870907";
-            const message = "أسعار الاشتراك";
-            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(url, "_blank");
         }
     </script>
 </body>
