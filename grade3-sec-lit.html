@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مقرر الصف الثانوي الثالث ادبي</title>
+    <title>مقرر الصف االثالث الثانوي ادبي</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -20,19 +20,57 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
-        h1 {
+        h1, h3 {
             text-align: center;
             margin-bottom: 20px;
         }
         .video-list, .question-list {
             margin-top: 20px;
         }
-        .video-item, .question-item {
+        .video-item {
+            display: flex;
+            align-items: center;
             padding: 10px;
             background: var(--second-color);
             color: var(--color-white);
             border-radius: 5px;
             margin: 5px 0;
+        }
+        .video-item img {
+            width: 120px;
+            height: 68px;
+            margin-left: 10px;
+            border-radius: 5px;
+        }
+        .video-item a {
+            color: var(--color-white);
+            text-decoration: none;
+        }
+        .question-item {
+            padding: 15px;
+            background: var(--second-color);
+            color: var(--color-white);
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .question-item label {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .question-item textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .question-item button {
+            background: var(--first-color);
+            padding: 8px 15px;
+        }
+        .result {
+            margin-top: 10px;
+            font-weight: bold;
         }
         .back-link {
             display: inline-block;
@@ -47,7 +85,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>مقرر الصف الثانوي الثالث ادبي</h1>
+        <h1>مقرر الصف االثالث الثانوي ادبي</h1>
         <h3>الفيديوهات</h3>
         <div class="video-list" id="videoList"></div>
         <h3>الأسئلة</h3>
@@ -56,20 +94,50 @@
     </div>
 
     <script>
-        // تحميل الفيديوهات والأسئلة من localStorage
+        // تحميل البيانات من localStorage
         const videos = JSON.parse(localStorage.getItem('videos')) || [];
         const questions = JSON.parse(localStorage.getItem('questions')) || [];
-        const courseId = "course1"; // معرف المقرر (غيّره لكل صفحة: course2, course3, إلخ)
+        const courseId = "course1"; // غيّره لكل صفحة (course2, course3, إلخ)
+
+        function getYouTubeThumbnail(url) {
+            const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1];
+            return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/120x68?text=فيديو';
+        }
 
         function renderVideos() {
             const videoList = document.getElementById("videoList");
             videoList.innerHTML = "";
             videos.filter(video => video.courseId === courseId).forEach((video, index) => {
+                const thumbnail = video.thumbnail || getYouTubeThumbnail(video.url);
+                const isYouTube = video.url.includes("youtube.com") || video.url.includes("youtu.be");
+                const videoUrl = isYouTube ? video.url.replace("watch?v=", "embed/") + "?autoplay=1" : video.url;
                 const div = document.createElement("div");
                 div.className = "video-item";
-                div.innerHTML = `<a href="${video.url}" target="_blank">فيديو ${index + 1}</a>`;
+                div.innerHTML = `
+                    <img src="${thumbnail}" alt="${video.title}">
+                    <a href="${videoUrl}" target="_blank">${video.title || `فيديو ${index + 1}`}</a>
+                `;
                 videoList.appendChild(div);
             });
+        }
+
+        function checkAnswer(index) {
+            const question = questions.filter(q => q.courseId === courseId)[index];
+            const resultDiv = document.getElementById(`result${index}`);
+            
+            if (question.type === "multiple") {
+                const selected = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selected) {
+                    const answer = parseInt(selected.value);
+                    resultDiv.textContent = answer === question.correctAnswer ? "إجابة صحيحة!" : "إجابة خاطئة!";
+                    resultDiv.style.color = answer === question.correctAnswer ? "green" : "red";
+                }
+            } else {
+                const answer = document.getElementById(`openAnswer${index}`).value.trim().toLowerCase();
+                const modelAnswer = question.modelAnswer.trim().toLowerCase();
+                resultDiv.textContent = answer === modelAnswer ? "إجابة صحيحة!" : "إجابة خاطئة!";
+                resultDiv.style.color = answer === modelAnswer ? "green" : "red";
+            }
         }
 
         function renderQuestions() {
@@ -78,7 +146,27 @@
             questions.filter(question => question.courseId === courseId).forEach((question, index) => {
                 const div = document.createElement("div");
                 div.className = "question-item";
-                div.textContent = `سؤال ${index + 1}: ${question.text}`;
+                if (question.type === "multiple") {
+                    const optionsHtml = question.options.map((option, i) => `
+                        <label>
+                            <input type="radio" name="question${index}" value="${i}">
+                            ${option}
+                        </label>
+                    `).join("");
+                    div.innerHTML = `
+                        سؤال ${index + 1}: ${question.text}
+                        ${optionsHtml}
+                        <button onclick="checkAnswer(${index})">إرسال الإجابة</button>
+                        <div id="result${index}" class="result"></div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        سؤال ${index + 1}: ${question.text}
+                        <textarea id="openAnswer${index}" placeholder="اكتب إجابتك هنا"></textarea>
+                        <button onclick="checkAnswer(${index})">إرسال الإجابة</button>
+                        <div id="result${index}" class="result"></div>
+                    `;
+                }
                 questionList.appendChild(div);
             });
         }
