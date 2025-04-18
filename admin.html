@@ -14,7 +14,7 @@
             color: var(--text-color-second);
         }
         .form-container, .admin-panel {
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
             background: var(--color-white);
             padding: 20px;
@@ -72,7 +72,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        .course-item button, .question-item button {
+        .course-item button, .video-item button, .question-item button {
             background: #ff204e;
             padding: 5px 10px;
         }
@@ -98,7 +98,7 @@
             background: var(--color-white);
             padding: 20px;
             border-radius: 10px;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
         }
         .modal-content h3 {
@@ -142,28 +142,39 @@
             <option value="">اختر المقرر</option>
         </select>
         <input type="text" id="videoTitle" placeholder="عنوان الفيديو">
-        <input type="text" id="videoUrl" placeholder="رابط الفيديو (يوتيوب أو هاتف)">
+        <input type="text" id="videoUrl" placeholder="رابط الفيديو (يوتيوب، Google Drive، إلخ)">
+        <input type="text" id="videoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
         <button onclick="addVideo()">إضافة فيديو</button>
         <div class="video-list" id="videoList"></div>
 
-        <h3>إضافة أسئلة موضوعية</h3>
+        <h3>إضافة أسئلة</h3>
         <select id="questionCourse">
             <option value="">اختر المقرر</option>
         </select>
-        <textarea id="questionText" placeholder="اكتب السؤال هنا"></textarea>
-        <div class="option-container">
-            <input type="text" id="option1" placeholder="الخيار الأول">
-            <input type="text" id="option2" placeholder="الخيار الثاني">
-            <input type="text" id="option3" placeholder="الخيار الثالث">
-            <input type="text" id="option4" placeholder="الخيار الرابع">
-        </div>
-        <select id="correctAnswer">
-            <option value="">اختر الإجابة الصحيحة</option>
-            <option value="0">الخيار الأول</option>
-            <option value="1">الخيار الثاني</option>
-            <option value="2">الخيار الثالث</option>
-            <option value="3">الخيار الرابع</option>
+        <select id="questionType" onchange="toggleQuestionForm()">
+            <option value="multiple">سؤال موضوعي (متعدد الخيارات)</option>
+            <option value="open">سؤال غير موضوعي (مفتوح)</option>
         </select>
+        <div id="multipleChoiceForm">
+            <textarea id="questionText" placeholder="اكتب السؤال هنا"></textarea>
+            <div class="option-container">
+                <input type="text" id="option1" placeholder="الخيار الأول">
+                <input type="text" id="option2" placeholder="الخيار الثاني">
+                <input type="text" id="option3" placeholder="الخيار الثالث">
+                <input type="text" id="option4" placeholder="الخيار الرابع">
+            </div>
+            <select id="correctAnswer">
+                <option value="">اختر الإجابة الصحيحة</option>
+                <option value="0">الخيار الأول</option>
+                <option value="1">الخيار الثاني</option>
+                <option value="2">الخيار الثالث</option>
+                <option value="3">الخيار الرابع</option>
+            </select>
+        </div>
+        <div id="openEndedForm" style="display: none;">
+            <textarea id="openQuestionText" placeholder="اكتب السؤال هنا"></textarea>
+            <textarea id="modelAnswer" placeholder="الإجابة النموذجية"></textarea>
+        </div>
         <button onclick="addQuestion()">إضافة سؤال</button>
         <div class="question-list" id="questionList"></div>
 
@@ -182,24 +193,49 @@
         </div>
     </div>
 
+    <!-- نافذة تعديل الفيديو -->
+    <div class="modal" id="editVideoModal">
+        <div class="modal-content">
+            <h3>تعديل الفيديو</h3>
+            <select id="editVideoCourse">
+                <option value="">اختر المقرر</option>
+            </select>
+            <input type="text" id="editVideoTitle" placeholder="عنوان الفيديو">
+            <input type="text" id="editVideoUrl" placeholder="رابط الفيديو">
+            <input type="text" id="editVideoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
+            <button onclick="saveVideoEdit()">حفظ التعديلات</button>
+            <button class="close-btn" onclick="closeModal()">إغلاق</button>
+        </div>
+    </div>
+
     <!-- نافذة تعديل السؤال -->
     <div class="modal" id="editQuestionModal">
         <div class="modal-content">
             <h3>تعديل السؤال</h3>
-            <textarea id="editQuestionText" placeholder="نص السؤال"></textarea>
-            <div class="option-container">
-                <input type="text" id="editOption1" placeholder="الخيار الأول">
-                <input type="text" id="editOption2" placeholder="الخيار الثاني">
-                <input type="text" id="editOption3" placeholder="الخيار الثالث">
-                <input type="text" id="editOption4" placeholder="الخيار الرابع">
-            </div>
-            <select id="editCorrectAnswer">
-                <option value="">اختر الإجابة الصحيحة</option>
-                <option value="0">الخيار الأول</option>
-                <option value="1">الخيار الثاني</option>
-                <option value="2">الخيار الثالث</option>
-                <option value="3">الخيار الرابع</option>
+            <select id="editQuestionType" onchange="toggleEditQuestionForm()">
+                <option value="multiple">سؤال موضوعي</option>
+                <option value="open">سؤال غير موضوعي</option>
             </select>
+            <div id="editMultipleChoiceForm">
+                <textarea id="editQuestionText" placeholder="نص السؤال"></textarea>
+                <div class="option-container">
+                    <input type="text" id="editOption1" placeholder="الخيار الأول">
+                    <input type="text" id="editOption2" placeholder="الخيار الثاني">
+                    <input type="text" id="editOption3" placeholder="الخيار الثالث">
+                    <input type="text" id="editOption4" placeholder="الخيار الرابع">
+                </div>
+                <select id="editCorrectAnswer">
+                    <option value="">اختر الإجابة الصحيحة</option>
+                    <option value="0">الخيار الأول</option>
+                    <option value="1">الخيار الثاني</option>
+                    <option value="2">الخيار الثالث</option>
+                    <option value="3">الخيار الرابع</option>
+                </select>
+            </div>
+            <div id="editOpenEndedForm" style="display: none;">
+                <textarea id="editOpenQuestionText" placeholder="نص السؤال"></textarea>
+                <textarea id="editModelAnswer" placeholder="الإجابة النموذجية"></textarea>
+            </div>
             <button onclick="saveQuestionEdit()">حفظ التعديلات</button>
             <button class="close-btn" onclick="closeModal()">إغلاق</button>
         </div>
@@ -222,6 +258,7 @@
         let videos = JSON.parse(localStorage.getItem('videos')) || [];
         let questions = JSON.parse(localStorage.getItem('questions')) || [];
         let editCourseIndex = null;
+        let editVideoIndex = null;
         let editQuestionIndex = null;
 
         function validateAdmin() {
@@ -247,8 +284,10 @@
         function populateCourseSelects() {
             const videoSelect = document.getElementById("videoCourse");
             const questionSelect = document.getElementById("questionCourse");
+            const editVideoSelect = document.getElementById("editVideoCourse");
             videoSelect.innerHTML = '<option value="">اختر المقرر</option>';
             questionSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            editVideoSelect.innerHTML = '<option value="">اختر المقرر</option>';
             courses.forEach(course => {
                 const option1 = document.createElement("option");
                 option1.value = course.id;
@@ -258,6 +297,10 @@
                 option2.value = course.id;
                 option2.textContent = course.name;
                 questionSelect.appendChild(option2);
+                const option3 = document.createElement("option");
+                option3.value = course.id;
+                option3.textContent = course.name;
+                editVideoSelect.appendChild(option3);
             });
         }
 
@@ -308,79 +351,173 @@
         function addVideo() {
             const videoTitle = document.getElementById("videoTitle").value;
             const videoUrl = document.getElementById("videoUrl").value;
+            const videoThumbnail = document.getElementById("videoThumbnail").value;
             const courseId = document.getElementById("videoCourse").value;
             if (videoTitle && videoUrl && courseId) {
-                videos.push({ courseId, title: videoTitle, url: videoUrl });
+                videos.push({ courseId, title: videoTitle, url: videoUrl, thumbnail: videoThumbnail });
                 localStorage.setItem('videos', JSON.stringify(videos));
                 renderVideos();
                 document.getElementById("videoTitle").value = "";
                 document.getElementById("videoUrl").value = "";
+                document.getElementById("videoThumbnail").value = "";
                 document.getElementById("videoCourse").value = "";
             }
         }
 
-        function addQuestion() {
-            const questionText = document.getElementById("questionText").value;
-            const courseId = document.getElementById("questionCourse").value;
-            const options = [
-                document.getElementById("option1").value,
-                document.getElementById("option2").value,
-                document.getElementById("option3").value,
-                document.getElementById("option4").value
-            ].filter(opt => opt); // تصفية الخيارات الفارغة
-            const correctAnswer = document.getElementById("correctAnswer").value;
+        function editVideo(index) {
+            editVideoIndex = index;
+            const video = videos[index];
+            document.getElementById("editVideoCourse").value = video.courseId;
+            document.getElementById("editVideoTitle").value = video.title;
+            document.getElementById("editVideoUrl").value = video.url;
+            document.getElementById("editVideoThumbnail").value = video.thumbnail || "";
+            document.getElementById("editVideoModal").style.display = "flex";
+        }
 
-            if (questionText && courseId && options.length >= 2 && correctAnswer !== "") {
-                questions.push({
-                    courseId,
-                    text: questionText,
-                    options,
-                    correctAnswer: parseInt(correctAnswer)
-                });
-                localStorage.setItem('questions', JSON.stringify(questions));
-                renderQuestions();
-                document.getElementById("questionText").value = "";
-                document.getElementById("option1").value = "";
-                document.getElementById("option2").value = "";
-                document.getElementById("option3").value = "";
-                document.getElementById("option4").value = "";
-                document.getElementById("correctAnswer").value = "";
-                document.getElementById("questionCourse").value = "";
+        function saveVideoEdit() {
+            const courseId = document.getElementById("editVideoCourse").value;
+            const videoTitle = document.getElementById("editVideoTitle").value;
+            const videoUrl = document.getElementById("editVideoUrl").value;
+            const videoThumbnail = document.getElementById("editVideoThumbnail").value;
+            if (videoTitle && videoUrl && courseId) {
+                videos[editVideoIndex] = { courseId, title: videoTitle, url: videoUrl, thumbnail: videoThumbnail };
+                localStorage.setItem('videos', JSON.stringify(videos));
+                renderVideos();
+                closeModal();
+            }
+        }
+
+        function deleteVideo(index) {
+            videos.splice(index, 1);
+            localStorage.setItem('videos', JSON.stringify(videos));
+            renderVideos();
+        }
+
+        function toggleQuestionForm() {
+            const questionType = document.getElementById("questionType").value;
+            document.getElementById("multipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
+            document.getElementById("openEndedForm").style.display = questionType === "open" ? "block" : "none";
+        }
+
+        function toggleEditQuestionForm() {
+            const questionType = document.getElementById("editQuestionType").value;
+            document.getElementById("editMultipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
+            document.getElementById("editOpenEndedForm").style.display = questionType === "open" ? "block" : "none";
+        }
+
+        function addQuestion() {
+            const courseId = document.getElementById("questionCourse").value;
+            const questionType = document.getElementById("questionType").value;
+
+            if (!courseId) return;
+
+            if (questionType === "multiple") {
+                const questionText = document.getElementById("questionText").value;
+                const options = [
+                    document.getElementById("option1").value,
+                    document.getElementById("option2").value,
+                    document.getElementById("option3").value,
+                    document.getElementById("option4").value
+                ].filter(opt => opt);
+                const correctAnswer = document.getElementById("correctAnswer").value;
+
+                if (questionText && options.length >= 2 && correctAnswer !== "") {
+                    questions.push({
+                        courseId,
+                        type: "multiple",
+                        text: questionText,
+                        options,
+                        correctAnswer: parseInt(correctAnswer)
+                    });
+                    localStorage.setItem('questions', JSON.stringify(questions));
+                    renderQuestions();
+                    document.getElementById("questionText").value = "";
+                    document.getElementById("option1").value = "";
+                    document.getElementById("option2").value = "";
+                    document.getElementById("option3").value = "";
+                    document.getElementById("option4").value = "";
+                    document.getElementById("correctAnswer").value = "";
+                    document.getElementById("questionCourse").value = "";
+                }
+            } else {
+                const questionText = document.getElementById("openQuestionText").value;
+                const modelAnswer = document.getElementById("modelAnswer").value;
+
+                if (questionText && modelAnswer) {
+                    questions.push({
+                        courseId,
+                        type: "open",
+                        text: questionText,
+                        modelAnswer
+                    });
+                    localStorage.setItem('questions', JSON.stringify(questions));
+                    renderQuestions();
+                    document.getElementById("openQuestionText").value = "";
+                    document.getElementById("modelAnswer").value = "";
+                    document.getElementById("questionCourse").value = "";
+                }
             }
         }
 
         function editQuestion(index) {
             editQuestionIndex = index;
             const question = questions[index];
-            document.getElementById("editQuestionText").value = question.text;
-            document.getElementById("editOption1").value = question.options[0] || "";
-            document.getElementById("editOption2").value = question.options[1] || "";
-            document.getElementById("editOption3").value = question.options[2] || "";
-            document.getElementById("editOption4").value = question.options[3] || "";
-            document.getElementById("editCorrectAnswer").value = question.correctAnswer;
+            document.getElementById("editQuestionType").value = question.type;
+            if (question.type === "multiple") {
+                document.getElementById("editQuestionText").value = question.text;
+                document.getElementById("editOption1").value = question.options[0] || "";
+                document.getElementById("editOption2").value = question.options[1] || "";
+                document.getElementById("editOption3").value = question.options[2] || "";
+                document.getElementById("editOption4").value = question.options[3] || "";
+                document.getElementById("editCorrectAnswer").value = question.correctAnswer;
+            } else {
+                document.getElementById("editOpenQuestionText").value = question.text;
+                document.getElementById("editModelAnswer").value = question.modelAnswer;
+            }
+            toggleEditQuestionForm();
             document.getElementById("editQuestionModal").style.display = "flex";
         }
 
         function saveQuestionEdit() {
-            const questionText = document.getElementById("editQuestionText").value;
-            const options = [
-                document.getElementById("editOption1").value,
-                document.getElementById("editOption2").value,
-                document.getElementById("editOption3").value,
-                document.getElementById("editOption4").value
-            ].filter(opt => opt);
-            const correctAnswer = document.getElementById("editCorrectAnswer").value;
+            const questionType = document.getElementById("editQuestionType").value;
 
-            if (questionText && options.length >= 2 && correctAnswer !== "") {
-                questions[editQuestionIndex] = {
-                    courseId: questions[editQuestionIndex].courseId,
-                    text: questionText,
-                    options,
-                    correctAnswer: parseInt(correctAnswer)
-                };
-                localStorage.setItem('questions', JSON.stringify(questions));
-                renderQuestions();
-                closeModal();
+            if (questionType === "multiple") {
+                const questionText = document.getElementById("editQuestionText").value;
+                const options = [
+                    document.getElementById("editOption1").value,
+                    document.getElementById("editOption2").value,
+                    document.getElementById("editOption3").value,
+                    document.getElementById("editOption4").value
+                ].filter(opt => opt);
+                const correctAnswer = document.getElementById("editCorrectAnswer").value;
+
+                if (questionText && options.length >= 2 && correctAnswer !== "") {
+                    questions[editQuestionIndex] = {
+                        courseId: questions[editQuestionIndex].courseId,
+                        type: "multiple",
+                        text: questionText,
+                        options,
+                        correctAnswer: parseInt(correctAnswer)
+                    };
+                    localStorage.setItem('questions', JSON.stringify(questions));
+                    renderQuestions();
+                    closeModal();
+                }
+            } else {
+                const questionText = document.getElementById("editOpenQuestionText").value;
+                const modelAnswer = document.getElementById("editModelAnswer").value;
+
+                if (questionText && modelAnswer) {
+                    questions[editQuestionIndex] = {
+                        courseId: questions[editQuestionIndex].courseId,
+                        type: "open",
+                        text: questionText,
+                        modelAnswer
+                    };
+                    localStorage.setItem('questions', JSON.stringify(questions));
+                    renderQuestions();
+                    closeModal();
+                }
             }
         }
 
@@ -414,7 +551,13 @@
                 const course = courses.find(c => c.id === video.courseId);
                 const div = document.createElement("div");
                 div.className = "video-item";
-                div.innerHTML = `<a href="${video.url}" target="_blank">${video.title} (${course ? course.name : 'غير مرتبط'})</a>`;
+                div.innerHTML = `
+                    ${video.title} (${course ? course.name : 'غير مرتبط'})
+                    <div>
+                        <button onclick="editVideo(${index})">تعديل</button>
+                        <button onclick="deleteVideo(${index})">حذف</button>
+                    </div>
+                `;
                 videoList.appendChild(div);
             });
         }
@@ -427,7 +570,7 @@
                 const div = document.createElement("div");
                 div.className = "question-item";
                 div.innerHTML = `
-                    سؤال ${index + 1}: ${question.text} (${course ? course.name : 'غير مرتبط'})
+                    سؤال ${index + 1}: ${question.text} (${question.type === "multiple" ? "موضوعي" : "مفتوح"}) (${course ? course.name : 'غير مرتبط'})
                     <div>
                         <button onclick="editQuestion(${index})">تعديل</button>
                         <button onclick="deleteQuestion(${index})">حذف</button>
@@ -439,6 +582,7 @@
 
         function closeModal() {
             document.getElementById("editCourseModal").style.display = "none";
+            document.getElementById("editVideoModal").style.display = "none";
             document.getElementById("editQuestionModal").style.display = "none";
         }
 

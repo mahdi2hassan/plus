@@ -58,6 +58,20 @@
             margin: 10px 0;
             cursor: pointer;
         }
+        .question-item textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .question-item button {
+            background: var(--first-color);
+            padding: 8px 15px;
+        }
+        .result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
         .back-link {
             display: inline-block;
             margin-top: 20px;
@@ -94,14 +108,36 @@
             const videoList = document.getElementById("videoList");
             videoList.innerHTML = "";
             videos.filter(video => video.courseId === courseId).forEach((video, index) => {
+                const thumbnail = video.thumbnail || getYouTubeThumbnail(video.url);
+                const isYouTube = video.url.includes("youtube.com") || video.url.includes("youtu.be");
+                const videoUrl = isYouTube ? video.url.replace("watch?v=", "embed/") + "?autoplay=1" : video.url;
                 const div = document.createElement("div");
                 div.className = "video-item";
                 div.innerHTML = `
-                    <img src="${getYouTubeThumbnail(video.url)}" alt="${video.title}">
-                    <a href="${video.url}" target="_blank">${video.title || `فيديو ${index + 1}`}</a>
+                    <img src="${thumbnail}" alt="${video.title}">
+                    <a href="${videoUrl}" target="_blank">${video.title || `فيديو ${index + 1}`}</a>
                 `;
                 videoList.appendChild(div);
             });
+        }
+
+        function checkAnswer(index) {
+            const question = questions.filter(q => q.courseId === courseId)[index];
+            const resultDiv = document.getElementById(`result${index}`);
+            
+            if (question.type === "multiple") {
+                const selected = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selected) {
+                    const answer = parseInt(selected.value);
+                    resultDiv.textContent = answer === question.correctAnswer ? "إجابة صحيحة!" : "إجابة خاطئة!";
+                    resultDiv.style.color = answer === question.correctAnswer ? "green" : "red";
+                }
+            } else {
+                const answer = document.getElementById(`openAnswer${index}`).value.trim().toLowerCase();
+                const modelAnswer = question.modelAnswer.trim().toLowerCase();
+                resultDiv.textContent = answer === modelAnswer ? "إجابة صحيحة!" : "إجابة خاطئة!";
+                resultDiv.style.color = answer === modelAnswer ? "green" : "red";
+            }
         }
 
         function renderQuestions() {
@@ -110,16 +146,27 @@
             questions.filter(question => question.courseId === courseId).forEach((question, index) => {
                 const div = document.createElement("div");
                 div.className = "question-item";
-                let optionsHtml = question.options.map((option, i) => `
-                    <label>
-                        <input type="radio" name="question${index}" value="${i}">
-                        ${option}
-                    </label>
-                `).join("");
-                div.innerHTML = `
-                    سؤال ${index + 1}: ${question.text}
-                    ${optionsHtml}
-                `;
+                if (question.type === "multiple") {
+                    const optionsHtml = question.options.map((option, i) => `
+                        <label>
+                            <input type="radio" name="question${index}" value="${i}">
+                            ${option}
+                        </label>
+                    `).join("");
+                    div.innerHTML = `
+                        سؤال ${index + 1}: ${question.text}
+                        ${optionsHtml}
+                        <button onclick="checkAnswer(${index})">إرسال الإجابة</button>
+                        <div id="result${index}" class="result"></div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        سؤال ${index + 1}: ${question.text}
+                        <textarea id="openAnswer${index}" placeholder="اكتب إجابتك هنا"></textarea>
+                        <button onclick="checkAnswer(${index})">إرسال الإجابة</button>
+                        <div id="result${index}" class="result"></div>
+                    `;
+                }
                 questionList.appendChild(div);
             });
         }
