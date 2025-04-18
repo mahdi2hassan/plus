@@ -32,9 +32,8 @@ function myMenuFunction(){
 
 
 /* ----- TYPING EFFECT ----- */
-/* ----- HAZOOOOOOMA ----- */
  var typingEffect = new Typed(".typedText",{
-    strings : ["Teacher .","Youtuber .","Developer .", "Designer .",],
+    strings : ["Welcome To .","PLUSINMATH  .","Mr.Mahdi .", "Hassan .",],
     loop : true,
     typeSpeed : 100, 
     backSpeed : 80,
