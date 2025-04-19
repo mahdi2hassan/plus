@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plus In Math - الاختبارات الإلكترونية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --first-color: #005eff;
+            --first-color-hover: #0047cc;
+            --second-color: #4a90e2;
+            --body-color: #f5f6fa;
+            --color-white: #fff;
+            --text-color-second: #333;
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+            --gradient-bg: linear-gradient(135deg, #005eff, #4a90e2);
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--body-color);
+            color: var(--text-color-second);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        header {
+            background: var(--gradient-bg);
+            height: 150px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-logo .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInPulse 2s ease-in-out;
+        }
+        @keyframes fadeInPulse {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--color-white);
+            box-shadow: 0 2px 4px var(--first-shadow-color);
+        }
+        .nav-logo a .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--first-color);
+            position: relative;
+            transition: transform 0.3s, text-shadow 0.3s;
+        }
+        .nav-logo a .logo-text:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--first-color);
+        }
+        .nav-logo a .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--first-color);
+            transition: width 0.3s;
+        }
+        .nav-logo a .logo-text:hover::after {
+            width: 100%;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-menu ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-menu a {
+            color: var(--text-color-second);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-menu a:hover, .nav-menu a.active-link {
+            color: var(--first-color);
+        }
+        .nav-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-color-second);
+        }
+        .exam-section {
+            padding: 20px;
+        }
+        .exam-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--first-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .exam-form, .exam-list {
+            background: var(--color-white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+            margin-bottom: 20px;
+        }
+        .exam-form h2, .exam-list h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-color-second);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .question-container {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .question-container h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .option-group input[type="text"] {
+            flex: 1;
+        }
+        .option-group input[type="radio"] {
+            margin-left: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .btn:hover {
+            background: var(--first-color-hover);
+            transform: translateY(-2px);
+        }
+        .btn-danger {
+            background: #e74c3c;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        .exam-card {
+            background: var(--color-white);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .exam-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px var(--first-shadow-color);
+        }
+        .exam-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .exam-card p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .exam-card .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            header {
+                height: 120px;
+            }
+            .nav-logo .logo-text {
+                font-size: 2rem;
+            }
+            .nav-menu {
+                display: none;
+            }
+            .nav-menu.responsive {
+                display: block;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background: var(--color-white);
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px var(--first-shadow-color);
+            }
+            .nav-menu ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .nav-menu-btn {
+                display: block;
+            }
+            .exam-section h1 {
+                font-size: 1.5rem;
+            }
+            .option-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="nav-logo">
+                <span class="logo-text">Plus In Math</span>
+            </div>
+        </header>
+        <nav>
+            <div class="nav-logo">
+                <a href="index.html"><span class="logo-text">Plus In Math</span></a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav_menu_list">
+                    <li class="nav_list"><a href="index.html" class="nav-link">الرئيسية</a></li>
+                    <li class="nav_list"><a href="data.html" class="nav-link">إدارة الحسابات</a></li>
+                    <li class="nav_list"><a href="courses.html" class="nav-link">إدارة المقررات</a></li>
+                    <li class="nav_list"><a href="exams.html" class="nav-link active-link">الاختبارات الإلكترونية</a></li>
+                    <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
+                </ul>
+            </div>
+            <button class="nav-menu-btn" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i></button>
+        </nav>
+        <main class="exam-section">
+            <h1>إدارة الاختبارات الإلكترونية</h1>
+            <div class="exam-form">
+                <h2>إنشاء اختبار جديد</h2>
+                <div class="form-group">
+                    <label for="examTitle">عنوان الاختبار</label>
+                    <input type="text" id="examTitle" placeholder="أدخل عنوان الاختبار" required>
+                </div>
+                <div class="form-group">
+                    <label for="examGrade">الصف الدراسي</label>
+                    <select id="examGrade" required>
+                        <option value="">اختر الصف الدراسي</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="examCourse">المقرر</label>
+                    <select id="examCourse" required>
+                        <option value="">اختر المقرر</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="examDuration">مدة الاختبار (بالدقائق)</label>
+                    <input type="number" id="examDuration" placeholder="أدخل مدة الاختبار" min="1" required>
+                </div>
+                <div id="questionsContainer"></div>
+                <button class="btn" onclick="addQuestion()">إضافة سؤال</button>
+                <button class="btn" onclick="saveExam()" style="margin-right: 10px;">حفظ الاختبار</button>
+            </div>
+            <div class="exam-list">
+                <h2>الاختبارات المحفوظة</h2>
+                <div id="examList"></div>
+            </div>
+        </main>
+        <footer>
+            <div class="top-footer"><span class="logo-text">Plus In Math</span></div>
+            <ul class="footer-menu">
+                <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
+                <li class="footer_menu_list"><a href="data.html">إدارة الحسابات</a></li>
+                <li class="footer_menu_list"><a href="courses.html">إدارة المقررات</a></li>
+                <li class="footer_menu_list"><a href="exams.html">الاختبارات الإلكترونية</a></li>
+            </ul>
+            <div class="footer-social-icons">
+                <a target="_blank" href="https://wa.me/+201558870907" class="icon" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                <a target="_blank" href="https://t.me/mahdi2hassan/" class="icon" aria-label="تيليجرام"><i class="fab fa-telegram"></i></a>
+                <a target="_blank" href="https://www.facebook.com/plusinmath" class="icon" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a target="_blank" href="https://www.instagram.com/mahdi2hassan/" class="icon" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>
+        // التحقق من تسجيل دخول الأدمن
+        const isAdminLoggedIn = localStorage.getItem('adminLoggedIn');
+        if (!isAdminLoggedIn) {
+            Swal.fire({
+                title: 'خطأ',
+                text: 'يرجى تسجيل الدخول كأدمن!',
+                icon: 'error',
+                confirmButtonColor: '#005eff'
+            }).then(() => {
+                window.location.href = 'admin-login.html';
+            });
+        }
+
+        // تحميل المقررات والصفوف
+        const courses = JSON.parse(localStorage.getItem('courses')) || [];
+        const grades = [...new Set(courses.map(course => course.grade))];
+        const gradeSelect = document.getElementById('examGrade');
+        const courseSelect = document.getElementById('examCourse');
+
+        grades.forEach(grade => {
+            const option = document.createElement('option');
+            option.value = grade;
+            option.textContent = grade;
+            gradeSelect.appendChild(option);
+        });
+
+        gradeSelect.addEventListener('change', () => {
+            courseSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            const selectedGrade = gradeSelect.value;
+            const filteredCourses = courses.filter(course => course.grade === selectedGrade);
+            filteredCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.name;
+                courseSelect.appendChild(option);
+            });
+        });
+
+        // إضافة سؤال جديد
+        let questionCount = 0;
+        function addQuestion() {
+            questionCount++;
+            const container = document.getElementById('questionsContainer');
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-container';
+            questionDiv.id = `question-${questionCount}`;
+            questionDiv.innerHTML = `
+                <h3>السؤال ${questionCount}</h3>
+                <div class="form-group">
+                    <label for="questionText-${questionCount}">نص السؤال</label>
+                    <textarea id="questionText-${questionCount}" placeholder="أدخل نص السؤال" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="questionType-${questionCount}">نوع السؤال</label>
+                    <select id="questionType-${questionCount}" onchange="toggleOptions(${questionCount})">
+                        <option value="open">مفتوح</option>
+                        <option value="multiple">اختيار متعدد</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="questionImage-${questionCount}">إرفاق صورة (اختياري)</label>
+                    <input type="file" id="questionImage-${questionCount}" accept="image/*">
+                </div>
+                <div id="optionsContainer-${questionCount}" style="display: none;">
+                    <h4>الخيارات</h4>
+                    <div id="options-${questionCount}"></div>
+                    <button class="btn" onclick="addOption(${questionCount})">إضافة خيار</button>
+                </div>
+                <button class="btn btn-danger" onclick="removeQuestion(${questionCount})">حذف السؤال</button>
+            `;
+            container.appendChild(questionDiv);
+        }
+
+        // إضافة خيار لسؤال اختيار متعدد
+        function addOption(questionId) {
+            const optionsContainer = document.getElementById(`options-${questionId}`);
+            const optionId = optionsContainer.childElementCount + 1;
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option-group';
+            optionDiv.innerHTML = `
+                <input type="text" id="option-${questionId}-${optionId}" placeholder="أدخل الخيار ${optionId}" required>
+                <label><input type="radio" name="correct-${questionId}" value="${optionId}"> الإجابة الصحيحة</label>
+            `;
+            optionsContainer.appendChild(optionDiv);
+        }
+
+        // تبديل نوع السؤال
+        function toggleOptions(questionId) {
+            const type = document.getElementById(`questionType-${questionId}`).value;
+            const optionsContainer = document.getElementById(`optionsContainer-${questionId}`);
+            optionsContainer.style.display = type === 'multiple' ? 'block' : 'none';
+        }
+
+        // حذف سؤال
+        function removeQuestion(questionId) {
+            const questionDiv = document.getElementById(`question-${questionId}`);
+            questionDiv.remove();
+        }
+
+        // حفظ الاختبار
+        function saveExam() {
+            const title = document.getElementById('examTitle').value;
+            const grade = document.getElementById('examGrade').value;
+            const courseId = document.getElementById('examCourse').value;
+            const duration = document.getElementById('examDuration').value;
+
+            if (!title || !grade || !courseId || !duration) {
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى ملء جميع الحقول!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
+                return;
+            }
+
+            const questions = [];
+            for (let i = 1; i <= questionCount; i++) {
+                const questionDiv = document.getElementById(`question-${i}`);
+                if (!questionDiv) continue;
+
+                const text = document.getElementById(`questionText-${i}`).value;
+                const type = document.getElementById(`questionType-${i}`).value;
+                const imageInput = document.getElementById(`questionImage-${i}`);
+                let image = null;
+                if (imageInput.files.length > 0) {
+                    image = URL.createObjectURL(imageInput.files[0]);
+                }
+
+                let options = [];
+                let correctAnswer = null;
+                if (type === 'multiple') {
+                    const optionsContainer = document.getElementById(`options-${i}`);
+                    options = Array.from(optionsContainer.querySelectorAll('input[type="text"]'))
+                        .map(input => input.value)
+                        .filter(value => value);
+                    const selectedRadio = optionsContainer.querySelector(`input[name="correct-${i}"]:checked`);
+                    if (selectedRadio) {
+                        correctAnswer = parseInt(selectedRadio.value) - 1;
+                    }
+                }
+
+                questions.push({ text, type, image, options, correctAnswer });
+            }
+
+            if (questions.length === 0) {
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى إضافة سؤال واحد على الأقل!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
+                return;
+            }
+
+            const exam = {
+                id: 'exam_' + Date.now(),
+                title,
+                grade,
+                courseId,
+                duration: parseInt(duration),
+                questions
+            };
+
+            const exams = JSON.parse(localStorage.getItem('exams')) || [];
+            exams.push(exam);
+            localStorage.setItem('exams', JSON.stringify(exams));
+
+            Swal.fire({
+                title: 'تم',
+                text: 'تم حفظ الاختبار بنجاح!',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
+            }).then(() => {
+                document.getElementById('examTitle').value = '';
+                document.getElementById('examGrade').value = '';
+                document.getElementById('examCourse').value = '';
+                document.getElementById('examDuration').value = '';
+                document.getElementById('questionsContainer').innerHTML = '';
+                questionCount = 0;
+                renderExams();
+            });
+        }
+
+        // عرض الاختبارات المحفوظة
+        function renderExams() {
+            const examList = document.getElementById('examList');
+            const exams = JSON.parse(localStorage.getItem('exams')) || [];
+            examList.innerHTML = '';
+
+            if (exams.length === 0) {
+                examList.innerHTML = '<p style="text-align: center; font-size: 1.2rem;">لا توجد اختبارات محفوظة.</p>';
+                return;
+            }
+
+            exams.forEach(exam => {
+                const course = courses.find(c => c.id === exam.courseId);
+                const div = document.createElement('div');
+                div.className = 'exam-card';
+                div.innerHTML = `
+                    <h3>${exam.title}</h3>
+                    <p>الصف: ${exam.grade}</p>
+                    <p>المقرر: ${course ? course.name : 'غير محدد'}</p>
+                    <p>المدة: ${exam.duration} دقيقة</p>
+                    <p>عدد الأسئلة: ${exam.questions.length}</p>
+                    <div class="actions">
+                        <button class="btn" onclick="exportExam('${exam.id}')">تصدير كـ Word</button>
+                        <button class="btn btn-danger" onclick="deleteExam('${exam.id}')">حذف</button>
+                    </div>
+                `;
+                examList.appendChild(div);
+            });
+        }
+
+        // تصدير الاختبار كملف Word
+        function exportExam(examId) {
+            const exams = JSON.parse(localStorage.getItem('exams')) || [];
+            const exam = exams.find(exam => exam.id === examId);
+            if (!exam) return;
+
+            const { Document, Packer, Paragraph, TextRun } = docx;
+
+            const doc = new Document({
+                sections: [{
+                    properties: {},
+                    children: [
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: exam.title,
+                                    bold: true,
+                                    size: 32,
+                                    font: 'Tajawal'
+                                })
+                            ],
+                            alignment: 'center'
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `الصف: ${exam.grade}`,
+                                    size: 24,
+                                    font: 'Tajawal'
+                                })
+                            ]
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `المقرر: ${courses.find(c => c.id === exam.courseId)?.name || 'غير محدد'}`,
+                                    size: 24,
+                                    font: 'Tajawal'
+                                })
+                            ]
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `المدة: ${exam.duration} دقيقة`,
+                                    size: 24,
+                                    font: 'Tajawal'
+                                })
+                            ]
+                        }),
+                        ...exam.questions.map((q, index) => [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: `السؤال ${index + 1}: ${q.text}`,
+                                        bold: true,
+                                        size: 24,
+                                        font: 'Tajawal'
+                                    })
+                                ]
+                            }),
+                            ...(q.type === 'multiple' ? q.options.map((option, i) => new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: `${i + 1}. ${option}${q.correctAnswer === i ? ' (الإجابة الصحيحة)' : ''}`,
+                                        size: 24,
+                                        font: 'Tajawal'
+                                    })
+                                ]
+                            })) : [new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: 'إجابة مفتوحة',
+                                        size: 24,
+                                        font: 'Tajawal'
+                                    })
+                                ]
+                            })])
+                        ]).flat()
+                    ]
+                }]
+            });
+
+            Packer.toBlob(doc).then(blob => {
+                saveAs(blob, `${exam.title}.docx`);
+                Swal.fire({
+                    title: 'تم',
+                    text: 'تم تصدير الاختبار كملف Word!',
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
+                });
+            });
+        }
+
+        // حذف اختبار
+        function deleteExam(examId) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: 'سيتم حذف الاختبار نهائيًا!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#005eff',
+                cancelButtonColor: '#e74c3c',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    let exams = JSON.parse(localStorage.getItem('exams')) || [];
+                    exams = exams.filter(exam => exam.id !== examId);
+                    localStorage.setItem('exams', JSON.stringify(exams));
+                    renderExams();
+                    Swal.fire({
+                        title: 'تم',
+                        text: 'تم حذف الاختبار بنجاح!',
+                        icon: 'success',
+                        confirmButtonColor: '#005eff'
+                    });
+                }
+            });
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            Swal.fire({
+                title: 'تم',
+                text: 'تم تسجيل الخروج بنجاح.',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
+            }).then(() => {
+                window.location.href = 'admin-login.html';
+            });
+        }
+
+        // إدارة قائمة التنقل للشاشات الصغيرة
+        document.querySelector('.nav-menu-btn').addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('responsive');
+        });
+
+        // تحميل الاختبارات عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', renderExams);
+    </script>
+</body>
+</html>

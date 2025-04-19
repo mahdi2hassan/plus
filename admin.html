@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plus 360 - لوحة الأدمن</title>
+    <title>Plus In Math - لوحة الأدمن</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
@@ -16,37 +17,42 @@
             --color-white: #fff;
             --text-color-second: #333;
             --first-shadow-color: rgba(0, 0, 0, 0.1);
+            --gradient-bg: linear-gradient(135deg, #005eff, #4a90e2);
         }
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
             background: var(--body-color);
             color: var(--text-color-second);
             margin: 0;
             padding: 0;
+            line-height: 1.6;
         }
         .container {
             max-width: 1200px;
             margin: auto;
-            padding: 20px;
             background: var(--color-white);
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
         header {
-            background-image: url('/images/n.png');
-            background-size: cover;
-            background-position: center;
-            height: 200px;
+            background: var(--gradient-bg);
+            height: 150px;
             border-radius: 10px 10px 0 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--color-white);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
-        .nav-logo p {
-            font-size: 2rem;
-            font-weight: bold;
+        .nav-logo .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInPulse 2s ease-in-out;
+        }
+        @keyframes fadeInPulse {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
         }
         nav {
             display: flex;
@@ -56,11 +62,29 @@
             background: var(--color-white);
             box-shadow: 0 2px 4px var(--first-shadow-color);
         }
-        .nav-logo a {
+        .nav-logo a .logo-text {
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 700;
             color: var(--first-color);
-            text-decoration: none;
+            position: relative;
+            transition: transform 0.3s, text-shadow 0.3s;
+        }
+        .nav-logo a .logo-text:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--first-color);
+        }
+        .nav-logo a .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--first-color);
+            transition: width 0.3s;
+        }
+        .nav-logo a .logo-text:hover::after {
+            width: 100%;
         }
         .nav-menu {
             display: flex;
@@ -76,42 +100,48 @@
         .nav-menu a {
             color: var(--text-color-second);
             text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
             transition: color 0.3s;
         }
-        .nav-menu a:hover {
+        .nav-menu a:hover, .nav-menu a.active-link {
             color: var(--first-color);
         }
         .nav-menu-btn {
             display: none;
             font-size: 1.5rem;
             cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-color-second);
         }
         .admin-section {
             padding: 20px;
             text-align: center;
         }
         .admin-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--first-color);
             margin-bottom: 20px;
-            color: var(--text-color-second);
         }
         .admin-cards {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            justify-content: center;
+            padding: 20px;
         }
         .admin-card {
             background: var(--color-white);
             border-radius: 10px;
-            box-shadow: 0 2px 8px var(--first-shadow-color);
             padding: 20px;
-            width: 100%;
-            max-width: 300px;
             text-align: center;
-            transition: transform 0.3s;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
         .admin-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 6px 12px var(--first-shadow-color);
         }
         .admin-card i {
             font-size: 2rem;
@@ -119,7 +149,8 @@
             margin-bottom: 10px;
         }
         .admin-card h3 {
-            color: var(--text-color-second);
+            font-size: 1.3rem;
+            font-weight: 700;
             margin-bottom: 10px;
         }
         .admin-card button {
@@ -129,60 +160,41 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
         }
         .admin-card button:hover {
             background: var(--first-color-hover);
+            transform: translateY(-2px);
         }
         .stats {
-            margin: 20px 0;
+            margin: 20px;
             padding: 20px;
             background: var(--color-white);
             border-radius: 10px;
-            box-shadow: 0 2px 8px var(--first-shadow-color);
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+            text-align: center;
         }
         .stats p {
             font-size: 1.2rem;
             margin: 10px 0;
-        }
-        .dark-mode-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--first-color);
-            color: var(--color-white);
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            border: none;
-            box-shadow: 0 2px 4px var(--first-shadow-color);
-            transition: background 0.3s;
-        }
-        .dark-mode-btn:hover {
-            background: var(--first-color-hover);
+            color: var(--text-color-second);
         }
         footer {
             text-align: center;
             padding: 20px;
             background: var(--first-color);
             color: var(--color-white);
-            margin-top: 20px;
             border-radius: 0 0 10px 10px;
         }
-        .footer-social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .footer-social-icons .icon a {
-            color: var(--color-white);
+        .top-footer .logo-text {
             font-size: 1.5rem;
-            transition: color 0.3s;
+            font-weight: 700;
+            transition: transform 0.3s, text-shadow 0.3s;
         }
-        .footer-social-icons .icon a:hover {
-            color: var(--second-color);
+        .top-footer .logo-text:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--color-white);
         }
         .footer-menu {
             list-style: none;
@@ -195,23 +207,40 @@
         .footer-menu a {
             color: var(--color-white);
             text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
             transition: color 0.3s;
         }
         .footer-menu a:hover {
             color: var(--second-color);
         }
-        .dark-mode {
-            --body-color: #1a1a1a;
-            --color-white: #2c2c2c;
-            --text-color-second: #e0e0e0;
-            --first-shadow-color: rgba(255, 255, 255, 0.1);
+        .footer-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .footer-social-icons .icon {
+            color: var(--color-white);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        .footer-social-icons .icon:hover {
+            color: var(--second-color);
+        }
+        .bottom-footer p {
+            font-size: 0.9rem;
+            font-weight: 400;
         }
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                margin: 10px;
             }
             header {
-                height: 150px;
+                height: 120px;
+            }
+            .nav-logo .logo-text {
+                font-size: 2rem;
             }
             .nav-menu {
                 display: none;
@@ -228,36 +257,41 @@
             }
             .nav-menu ul {
                 flex-direction: column;
+                gap: 10px;
             }
             .nav-menu-btn {
                 display: block;
             }
-            .admin-card {
-                max-width: 100%;
+            .admin-section h1 {
+                font-size: 1.5rem;
+            }
+            .admin-cards {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <button id="darkModeBtn" class="dark-mode-btn" title="تبديل الوضع الغامق">🌙</button>
     <div class="container">
         <header>
             <div class="nav-logo">
-                <p>Plus 360</p>
+                <span class="logo-text">Plus In Math</span>
             </div>
         </header>
         <nav>
             <div class="nav-logo">
-                <a href="index.html" class="nav-name">Plus 360</a>
+                <a href="index.html"><span class="logo-text">Plus In Math</span></a>
             </div>
             <div class="nav-menu" id="navMenu">
                 <ul class="nav_menu_list">
                     <li class="nav_list"><a href="index.html" class="nav-link">الرئيسية</a></li>
                     <li class="nav_list"><a href="data.html" class="nav-link">إدارة الحسابات</a></li>
+                    <li class="nav_list"><a href="courses.html" class="nav-link">إدارة المقررات</a></li>
+                    <li class="nav_list"><a href="exams.html" class="nav-link">الاختبارات الإلكترونية</a></li>
                     <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
                 </ul>
             </div>
-            <div class="nav-menu-btn"><i class="fa-solid fa-bars"></i></div>
+            <button class="nav-menu-btn" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i></button>
         </nav>
         <main class="admin-section">
             <h1>لوحة تحكم الأدمن</h1>
@@ -277,25 +311,30 @@
                     <button onclick="window.location.href='courses.html'">عرض المقررات</button>
                 </div>
                 <div class="admin-card">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>الاختبارات الإلكترونية</h3>
+                    <button onclick="window.location.href='exams.html'">إدارة الاختبارات</button>
+                </div>
+                <div class="admin-card">
                     <i class="fas fa-chart-line"></i>
                     <h3>إحصائيات المنصة</h3>
-                    <button onclick="alert('قيد التطوير')">عرض الإحصائيات</button>
+                    <button onclick="Swal.fire('قيد التطوير', 'هذه الميزة تحت التطوير!', 'info')">عرض الإحصائيات</button>
                 </div>
             </div>
         </main>
         <footer>
-            <div class="top-footer"><p>Plus 360</p></div>
-            <div class="middle-footer">
-                <ul class="footer-menu">
-                    <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
-                    <li class="footer_menu_list"><a href="data.html">إدارة الحسابات</a></li>
-                </ul>
-            </div>
+            <div class="top-footer"><span class="logo-text">Plus In Math</span></div>
+            <ul class="footer-menu">
+                <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
+                <li class="footer_menu_list"><a href="data.html">إدارة الحسابات</a></li>
+                <li class="footer_menu_list"><a href="courses.html">إدارة المقررات</a></li>
+                <li class="footer_menu_list"><a href="exams.html">الاختبارات الإلكترونية</a></li>
+            </ul>
             <div class="footer-social-icons">
-                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="fab fa-whatsapp"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="fab fa-telegram"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fab fa-facebook-f"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="fab fa-instagram"></i></a></div>
+                <a target="_blank" href="https://wa.me/+201558870907" class="icon" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                <a target="_blank" href="https://t.me/mahdi2hassan/" class="icon" aria-label="تيليجرام"><i class="fab fa-telegram"></i></a>
+                <a target="_blank" href="https://www.facebook.com/plusinmath" class="icon" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a target="_blank" href="https://www.instagram.com/mahdi2hassan/" class="icon" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
             </div>
             <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
         </footer>
@@ -305,7 +344,14 @@
         // التحقق من تسجيل دخول الأدمن
         const isAdminLoggedIn = localStorage.getItem('adminLoggedIn');
         if (!isAdminLoggedIn) {
-            window.location.href = 'admin-login.html';
+            Swal.fire({
+                title: 'خطأ',
+                text: 'يرجى تسجيل الدخول كأدمن!',
+                icon: 'error',
+                confirmButtonColor: '#005eff'
+            }).then(() => {
+                window.location.href = 'admin-login.html';
+            });
         }
 
         // تحميل الإحصائيات
@@ -316,30 +362,31 @@
             document.getElementById('totalCount').textContent = accounts.length;
         } catch (error) {
             console.error('خطأ في تحليل البيانات:', error);
-            Swal.fire('خطأ', 'حدث خطأ في تحميل الإحصائيات!', 'error');
+            Swal.fire({
+                title: 'خطأ',
+                text: 'حدث خطأ في تحميل الإحصائيات!',
+                icon: 'error',
+                confirmButtonColor: '#005eff'
+            });
         }
 
+        // تسجيل الخروج
         function logout() {
             localStorage.removeItem('adminLoggedIn');
-            window.location.href = 'admin-login.html';
+            Swal.fire({
+                title: 'تم',
+                text: 'تم تسجيل الخروج بنجاح.',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
+            }).then(() => {
+                window.location.href = 'admin-login.html';
+            });
         }
 
-        // قائمة التنقل المحمولة
+        // إدارة قائمة التنقل للشاشات الصغيرة
         document.querySelector('.nav-menu-btn').addEventListener('click', () => {
             document.getElementById('navMenu').classList.toggle('responsive');
         });
-
-        // تبديل الوضع الغامق
-        document.getElementById('darkModeBtn').addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : '');
-            document.getElementById('darkModeBtn').innerHTML = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-        });
-
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.getElementById('darkModeBtn').innerHTML = '☀️';
-        }
     </script>
 </body>
 </html>
