@@ -86,86 +86,116 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
-        .courses-section {
-            padding: 20px;
-        }
-        .courses-section h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--text-color-second);
-        }
-        .add-course-form {
+        .form-container, .admin-panel {
+            max-width: 900px;
+            margin: 20px auto;
             background: var(--color-white);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 8px var(--first-shadow-color);
-            margin-bottom: 20px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
         }
-        .add-course-form input, .add-course-form select {
+        input, textarea, select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             border: 2px solid var(--text-color-second);
             border-radius: 5px;
+            font-family: 'Cairo', sans-serif;
             background: var(--color-white);
             color: var(--text-color-second);
         }
-        .add-course-form select[multiple] {
+        select[multiple] {
             height: 100px;
         }
-        .add-course-form button {
+        button {
             padding: 10px 20px;
             background: var(--first-color);
             color: var(--color-white);
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
-        }
-        .add-course-form button:hover {
-            background: var(--first-color-hover);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid var(--text-color-second);
-            text-align: right;
-        }
-        th {
-            background: var(--first-color);
-            color: var(--color-white);
-        }
-        button {
-            padding: 8px 15px;
-            background: var(--first-color);
-            color: var(--color-white);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            margin: 5px;
             transition: background 0.3s;
         }
         button:hover {
             background: var(--first-color-hover);
         }
-        .delete {
+        .delete-btn {
             background: #FF4D4F;
         }
-        .delete:hover {
+        .delete-btn:hover {
             background: #D9363E;
         }
+        .error {
+            color: #FF4D4F;
+            display: none;
+            margin: 10px 0;
+            text-align: center;
+        }
         .back-link {
-            display: inline-block;
             margin-top: 20px;
+            display: inline-block;
             color: var(--first-color);
             text-decoration: none;
         }
         .back-link:hover {
             color: var(--first-color-hover);
             text-decoration: underline;
+        }
+        .admin-panel {
+            display: none;
+        }
+        .section {
+            margin-top: 20px;
+        }
+        .section h3 {
+            margin-bottom: 15px;
+            color: var(--text-color-second);
+        }
+        .item {
+            padding: 10px;
+            background: var(--color-white);
+            border-radius: 5px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px var(--first-shadow-color);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+        }
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: var(--text-color-second);
+        }
+        .close-btn {
+            background: #FF4D4F;
+            color: var(--color-white);
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            float: left;
+        }
+        .close-btn:hover {
+            background: #D9363E;
         }
         .dark-mode-btn {
             position: fixed;
@@ -254,14 +284,14 @@
             .nav-menu-btn {
                 display: block;
             }
-            .add-course-form input, .add-course-form select {
+            .form-container, .admin-panel {
+                padding: 15px;
+            }
+            input, textarea, select {
                 font-size: 0.9rem;
             }
-            table {
-                font-size: 0.9rem;
-            }
-            th, td {
-                padding: 8px;
+            .modal-content {
+                width: 95%;
             }
         }
     </style>
@@ -288,51 +318,138 @@
             </div>
             <div class="nav-menu-btn"><i class="fa-solid fa-bars"></i></div>
         </nav>
-        <main class="courses-section">
-            <h1>إدارة المقررات</h1>
-            <div class="add-course-form">
-                <h2 id="formTitle">إضافة مقرر جديد</h2>
-                <form id="courseForm" onsubmit="return saveCourse()">
-                    <input type="hidden" id="courseId">
-                    <input type="text" id="courseName" placeholder="اسم المقرر" required>
-                    <input type="url" id="courseUrl" placeholder="رابط المقرر" required>
-                    <select id="grade" onchange="updateStudentOptions()" required>
-                        <option value="">اختر الصف الدراسي</option>
-                        <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
-                        <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
-                        <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
-                        <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
-                        <option value="الصف الثاني الثانوي علمي">الصف الثاني الثانوي علمي</option>
-                        <option value="الصف الثاني الثانوي أدبي">الصف الثاني الثانوي أدبي</option>
-                        <option value="الصف الثالث الثانوي علمي">الصف الثالث الثانوي علمي</option>
-                        <option value="الصف الثالث الثانوي أدبي">الصف الثالث الثانوي أدبي</option>
-                    </select>
-                    <select id="studentOption" onchange="toggleStudentSelect()" required>
-                        <option value="">اختر خيار الطلاب</option>
-                        <option value="all">كل الطلاب</option>
-                        <option value="count">عددهم</option>
-                        <option value="except">الطلاب باستثناء</option>
-                    </select>
-                    <input type="number" id="studentCount" placeholder="عدد الطلاب" style="display: none;">
-                    <select id="exceptStudents" multiple style="display: none;">
-                        <!-- يتم ملؤها ديناميكيًا -->
-                    </select>
-                    <button type="submit">حفظ المقرر</button>
+        <main>
+            <div class="form-container" id="loginForm">
+                <h2>تسجيل دخول الأدمن</h2>
+                <form onsubmit="return validateAdmin()">
+                    <input type="text" id="username" placeholder="اسم المستخدم" required>
+                    <input type="password" id="password" placeholder="كلمة المرور" required>
+                    <p id="errorMessage" class="error">اسم المستخدم أو كلمة المرور غير صحيحة!</p>
+                    <button type="submit">تسجيل الدخول</button>
                 </form>
+                <a href="index.html" class="back-link">العودة إلى الرئيسية</a>
             </div>
-            <table id="coursesTable">
-                <thead>
-                    <tr>
-                        <th>اسم المقرر</th>
-                        <th>الصف الدراسي</th>
-                        <th>رابط المقرر</th>
-                        <th>الطلاب</th>
-                        <th>إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="coursesBody"></tbody>
-            </table>
-            <a href="admin.html" class="back-link">العودة إلى لوحة الأدمن</a>
+
+            <div class="admin-panel" id="adminPanel">
+                <h2>إدارة المقررات</h2>
+                <div class="section">
+                    <h3>إضافة مقرر جديد</h3>
+                    <form id="courseForm">
+                        <input type="text" id="courseName" placeholder="اسم المقرر" required>
+                        <input type="text" id="courseId" placeholder="معرف المقرر (مثل course9)" required>
+                        <input type="url" id="courseUrl" placeholder="رابط صفحة المقرر (مثل course9.html)" required>
+                        <select id="courseGrade" onchange="updateStudentOptions('course')" required>
+                            <option value="">اختر الصف الدراسي</option>
+                            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي علمي">الصف الثاني الثانوي علمي</option>
+                            <option value="الصف الثاني الثانوي أدبي">الصف الثاني الثانوي أدبي</option>
+                            <option value="الصف الثالث الثانوي علمي">الصف الثالث الثانوي علمي</option>
+                            <option value="الصف الثالث الثانوي أدبي">الصف الثالث الثانوي أدبي</option>
+                        </select>
+                        <select id="courseStudentOption" onchange="toggleStudentSelect('course')" required>
+                            <option value="">اختر خيار الطلاب</option>
+                            <option value="all">كل الطلاب</option>
+                            <option value="count">عددهم</option>
+                            <option value="except">الطلاب باستثناء</option>
+                        </select>
+                        <input type="number" id="courseStudentCount" placeholder="عدد الطلاب" style="display: none;">
+                        <select id="courseExceptStudents" multiple style="display: none;"></select>
+                        <button type="submit" onclick="addCourse()">إضافة مقرر</button>
+                    </form>
+                    <div class="section course-list" id="courseList"></div>
+                </div>
+
+                <div class="section">
+                    <h3>إضافة فيديوهات</h3>
+                    <form id="videoForm">
+                        <select id="videoCourse" required>
+                            <option value="">اختر المقرر</option>
+                        </select>
+                        <input type="text" id="videoTitle" placeholder="عنوان الفيديو" required>
+                        <input type="url" id="videoUrl" placeholder="رابط الفيديو (يوتيوب، Google Drive، إلخ)" required>
+                        <input type="url" id="videoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
+                        <select id="videoStudentOption" onchange="toggleStudentSelect('video')" required>
+                            <option value="">اختر خيار الطلاب</option>
+                            <option value="all">كل الطلاب</option>
+                            <option value="count">عددهم</option>
+                            <option value="except">الطلاب باستثناء</option>
+                        </select>
+                        <input type="number" id="videoStudentCount" placeholder="عدد الطلاب" style="display: none;">
+                        <select id="videoExceptStudents" multiple style="display: none;"></select>
+                        <button type="submit" onclick="addVideo()">إضافة فيديو</button>
+                    </form>
+                    <div class="section video-list" id="videoList"></div>
+                </div>
+
+                <div class="section">
+                    <h3>إضافة أسئلة</h3>
+                    <form id="questionForm">
+                        <select id="questionCourse" required>
+                            <option value="">اختر المقرر</option>
+                        </select>
+                        <select id="questionType" onchange="toggleQuestionForm()" required>
+                            <option value="multiple">سؤال موضوعي (متعدد الخيارات)</option>
+                            <option value="open">سؤال غير موضوعي (مفتوح)</option>
+                        </select>
+                        <select id="questionStudentOption" onchange="toggleStudentSelect('question')" required>
+                            <option value="">اختر خيار الطلاب</option>
+                            <option value="all">كل الطلاب</option>
+                            <option value="count">عددهم</option>
+                            <option value="except">الطلاب باستثناء</option>
+                        </select>
+                        <input type="number" id="questionStudentCount" placeholder="عدد الطلاب" style="display: none;">
+                        <select id="questionExceptStudents" multiple style="display: none;"></select>
+                        <div id="multipleChoiceForm">
+                            <textarea id="questionText" placeholder="اكتب السؤال هنا" required></textarea>
+                            <div class="option-container">
+                                <input type="text" id="option1" placeholder="الخيار الأول" required>
+                                <input type="text" id="option2" placeholder="الخيار الثاني" required>
+                                <input type="text" id="option3" placeholder="الخيار الثالث">
+                                <input type="text" id="option4" placeholder="الخيار الرابع">
+                            </div>
+                            <select id="correctAnswer" required>
+                                <option value="">اختر الإجابة الصحيحة</option>
+                                <option value="0">الخيار الأول</option>
+                                <option value="1">الخيار الثاني</option>
+                                <option value="2">الخيار الثالث</option>
+                                <option value="3">الخيار الرابع</option>
+                            </select>
+                        </div>
+                        <div id="openEndedForm" style="display: none;">
+                            <textarea id="openQuestionText" placeholder="اكتب السؤال هنا" required></textarea>
+                            <textarea id="modelAnswer" placeholder="الإجابة النموذجية" required></textarea>
+                        </div>
+                        <button type="submit" onclick="addQuestion()">إضافة سؤال</button>
+                    </form>
+                    <div class="section question-list" id="questionList"></div>
+                </div>
+
+                <div class="section">
+                    <h3>إضافة مستندات</h3>
+                    <form id="documentForm">
+                        <select id="documentCourse" required>
+                            <option value="">اختر المقرر</option>
+                        </select>
+                        <input type="text" id="documentTitle" placeholder="عنوان المستند" required>
+                        <input type="file" id="documentFile" accept="application/pdf" required>
+                        <select id="documentStudentOption" onchange="toggleStudentSelect('document')" required>
+                            <option value="">اختر خيار الطلاب</option>
+                            <option value="all">كل الطلاب</option>
+                            <option value="count">عددهم</option>
+                            <option value="except">الطلاب باستثناء</option>
+                        </select>
+                        <input type="number" id="documentStudentCount" placeholder="عدد الطلاب" style="display: none;">
+                        <select id="documentExceptStudents" multiple style="display: none;"></select>
+                        <button type="submit" onclick="addDocument()">إضافة مستند</button>
+                    </form>
+                    <div class="section document-list" id="documentList"></div>
+                </div>
+
+                <a href="admin.html" class="back-link">العودة إلى لوحة الأدمن</a>
+            </div>
         </main>
         <footer>
             <div class="top-footer"><p>Plus 360</p></div>
@@ -351,57 +468,168 @@
             <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
         </footer>
     </div>
+
+    <!-- نافذة تعديل المقرر -->
+    <div class="modal" id="editCourseModal">
+        <div class="modal-content">
+            <h3>تعديل المقرر</h3>
+            <input type="text" id="editCourseName" placeholder="اسم المقرر" required>
+            <input type="text" id="editCourseId" placeholder="معرف المقرر" required>
+            <input type="url" id="editCourseUrl" placeholder="رابط الصفحة" required>
+            <select id="editCourseGrade" onchange="updateStudentOptions('editCourse')" required>
+                <option value="">اختر الصف الدراسي</option>
+                <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                <option value="الصف الثاني الثانوي علمي">الصف الثاني الثانوي علمي</option>
+                <option value="الصف الثاني الثانوي أدبي">الصف الثاني الثانوي أدبي</option>
+                <option value="الصف الثالث الثانوي علمي">الصف الثالث الثانوي علمي</option>
+                <option value="الصف الثالث الثانوي أدبي">الصف الثالث الثانوي أدبي</option>
+            </select>
+            <select id="editCourseStudentOption" onchange="toggleStudentSelect('editCourse')" required>
+                <option value="">اختر خيار الطلاب</option>
+                <option value="all">كل الطلاب</option>
+                <option value="count">عددهم</option>
+                <option value="except">الطلاب باستثناء</option>
+            </select>
+            <input type="number" id="editCourseStudentCount" placeholder="عدد الطلاب" style="display: none;">
+            <select id="editCourseExceptStudents" multiple style="display: none;"></select>
+            <button onclick="saveCourseEdit()">حفظ التعديلات</button>
+            <button class="close-btn" onclick="closeModal('editCourseModal')">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل الفيديو -->
+    <div class="modal" id="editVideoModal">
+        <div class="modal-content">
+            <h3>تعديل الفيديو</h3>
+            <select id="editVideoCourse" required>
+                <option value="">اختر المقرر</option>
+            </select>
+            <input type="text" id="editVideoTitle" placeholder="عنوان الفيديو" required>
+            <input type="url" id="editVideoUrl" placeholder="رابط الفيديو" required>
+            <input type="url" id="editVideoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
+            <select id="editVideoStudentOption" onchange="toggleStudentSelect('editVideo')" required>
+                <option value="">اختر خيار الطلاب</option>
+                <option value="all">كل الطلاب</option>
+                <option value="count">عددهم</option>
+                <option value="except">الطلاب باستثناء</option>
+            </select>
+            <input type="number" id="editVideoStudentCount" placeholder="عدد الطلاب" style="display: none;">
+            <select id="editVideoExceptStudents" multiple style="display: none;"></select>
+            <button onclick="saveVideoEdit()">حفظ التعديلات</button>
+            <button class="close-btn" onclick="closeModal('editVideoModal')">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل السؤال -->
+    <div class="modal" id="editQuestionModal">
+        <div class="modal-content">
+            <h3>تعديل السؤال</h3>
+            <select id="editQuestionCourse" required>
+                <option value="">اختر المقرر</option>
+            </select>
+            <select id="editQuestionType" onchange="toggleEditQuestionForm()" required>
+                <option value="multiple">سؤال موضوعي</option>
+                <option value="open">سؤال غير موضوعي</option>
+            </select>
+            <select id="editQuestionStudentOption" onchange="toggleStudentSelect('editQuestion')" required>
+                <option value="">اختر خيار الطلاب</option>
+                <option value="all">كل الطلاب</option>
+                <option value="count">عددهم</option>
+                <option value="except">الطلاب باستثناء</option>
+            </select>
+            <input type="number" id="editQuestionStudentCount" placeholder="عدد الطلاب" style="display: none;">
+            <select id="editQuestionExceptStudents" multiple style="display: none;"></select>
+            <div id="editMultipleChoiceForm">
+                <textarea id="editQuestionText" placeholder="نص السؤال" required></textarea>
+                <div class="option-container">
+                    <input type="text" id="editOption1" placeholder="الخيار الأول" required>
+                    <input type="text" id="editOption2" placeholder="الخيار الثاني" required>
+                    <input type="text" id="editOption3" placeholder="الخيار الثالث">
+                    <input type="text" id="editOption4" placeholder="الخيار الرابع">
+                </div>
+                <select id="editCorrectAnswer" required>
+                    <option value="">اختر الإجابة الصحيحة</option>
+                    <option value="0">الخيار الأول</option>
+                    <option value="1">الخيار الثاني</option>
+                    <option value="2">الخيار الثالث</option>
+                    <option value="3">الخيار الرابع</option>
+                </select>
+            </div>
+            <div id="editOpenEndedForm" style="display: none;">
+                <textarea id="editOpenQuestionText" placeholder="نص السؤال" required></textarea>
+                <textarea id="editModelAnswer" placeholder="الإجابة النموذجية" required></textarea>
+            </div>
+            <button onclick="saveQuestionEdit()">حفظ التعديلات</button>
+            <button class="close-btn" onclick="closeModal('editQuestionModal')">إغلاق</button>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // التحقق من تسجيل دخول الأدمن
-        const isAdminLoggedIn = localStorage.getItem('adminLoggedIn');
-        if (!isAdminLoggedIn) {
-            window.location.href = 'admin-login.html';
+        const ADMIN_USERNAME = "mahdi2hassan";
+        const ADMIN_PASSWORD = "01007586279";
+
+        let courses = JSON.parse(localStorage.getItem('courses')) || [];
+        let videos = JSON.parse(localStorage.getItem('videos')) || [];
+        let questions = JSON.parse(localStorage.getItem('questions')) || [];
+        let documents = JSON.parse(localStorage.getItem('documents')) || [];
+        let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+        let editCourseIndex = null;
+        let editVideoIndex = null;
+        let editQuestionIndex = null;
+
+        function validateAdmin() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById("loginForm").style.display = "none";
+                document.getElementById("adminPanel").style.display = "block";
+                errorMessage.style.display = "none";
+                renderCourses();
+                renderVideos();
+                renderQuestions();
+                renderDocuments();
+                populateCourseSelects();
+                return false;
+            } else {
+                errorMessage.style.display = "block";
+                Swal.fire('خطأ', 'اسم المستخدم أو كلمة المرور غير صحيحة!', 'error');
+                return false;
+            }
         }
 
-        let courses = [];
-        let accounts = [];
-        let editIndex = -1;
-
-        // تحميل البيانات من localStorage
-        try {
-            courses = JSON.parse(localStorage.getItem('courses')) || [];
-            accounts = JSON.parse(localStorage.getItem('accounts')) || [];
-        } catch (error) {
-            console.error('خطأ في تحليل البيانات:', error);
-            Swal.fire('خطأ', 'حدث خطأ في تحميل البيانات!', 'error');
-        }
-
-        function renderCourses() {
-            const coursesBody = document.getElementById('coursesBody');
-            coursesBody.innerHTML = '';
-            courses.forEach((course, index) => {
-                let studentsDisplay = '';
-                if (course.studentOption === 'all') {
-                    studentsDisplay = 'كل الطلاب';
-                } else if (course.studentOption === 'count') {
-                    studentsDisplay = `عددهم: ${course.studentCount}`;
-                } else if (course.studentOption === 'except') {
-                    studentsDisplay = `باستثناء: ${course.exceptStudents.join(', ')}`;
-                }
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${course.name}</td>
-                    <td>${course.grade}</td>
-                    <td><a href="${course.url}" target="_blank">عرض</a></td>
-                    <td>${studentsDisplay}</td>
-                    <td>
-                        <button onclick="editCourse(${index})">تعديل</button>
-                        <button class="delete" onclick="deleteCourse(${index})">حذف</button>
-                    </td>
-                `;
-                coursesBody.appendChild(tr);
+        function populateCourseSelects() {
+            const videoSelect = document.getElementById("videoCourse");
+            const questionSelect = document.getElementById("questionCourse");
+            const documentSelect = document.getElementById("documentCourse");
+            const editVideoSelect = document.getElementById("editVideoCourse");
+            const editQuestionSelect = document.getElementById("editQuestionCourse");
+            videoSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            questionSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            documentSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            editVideoSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            editQuestionSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            courses.forEach(course => {
+                const option = document.createElement("option");
+                option.value = course.id;
+                option.textContent = course.name;
+                videoSelect.appendChild(option.cloneNode(true));
+                questionSelect.appendChild(option.cloneNode(true));
+                documentSelect.appendChild(option.cloneNode(true));
+                editVideoSelect.appendChild(option.cloneNode(true));
+                editQuestionSelect.appendChild(option.cloneNode(true));
             });
         }
 
-        function updateStudentOptions() {
-            const grade = document.getElementById('grade').value;
-            const exceptStudentsSelect = document.getElementById('exceptStudents');
+        function updateStudentOptions(prefix) {
+            const grade = document.getElementById(`${prefix}Grade`).value;
+            const exceptStudentsSelect = document.getElementById(`${prefix}ExceptStudents`);
             exceptStudentsSelect.innerHTML = '';
             if (grade) {
                 const studentsInGrade = accounts.filter(acc => acc.grade === grade && acc.active);
@@ -414,35 +642,38 @@
             }
         }
 
-        function toggleStudentSelect() {
-            const studentOption = document.getElementById('studentOption').value;
-            const studentCountInput = document.getElementById('studentCount');
-            const exceptStudentsSelect = document.getElementById('exceptStudents');
+        function toggleStudentSelect(prefix) {
+            const studentOption = document.getElementById(`${prefix}StudentOption`).value;
+            const studentCountInput = document.getElementById(`${prefix}StudentCount`);
+            const exceptStudentsSelect = document.getElementById(`${prefix}ExceptStudents`);
             studentCountInput.style.display = studentOption === 'count' ? 'block' : 'none';
             exceptStudentsSelect.style.display = studentOption === 'except' ? 'block' : 'none';
         }
 
-        function saveCourse() {
-            const courseId = document.getElementById('courseId').value || `course${Date.now()}`;
-            const name = document.getElementById('courseName').value;
-            const url = document.getElementById('courseUrl').value;
-            const grade = document.getElementById('grade').value;
-            const studentOption = document.getElementById('studentOption').value;
-            const studentCount = document.getElementById('studentCount').value;
-            const exceptStudentsSelect = document.getElementById('exceptStudents');
-            const exceptStudents = Array.from(exceptStudentsSelect.selectedOptions).map(opt => opt.value);
+        async function addCourse() {
+            const name = document.getElementById("courseName").value;
+            const id = document.getElementById("courseId").value;
+            const url = document.getElementById("courseUrl").value;
+            const grade = document.getElementById("courseGrade").value;
+            const studentOption = document.getElementById("courseStudentOption").value;
+            const studentCount = document.getElementById("courseStudentCount").value;
+            const exceptStudents = Array.from(document.getElementById("courseExceptStudents").selectedOptions).map(opt => opt.value);
 
+            if (!name || !id || !url || !grade || !studentOption) {
+                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                return;
+            }
             if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
                 Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
-                return false;
+                return;
             }
             if (studentOption === 'except' && exceptStudents.length === 0) {
                 Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
-                return false;
+                return;
             }
 
             const course = {
-                id: courseId,
+                id,
                 name,
                 url,
                 grade,
@@ -452,44 +683,90 @@
                 studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
             };
 
-            if (editIndex >= 0) {
-                courses[editIndex] = course;
-                editIndex = -1;
-                document.getElementById('formTitle').textContent = 'إضافة مقرر جديد';
-            } else {
-                courses.push(course);
+            if (courses.some(c => c.id === id)) {
+                Swal.fire('خطأ', 'معرف المقرر موجود بالفعل!', 'error');
+                return;
             }
 
+            courses.push(course);
             localStorage.setItem('courses', JSON.stringify(courses));
             renderCourses();
-            resetForm();
-            Swal.fire('تم الحفظ', `تم ${editIndex >= 0 ? 'تعديل' : 'إضافة'} المقرر بنجاح.`, 'success');
-            return false;
+            populateCourseSelects();
+            document.getElementById("courseForm").reset();
+            document.getElementById("courseStudentCount").style.display = 'none';
+            document.getElementById("courseExceptStudents").style.display = 'none';
+            Swal.fire('تم', 'تم إضافة المقرر بنجاح.', 'success');
         }
 
         function editCourse(index) {
+            editCourseIndex = index;
             const course = courses[index];
-            document.getElementById('courseId').value = course.id;
-            document.getElementById('courseName').value = course.name;
-            document.getElementById('courseUrl').value = course.url;
-            document.getElementById('grade').value = course.grade;
-            document.getElementById('studentOption').value = course.studentOption;
-            document.getElementById('studentCount').value = course.studentCount || '';
-            updateStudentOptions();
-            const exceptStudentsSelect = document.getElementById('exceptStudents');
+            document.getElementById("editCourseName").value = course.name;
+            document.getElementById("editCourseId").value = course.id;
+            document.getElementById("editCourseUrl").value = course.url;
+            document.getElementById("editCourseGrade").value = course.grade;
+            document.getElementById("editCourseStudentOption").value = course.studentOption;
+            document.getElementById("editCourseStudentCount").value = course.studentCount || '';
+            updateStudentOptions('editCourse');
+            const exceptStudentsSelect = document.getElementById("editCourseExceptStudents");
             Array.from(exceptStudentsSelect.options).forEach(opt => {
                 opt.selected = course.exceptStudents.includes(opt.value);
             });
-            toggleStudentSelect();
-            document.getElementById('formTitle').textContent = 'تعديل المقرر';
-            editIndex = index;
+            toggleStudentSelect('editCourse');
+            document.getElementById("editCourseModal").style.display = "flex";
+        }
+
+        async function saveCourseEdit() {
+            const name = document.getElementById("editCourseName").value;
+            const id = document.getElementById("editCourseId").value;
+            const url = document.getElementById("editCourseUrl").value;
+            const grade = document.getElementById("editCourseGrade").value;
+            const studentOption = document.getElementById("editCourseStudentOption").value;
+            const studentCount = document.getElementById("editCourseStudentCount").value;
+            const exceptStudents = Array.from(document.getElementById("editCourseExceptStudents").selectedOptions).map(opt => opt.value);
+
+            if (!name || !id || !url || !grade || !studentOption) {
+                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                return;
+            }
+            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                return;
+            }
+            if (studentOption === 'except' && exceptStudents.length === 0) {
+                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                return;
+            }
+
+            const course = {
+                id,
+                name,
+                url,
+                grade,
+                studentOption,
+                studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+            };
+
+            if (courses.some((c, i) => c.id === id && i !== editCourseIndex)) {
+                Swal.fire('خطأ', 'معرف المقرر موجود بالفعل!', 'error');
+                return;
+            }
+
+            courses[editCourseIndex] = course;
+            localStorage.setItem('courses', JSON.stringify(courses));
+            renderCourses();
+            populateCourseSelects();
+            closeModal('editCourseModal');
+            Swal.fire('تم', 'تم تعديل المقرر بنجاح.', 'success');
         }
 
         async function deleteCourse(index) {
             const course = courses[index];
             const result = await Swal.fire({
                 title: 'تأكيد الحذف',
-                text: `هل أنت متأكد من حذف مقرر ${course.name}؟`,
+                text: `هل أنت متأكد من حذف مقرر ${course.name}؟ سيتم حذف جميع الفيديوهات والأسئلة والمستندات المرتبطة.`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#FF4D4F',
@@ -499,29 +776,536 @@
             });
 
             if (result.isConfirmed) {
-                try {
-                    courses.splice(index, 1);
-                    localStorage.setItem('courses', JSON.stringify(courses));
-                    renderCourses();
-                    Swal.fire('تم الحذف', `تم حذف مقرر ${course.name} بنجاح.`, 'success');
-                } catch (error) {
-                    console.error('خطأ أثناء الحذف:', error);
-                    Swal.fire('خطأ', 'حدث خطأ أثناء حذف المقرر!', 'error');
-                }
+                videos = videos.filter(v => v.courseId !== course.id);
+                questions = questions.filter(q => q.courseId !== course.id);
+                documents = documents.filter(d => d.courseId !== course.id);
+                courses.splice(index, 1);
+                localStorage.setItem('courses', JSON.stringify(courses));
+                localStorage.setItem('videos', JSON.stringify(videos));
+                localStorage.setItem('questions', JSON.stringify(questions));
+                localStorage.setItem('documents', JSON.stringify(documents));
+                renderCourses();
+                renderVideos();
+                renderQuestions();
+                renderDocuments();
+                populateCourseSelects();
+                Swal.fire('تم', `تم حذف مقرر ${course.name} بنجاح.`, 'success');
             }
         }
 
-        function resetForm() {
-            document.getElementById('courseForm').reset();
-            document.getElementById('courseId').value = '';
-            document.getElementById('studentCount').style.display = 'none';
-            document.getElementById('exceptStudents').style.display = 'none';
-            document.getElementById('formTitle').textContent = 'إضافة مقرر جديد';
+        async function addVideo() {
+            const courseId = document.getElementById("videoCourse").value;
+            const title = document.getElementById("videoTitle").value;
+            const url = document.getElementById("videoUrl").value;
+            const thumbnail = document.getElementById("videoThumbnail").value;
+            const studentOption = document.getElementById("videoStudentOption").value;
+            const studentCount = document.getElementById("videoStudentCount").value;
+            const exceptStudents = Array.from(document.getElementById("videoExceptStudents").selectedOptions).map(opt => opt.value);
+
+            if (!courseId || !title || !url || !studentOption) {
+                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                return;
+            }
+            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                return;
+            }
+            if (studentOption === 'except' && exceptStudents.length === 0) {
+                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                return;
+            }
+
+            videos.push({
+                courseId,
+                title,
+                url,
+                thumbnail,
+                studentOption,
+                studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+            });
+            localStorage.setItem('videos', JSON.stringify(videos));
+            renderVideos();
+            document.getElementById("videoForm").reset();
+            document.getElementById("videoStudentCount").style.display = 'none';
+            document.getElementById("videoExceptStudents").style.display = 'none';
+            Swal.fire('تم', 'تم إضافة الفيديو بنجاح.', 'success');
+        }
+
+        function editVideo(index) {
+            editVideoIndex = index;
+            const video = videos[index];
+            document.getElementById("editVideoCourse").value = video.courseId;
+            document.getElementById("editVideoTitle").value = video.title;
+            document.getElementById("editVideoUrl").value = video.url;
+            document.getElementById("editVideoThumbnail").value = video.thumbnail || "";
+            document.getElementById("editVideoStudentOption").value = video.studentOption;
+            document.getElementById("editVideoStudentCount").value = video.studentCount || '';
+            updateStudentOptions('editVideo');
+            const exceptStudentsSelect = document.getElementById("editVideoExceptStudents");
+            Array.from(exceptStudentsSelect.options).forEach(opt => {
+                opt.selected = video.exceptStudents.includes(opt.value);
+            });
+            toggleStudentSelect('editVideo');
+            document.getElementById("editVideoModal").style.display = "flex";
+        }
+
+        async function saveVideoEdit() {
+            const courseId = document.getElementById("editVideoCourse").value;
+            const title = document.getElementById("editVideoTitle").value;
+            const url = document.getElementById("editVideoUrl").value;
+            const thumbnail = document.getElementById("editVideoThumbnail").value;
+            const studentOption = document.getElementById("editVideoStudentOption").value;
+            const studentCount = document.getElementById("editVideoStudentCount").value;
+            const exceptStudents = Array.from(document.getElementById("editVideoExceptStudents").selectedOptions).map(opt => opt.value);
+
+            if (!courseId || !title || !url || !studentOption) {
+                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                return;
+            }
+            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                return;
+            }
+            if (studentOption === 'except' && exceptStudents.length === 0) {
+                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                return;
+            }
+
+            videos[editVideoIndex] = {
+                courseId,
+                title,
+                url,
+                thumbnail,
+                studentOption,
+                studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+            };
+            localStorage.setItem('videos', JSON.stringify(videos));
+            renderVideos();
+            closeModal('editVideoModal');
+            Swal.fire('تم', 'تم تعديل الفيديو بنجاح.', 'success');
+        }
+
+        async function deleteVideo(index) {
+            const video = videos[index];
+            const result = await Swal.fire({
+                title: 'تأكيد الحذف',
+                text: `هل أنت متأكد من حذف فيديو ${video.title}؟`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FF4D4F',
+                cancelButtonColor: '#005eff',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            });
+
+            if (result.isConfirmed) {
+                videos.splice(index, 1);
+                localStorage.setItem('videos', JSON.stringify(videos));
+                renderVideos();
+                Swal.fire('تم', 'تم حذف الفيديو بنجاح.', 'success');
+            }
+        }
+
+        function toggleQuestionForm() {
+            const questionType = document.getElementById("questionType").value;
+            document.getElementById("multipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
+            document.getElementById("openEndedForm").style.display = questionType === "open" ? "block" : "none";
+        }
+
+        function toggleEditQuestionForm() {
+            const questionType = document.getElementById("editQuestionType").value;
+            document.getElementById("editMultipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
+            document.getElementById("editOpenEndedForm").style.display = questionType === "open" ? "block" : "none";
+        }
+
+        async function addQuestion() {
+            const courseId = document.getElementById("questionCourse").value;
+            const questionType = document.getElementById("questionType").value;
+            const studentOption = document.getElementById("questionStudentOption").value;
+            const studentCount = document.getElementById("questionStudentCount").value;
+            const exceptStudents = Array.from(document.getElementById("questionExceptStudents").selectedOptions).map(opt => opt.value);
+
+            if (!courseId || !studentOption) {
+                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                return;
+            }
+            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                return;
+            }
+            if (studentOption === 'except' && exceptStudents.length === 0) {
+                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                return;
+            }
+
+            if (questionType === "multiple") {
+                const questionText = document.getElementById("questionText").value;
+                const options = [
+                    document.getElementById("option1").value,
+                    document.getElementById("option2").value,
+                    document.getElementById("option3").value,
+                    document.getElementById("option4").value
+                ].filter(opt => opt);
+                const correctAnswer = document.getElementById("correctAnswer").value;
+
+                if (!questionText || options.length < 2 || correctAnswer === "") {
+                    Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة للسؤال الموضوعي!', 'error');
+                    return;
+                }
+
+                const questionId = `q${Date.now()}`;
+                questions.push({
+                    id: questionId,
+                    courseId,
+                    type: "multiple",
+                    text: questionText,
+                    options,
+                    correctAnswer: parseInt(correctAnswer),
+                    studentOption,
+                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+                });
+            } else {
+                const questionText = document.getElementById("openQuestionText").value;
+                const modelAnswer = document.getElementById("modelAnswer").value;
+
+                if (!questionText || !modelAnswer) {
+                    Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة للسؤال المفتوح!', 'error');
+                    return;
+                }
+
+                const questionId = `q${Date.now()}`;
+                questions.push({
+                    id: questionId,
+                    courseId,
+                    type: "open",
+                    text: questionText,
+                    modelAnswer,
+                    studentOption,
+                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+                });
+            }
+
+            localStorage.setItem('questions', JSON.stringify(questions));
+            renderQuestions();
+            document.getElementById("questionForm").reset();
+            document.getElementById("multipleChoiceForm").style.display = "block";
+            document.getElementById("openEndedForm").style.display = "none";
+            document.getElementById("questionStudentCount").style.display = 'none';
+            document.getElementById("questionExceptStudents").style.display = 'none';
+            Swal.fire('تم', 'تم إضافة السؤال بنجاح.', 'success');
+        }
+
+        function editQuestion(index) {
+            editQuestionIndex = index;
+            const question = questions[index];
+            document.getElementById("editQuestionCourse").value = question.courseId;
+            document.getElementById("editQuestionType").value = question.type;
+            document.getElementById("editQuestionStudentOption").value = question.studentOption;
+            document.getElementById("editQuestionStudentCount").value = question.studentCount || '';
+            updateStudentOptions('editQuestion');
+            const exceptStudentsSelect = document.getElementById("editQuestionExceptStudents");
+            Array.from(exceptStudentsSelect.options).forEach(opt => {
+                opt.selected = question.exceptStudents.includes(opt.value);
+            });
+            toggleStudentSelect('editQuestion');
+            if (question.type === "multiple") {
+                document.getElementById("editQuestionText").value = question.text;
+                document.getElementById("editOption1").value = question.options[0] || "";
+                document.getElementById("editOption2").value = question.options[1] || "";
+                document.getElementById("editOption3").value = question.options[2] || "";
+                document.getElementById("editOption4").value = question.options[3] || "";
+                document.getElementById("editCorrectAnswer").value = question.correctAnswer;
+            } else {
+                document.getElementById("editOpenQuestionText").value = question.text;
+                document.getElementById("editModelAnswer").value = question.modelAnswer;
+            }
+            toggleEditQuestionForm();
+            document.getElementById("editQuestionModal").style.display = "flex";
+        }
+
+        async function saveQuestionEdit() {
+            const courseId = document.getElementById("editQuestionCourse").value;
+            const questionType = document.getElementById("editQuestionType").value;
+            const studentOption = document.getElementById("editQuestionStudentOption").value;
+            const studentCount = document.getElementById("editQuestionStudentCount").value;
+            const exceptStudents = Array.from(document.getElementById("editQuestionExceptStudents").selectedOptions).map(opt => opt.value);
+
+            if (!courseId || !studentOption) {
+                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                return;
+            }
+            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                return;
+            }
+            if (studentOption === 'except' && exceptStudents.length === 0) {
+                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                return;
+            }
+
+            if (questionType === "multiple") {
+                const questionText = document.getElementById("editQuestionText").value;
+                const options = [
+                    document.getElementById("editOption1").value,
+                    document.getElementById("editOption2").value,
+                    document.getElementById("editOption3").value,
+                    document.getElementById("editOption4").value
+                ].filter(opt => opt);
+                const correctAnswer = document.getElementById("editCorrectAnswer").value;
+
+                if (!questionText || options.length < 2 || correctAnswer === "") {
+                    Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة للسؤال الموضوعي!', 'error');
+                    return;
+                }
+
+                questions[editQuestionIndex] = {
+                    id: questions[editQuestionIndex].id,
+                    courseId,
+                    type: "multiple",
+                    text: questionText,
+                    options,
+                    correctAnswer: parseInt(correctAnswer),
+                    studentOption,
+                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+                };
+            } else {
+                const questionText = document.getElementById("editOpenQuestionText").value;
+                const modelAnswer = document.getElementById("editModelAnswer").value;
+
+                if (!questionText || !modelAnswer) {
+                    Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة للسؤال المفتوح!', 'error');
+                    return;
+                }
+
+                questions[editQuestionIndex] = {
+                    id: questions[editQuestionIndex].id,
+                    courseId,
+                    type: "open",
+                    text: questionText,
+                    modelAnswer,
+                    studentOption,
+                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+                };
+            }
+
+            localStorage.setItem('questions', JSON.stringify(questions));
+            renderQuestions();
+            closeModal('editQuestionModal');
+            Swal.fire('تم', 'تم تعديل السؤال بنجاح.', 'success');
+        }
+
+        async function deleteQuestion(index) {
+            const question = questions[index];
+            const result = await Swal.fire({
+                title: 'تأكيد الحذف',
+                text: `هل أنت متأكد من حذف السؤال؟`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FF4D4F',
+                cancelButtonColor: '#005eff',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            });
+
+            if (result.isConfirmed) {
+                questions.splice(index, 1);
+                localStorage.setItem('questions', JSON.stringify(questions));
+                renderQuestions();
+                Swal.fire('تم', 'تم حذف السؤال بنجاح.', 'success');
+            }
+        }
+
+        async function addDocument() {
+            const courseId = document.getElementById("documentCourse").value;
+            const title = document.getElementById("documentTitle").value;
+            const file = document.getElementById("documentFile").files[0];
+            const studentOption = document.getElementById("documentStudentOption").value;
+            const studentCount = document.getElementById("documentStudentCount").value;
+            const exceptStudents = Array.from(document.getElementById("documentExceptStudents").selectedOptions).map(opt => opt.value);
+
+            if (!courseId || !title || !file || !studentOption) {
+                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                return;
+            }
+            if (file.type !== "application/pdf") {
+                Swal.fire('خطأ', 'يرجى رفع ملف PDF فقط!', 'error');
+                return;
+            }
+            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                return;
+            }
+            if (studentOption === 'except' && exceptStudents.length === 0) {
+                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                documents.push({
+                    id: `doc${Date.now()}`,
+                    courseId,
+                    title,
+                    data: e.target.result,
+                    studentOption,
+                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+                });
+                localStorage.setItem('documents', JSON.stringify(documents));
+                renderDocuments();
+                document.getElementById("documentForm").reset();
+                document.getElementById("documentStudentCount").style.display = 'none';
+                document.getElementById("documentExceptStudents").style.display = 'none';
+                Swal.fire('تم', 'تم إضافة المستند بنجاح.', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function deleteDocument(index) {
+            const document = documents[index];
+            const result = await Swal.fire({
+                title: 'تأكيد الحذف',
+                text: `هل أنت متأكد من حذف مستند ${document.title}؟`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FF4D4F',
+                cancelButtonColor: '#005eff',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            });
+
+            if (result.isConfirmed) {
+                documents.splice(index, 1);
+                localStorage.setItem('documents', JSON.stringify(documents));
+                renderDocuments();
+                Swal.fire('تم', 'تم حذف المستند بنجاح.', 'success');
+            }
+        }
+
+        function renderCourses() {
+            const courseList = document.getElementById("courseList");
+            courseList.innerHTML = "";
+            courses.forEach((course, index) => {
+                let studentsDisplay = '';
+                if (course.studentOption === 'all') {
+                    studentsDisplay = 'كل الطلاب';
+                } else if (course.studentOption === 'count') {
+                    studentsDisplay = `عددهم: ${course.studentCount}`;
+                } else if (course.studentOption === 'except') {
+                    studentsDisplay = `باستثناء: ${course.exceptStudents.join(', ')}`;
+                }
+                const div = document.createElement("div");
+                div.className = "item";
+                div.innerHTML = `
+                    ${course.name} (${course.grade}) - ${studentsDisplay}
+                    <div>
+                        <button onclick="editCourse(${index})">تعديل</button>
+                        <button class="delete-btn" onclick="deleteCourse(${index})">حذف</button>
+                    </div>
+                `;
+                courseList.appendChild(div);
+            });
+        }
+
+        function renderVideos() {
+            const videoList = document.getElementById("videoList");
+            videoList.innerHTML = "";
+            videos.forEach((video, index) => {
+                const course = courses.find(c => c.id === video.courseId);
+                let studentsDisplay = '';
+                if (video.studentOption === 'all') {
+                    studentsDisplay = 'كل الطلاب';
+                } else if (video.studentOption === 'count') {
+                    studentsDisplay = `عددهم: ${video.studentCount}`;
+                } else if (video.studentOption === 'except') {
+                    studentsDisplay = `باستثناء: ${video.exceptStudents.join(', ')}`;
+                }
+                const div = document.createElement("div");
+                div.className = "item";
+                div.innerHTML = `
+                    ${video.title} (${course ? course.name : 'غير مرتبط'}) - ${studentsDisplay}
+                    <div>
+                        <button onclick="editVideo(${index})">تعديل</button>
+                        <button class="delete-btn" onclick="deleteVideo(${index})">حذف</button>
+                    </div>
+                `;
+                videoList.appendChild(div);
+            });
+        }
+
+        function renderQuestions() {
+            const questionList = document.getElementById("questionList");
+            questionList.innerHTML = "";
+            questions.forEach((question, index) => {
+                const course = courses.find(c => c.id === question.courseId);
+                let studentsDisplay = '';
+                if (question.studentOption === 'all') {
+                    studentsDisplay = 'كل الطلاب';
+                } else if (question.studentOption === 'count') {
+                    studentsDisplay = `عددهم: ${question.studentCount}`;
+                } else if (question.studentOption === 'except') {
+                    studentsDisplay = `باستثناء: ${question.exceptStudents.join(', ')}`;
+                }
+                const div = document.createElement("div");
+                div.className = "item";
+                div.innerHTML = `
+                    سؤال ${index + 1}: ${question.text} (${question.type === "multiple" ? "موضوعي" : "مفتوح"}) (${course ? course.name : 'غير مرتبط'}) - ${studentsDisplay}
+                    <div>
+                        <button onclick="editQuestion(${index})">تعديل</button>
+                        <button class="delete-btn" onclick="deleteQuestion(${index})">حذف</button>
+                    </div>
+                `;
+                questionList.appendChild(div);
+            });
+        }
+
+        function renderDocuments() {
+            const documentList = document.getElementById("documentList");
+            documentList.innerHTML = "";
+            documents.forEach((doc, index) => {
+                const course = courses.find(c => c.id === doc.courseId);
+                let studentsDisplay = '';
+                if (doc.studentOption === 'all') {
+                    studentsDisplay = 'كل الطلاب';
+                } else if (doc.studentOption === 'count') {
+                    studentsDisplay = `عددهم: ${doc.studentCount}`;
+                } else if (doc.studentOption === 'except') {
+                    studentsDisplay = `باستثناء: ${doc.exceptStudents.join(', ')}`;
+                }
+                const div = document.createElement("div");
+                div.className = "item";
+                div.innerHTML = `
+                    ${doc.title} (${course ? course.name : 'غير مرتبط'}) - ${studentsDisplay}
+                    <div>
+                        <button onclick="deleteDocument(${index})" class="delete-btn">حذف</button>
+                    </div>
+                `;
+                documentList.appendChild(div);
+            });
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
         }
 
         function logout() {
             localStorage.removeItem('adminLoggedIn');
-            window.location.href = 'admin-login.html';
+            document.getElementById("loginForm").style.display = "block";
+            document.getElementById("adminPanel").style.display = "none";
+            Swal.fire('تم', 'تم تسجيل الخروج بنجاح.', 'success');
         }
 
         // قائمة التنقل المحمولة
@@ -541,7 +1325,15 @@
             document.getElementById('darkModeBtn').innerHTML = '☀️';
         }
 
-        renderCourses();
+        if (localStorage.getItem('adminLoggedIn') === 'true') {
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("adminPanel").style.display = "block";
+            renderCourses();
+            renderVideos();
+            renderQuestions();
+            renderDocuments();
+            populateCourseSelects();
+        }
     </script>
 </body>
 </html>
