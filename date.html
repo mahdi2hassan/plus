@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بيانات الحسابات والإجابات</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            padding: 50px;
+            background: var(--body-color);
+            color: var(--text-color-second);
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        h1, h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid var(--text-color-second);
+            text-align: right;
+        }
+        th {
+            background: var(--first-color);
+            color: var(--color-white);
+        }
+        button {
+            padding: 10px 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: var(--first-color-hover);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>بيانات الحسابات والإجابات</h1>
+        <button onclick="exportToExcel()">تصدير إلى Excel</button>
+        <h3>بيانات الحسابات</h3>
+        <table id="accountsTable">
+            <thead>
+                <tr>
+                    <th>كود الطالب</th>
+                    <th>الاسم</th>
+                    <th>الصف</th>
+                    <th>رقم الهاتف</th>
+                    <th>المحافظة</th>
+                    <th>المنطقة</th>
+                    <th>تاريخ التسجيل</th>
+                </tr>
+            </thead>
+            <tbody id="accountsBody"></tbody>
+        </table>
+        <h3>إجابات الأسئلة</h3>
+        <table id="answersTable">
+            <thead>
+                <tr>
+                    <th>كود الطالب</th>
+                    <th>المقرر</th>
+                    <th>السؤال</th>
+                    <th>الإجابة</th>
+                    <th>النتيجة</th>
+                    <th>تاريخ الإجابة</th>
+                </tr>
+            </thead>
+            <tbody id="answersBody"></tbody>
+        </table>
+        <a href="admin.html" class="back-link">العودة إلى لوحة الأدمن</a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+        const answers = JSON.parse(localStorage.getItem('studentAnswers')) || [];
+        const questions = JSON.parse(localStorage.getItem('questions')) || [];
+        const courses = JSON.parse(localStorage.getItem('courses')) || [];
+
+        function renderAccounts() {
+            const accountsBody = document.getElementById("accountsBody");
+            accountsBody.innerHTML = "";
+            accounts.forEach(account => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${account.code}</td>
+                    <td>${account.name}</td>
+                    <td>${account.grade}</td>
+                    <td>${account.phone}</td>
+                    <td>${account.governorate}</td>
+                    <td>${account.area}</td>
+                    <td>${new Date(account.timestamp).toLocaleString('ar-EG')}</td>
+                `;
+                accountsBody.appendChild(tr);
+            });
+        }
+
+        function renderAnswers() {
+            const answersBody = document.getElementById("answersBody");
+            answersBody.innerHTML = "";
+            answers.forEach(answer => {
+                const question = questions.find(q => q.id === answer.questionId);
+                const course = courses.find(c => c.id === answer.courseId);
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${answer.studentCode}</td>
+                    <td>${course ? course.name : 'غير معروف'}</td>
+                    <td>${question ? question.text : 'غير معروف'}</td>
+                    <td>${answer.studentAnswer}</td>
+                    <td>${answer.isCorrect ? 'صحيحة' : 'خاطئة'}</td>
+                    <td>${new Date(answer.timestamp).toLocaleString('ar-EG')}</td>
+                `;
+                answersBody.appendChild(tr);
+            });
+        }
+
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+
+            // تصدير بيانات الحسابات
+            const accountsData = accounts.map(account => ({
+                "كود الطالب": account.code,
+                "الاسم": account.name,
+                "الصف": account.grade,
+                "رقم الهاتف": account.phone,
+                "المحافظة": account.governorate,
+                "المنطقة": account.area,
+                "تاريخ التسجيل": new Date(account.timestamp).toLocaleString('ar-EG')
+            }));
+            const accountsSheet = XLSX.utils.json_to_sheet(accountsData);
+            XLSX.utils.book_append_sheet(wb, accountsSheet, "الحسابات");
+
+            // تصدير إجابات الأسئلة
+            const answersData = answers.map(answer => {
+                const question = questions.find(q => q.id === answer.questionId);
+                const course = courses.find(c => c.id === answer.courseId);
+                return {
+                    "كود الطالب": answer.studentCode,
+                    "المقرر": course ? course.name : 'غير معروف',
+                    "السؤال": question ? question.text : 'غير معروف',
+                    "الإجابة": answer.studentAnswer,
+                    "النتيجة": answer.isCorrect ? 'صحيحة' : 'خاطئة',
+                    "تاريخ الإجابة": new Date(answer.timestamp).toLocaleString('ar-EG')
+                };
+            });
+            const answersSheet = XLSX.utils.json_to_sheet(answersData);
+            XLSX.utils.book_append_sheet(wb, answersSheet, "الإجابات");
+
+            // حفظ الملف
+            XLSX.writeFile(wb, "student_data.xlsx");
+        }
+
+        renderAccounts();
+        renderAnswers();
+
+        // تبديل الوضع الغامق
+        document.getElementById('dar')?.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.removeItem('theme');
+            }
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل حساب جديد</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: var(--body-color);
+            color: var(--text-color-second);
+        }
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid var(--text-color-second);
+            border-radius: 5px;
+            font-family: 'Cairo', sans-serif;
+        }
+        button {
+            padding: 10px 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: var(--first-color-hover);
+        }
+        .error {
+            color: red;
+            display: none;
+            margin: 10px 0;
+        }
+        .back-link {
+            margin-top: 20px;
+            display: inline-block;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>تسجيل حساب جديد</h2>
+        <form id="registerForm" onsubmit="return registerStudent()">
+            <input type="text" id="studentName" placeholder="الاسم" required>
+            <select id="grade" required>
+                <option value="">اختر الصف</option>
+                <option value="grade1-prep">الصف الأول الإعدادي</option>
+                <option value="grade2-prep">الصف الثاني الإعدادي</option>
+                <option value="grade3-prep">الصف الثالث الإعدادي</option>
+                <option value="grade1-sec">الصف الأول الثانوي</option>
+                <option value="grade2-sec-sci">الصف الثاني الثانوي علمي</option>
+                <option value="grade2-sec-lit">الصف الثاني الثانوي أدبي</option>
+                <option value="grade3-sec-sci">الصف الثالث الثانوي علمي</option>
+                <option value="grade3-sec-lit">الصف الثالث الثانوي أدبي إحصاء</option>
+            </select>
+            <input type="tel" id="phone" placeholder="رقم الهاتف (مثل 01012345678)" pattern="[0-9]{11}" required>
+            <select id="governorate" onchange="updateAreas()" required>
+                <option value="">اختر المحافظة</option>
+                <option value="القاهرة">القاهرة</option>
+                <option value="الجيزة">الجيزة</option>
+                <option value="الإسكندرية">الإسكندرية</option>
+                <option value="الدقهلية">الدقهلية</option>
+                <option value="البحر الأحمر">البحر الأحمر</option>
+                <option value="البحيرة">البحيرة</option>
+                <option value="الفيوم">الفيوم</option>
+                <option value="الغربية">الغربية</option>
+                <option value="الإسماعيلية">الإسماعيلية</option>
+                <option value="المنوفية">المنوفية</option>
+                <option value="المنيا">المنيا</option>
+                <option value="القليوبية">القليوبية</option>
+                <option value="الوادي الجديد">الوادي الجديد</option>
+                <option value="السويس">السويس</option>
+                <option value="أسوان">أسوان</option>
+                <option value="أسيوط">أسيوط</option>
+                <option value="بني سويف">بني سويف</option>
+                <option value="بورسعيد">بورسعيد</option>
+                <option value="دمياط">دمياط</option>
+                <option value="الشرقية">الشرقية</option>
+                <option value="جنوب سيناء">جنوب سيناء</option>
+                <option value="كفر الشيخ">كفر الشيخ</option>
+                <option value="مطروح">مطروح</option>
+                <option value="الأقصر">الأقصر</option>
+                <option value="قنا">قنا</option>
+                <option value="شمال سيناء">شمال سيناء</option>
+                <option value="سوهاج">سوهاج</option>
+            </select>
+            <select id="area" required>
+                <option value="">اختر المنطقة</option>
+            </select>
+            <p id="errorMessage" class="error"></p>
+            <button type="submit">تسجيل</button>
+        </form>
+        <a href="index.html" class="back-link">العودة إلى المقررات</a>
+    </div>
+
+    <script>
+        const areasByGovernorate = {
+            "القاهرة": ["مدينة نصر", "المقطم", "المعادي", "مصر الجديدة", "الزمالك"],
+            "الجيزة": ["6 أكتوبر", "الدقي", "الهرم", "الشيخ زايد", "إمبابة"],
+            "الإسكندرية": ["المنتزه", "سموحة", "ستانلي", "العجمي", "لوران"],
+            "الدقهلية": ["المنصورة", "طلخا", "ميت غمر", "دكرنس", "بلقاس"],
+            "البحر الأحمر": ["الغردقة", "سفاجا", "مرسى علم", "القصير"],
+            "البحيرة": ["دمنهور", "كفر الدوار", "رشيد", "إدكو", "أبو حمص"],
+            "الفيوم": ["الفيوم", "سنورس", "طامية", "إبشواي", "يوسف الصديق"],
+            "الغربية": ["طنطا", "المحلة الكبرى", "زفتى", "سمنود", "قطور"],
+            "الإسماعيلية": ["الإسماعيلية", "فايد", "القنطرة شرق", "التل الكبير"],
+            "المنوفية": ["شبين الكوم", "منوف", "الباجور", "قويسنا", "أشمون"],
+            "المنيا": ["المنيا", "مغاغة", "بني مزار", "سمالوط", "مطاي"],
+            "القليوبية": ["بنها", "قليوب", "شبرا الخيمة", "الخانكة", "طوخ"],
+            "الوادي الجديد": ["الخارجة", "الداخلة", "باريس", "بلاط"],
+            "السويس": ["السويس", "الأربعين", "فيصل", "الجناين"],
+            "أسوان": ["أسوان", "كوم أمبو", "إدفو", "دراو", "نصر النوبة"],
+            "أسيوط": ["أسيوط", "ديروط", "منفلوط", "القوصية", "أبو تيج"],
+            "بني سويف": ["بني سويف", "ناصر", "ببا", "الواسطى", "إهناسيا"],
+            "بورسعيد": ["بورسعيد", "بورسفو", "الزهور", "المناخ"],
+            "دمياط": ["دمياط", "كفر سعد", "فارسكور", "الزرقا"],
+            "الشرقية": ["الزقازيق", "بلبيس", "منيا القمح", "أبو حماد", "فاقوس"],
+            "جنوب سيناء": ["شرم الشيخ", "دهب", "نويبع", "طابا"],
+            "كفر الشيخ": ["كفر الشيخ", "دسوق", "فوه", "بيلا", "الحامول"],
+            "مطروح": ["مرسى مطروح", "الحمام", "سيوة", "الضبعة"],
+            "الأقصر": ["الأقصر", "إسنا", "أرمنت", "الطود"],
+            "قنا": ["قنا", "نجع حمادي", "قفط", "نقادة", "دشنا"],
+            "شمال سيناء": ["العريش", "رفح", "بئر العبد", "الشيخ زويد"],
+            "سوهاج": ["سوهاج", "جرجا", "طما", "أخميم", "جهينة"]
+        };
+
+        function updateAreas() {
+            const governorate = document.getElementById("governorate").value;
+            const areaSelect = document.getElementById("area");
+            areaSelect.innerHTML = '<option value="">اختر المنطقة</option>';
+            if (governorate && areasByGovernorate[governorate]) {
+                areasByGovernorate[governorate].forEach(area => {
+                    const option = document.createElement("option");
+                    option.value = area;
+                    option.textContent = area;
+                    areaSelect.appendChild(option);
+                });
+            }
+        }
+
+        function registerStudent() {
+            const name = document.getElementById("studentName").value;
+            const grade = document.getElementById("grade").value;
+            const phone = document.getElementById("phone").value;
+            const governorate = document.getElementById("governorate").value;
+            const area = document.getElementById("area").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            // التحقق من صحة البيانات
+            const phoneRegex = /^[0-9]{11}$/;
+            if (!name || !grade || !phone || !governorate || !area) {
+                errorMessage.textContent = "يرجى ملء جميع الحقول!";
+                errorMessage.style.display = "block";
+                return false;
+            }
+            if (!phoneRegex.test(phone)) {
+                errorMessage.textContent = "رقم الهاتف غير صالح! يجب أن يكون 11 رقمًا.";
+                errorMessage.style.display = "block";
+                return false;
+            }
+
+            // إنشاء كود طالب جديد
+            let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
+            let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+            const lastCode = studentCodes.length > 0 ? Math.max(...studentCodes.map(c => c.code)) : 100;
+            const newCode = lastCode + 2; // زيادة بمقدار 2 للحفاظ على النمط
+
+            // تخزين بيانات الحساب
+            accounts.push({
+                code: newCode,
+                name,
+                grade,
+                phone,
+                governorate,
+                area,
+                timestamp: new Date().toISOString()
+            });
+            studentCodes.push({ code: newCode, active: true });
+
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+
+            alert(`تم التسجيل بنجاح! كود الطالب الخاص بك: ${newCode}`);
+            window.location.href = "index.html";
+            return false;
+        }
+
+        // تبديل الوضع الغامق
+        document.getElementById('dar')?.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.removeItem('theme');
+            }
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html>

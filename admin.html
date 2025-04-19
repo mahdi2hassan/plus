@@ -36,7 +36,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-family: 'Cairo', sans-serif;
             margin: 10px;
         }
         button:hover {
@@ -129,6 +128,7 @@
 
     <div class="admin-panel" id="adminPanel">
         <h2>لوحة تحكم الأدمن</h2>
+        <a href="data.html" class="back-link">عرض بيانات الحسابات والإجابات</a>
 
         <h3>إدارة المقررات</h3>
         <input type="text" id="courseName" placeholder="اسم المقرر">
@@ -422,7 +422,9 @@
                 const correctAnswer = document.getElementById("correctAnswer").value;
 
                 if (questionText && options.length >= 2 && correctAnswer !== "") {
+                    const questionId = `q${Date.now()}`; // معرف فريد
                     questions.push({
+                        id: questionId,
                         courseId,
                         type: "multiple",
                         text: questionText,
@@ -444,7 +446,9 @@
                 const modelAnswer = document.getElementById("modelAnswer").value;
 
                 if (questionText && modelAnswer) {
+                    const questionId = `q${Date.now()}`; // معرف فريد
                     questions.push({
+                        id: questionId,
                         courseId,
                         type: "open",
                         text: questionText,
@@ -493,6 +497,7 @@
 
                 if (questionText && options.length >= 2 && correctAnswer !== "") {
                     questions[editQuestionIndex] = {
+                        id: questions[editQuestionIndex].id,
                         courseId: questions[editQuestionIndex].courseId,
                         type: "multiple",
                         text: questionText,
@@ -509,6 +514,7 @@
 
                 if (questionText && modelAnswer) {
                     questions[editQuestionIndex] = {
+                        id: questions[editQuestionIndex].id,
                         courseId: questions[editQuestionIndex].courseId,
                         type: "open",
                         text: questionText,

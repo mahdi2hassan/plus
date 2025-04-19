@@ -142,6 +142,16 @@
         const videos = JSON.parse(localStorage.getItem('videos')) || [];
         const questions = JSON.parse(localStorage.getItem('questions')) || [];
         const courseId = "course1"; // غيّره لكل صفحة (course2, course3, إلخ)
+        let studentCode = localStorage.getItem('currentStudentCode') || prompt("أدخل كود الطالب:");
+
+        // التحقق من كود الطالب
+        const studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
+        if (!studentCodes.some(sc => sc.code === parseInt(studentCode) && sc.active)) {
+            alert("كود الطالب غير صحيح!");
+            window.location.href = "password.html?course=" + courseId;
+        } else {
+            localStorage.setItem('currentStudentCode', studentCode);
+        }
 
         function getYouTubeThumbnail(url) {
             const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1];
@@ -179,7 +189,6 @@
             const videoContent = document.getElementById("videoContent");
             let embedUrl = url;
 
-            // تحديد نوع الفيديو
             if (url.includes("youtube.com") || url.includes("youtu.be")) {
                 embedUrl = getYouTubeEmbedUrl(url);
                 videoContent.innerHTML = `
@@ -191,7 +200,6 @@
                     <iframe src="${embedUrl}" title="${title}" allow="autoplay" allowfullscreen></iframe>
                 `;
             } else {
-                // روابط أخرى: محاولة عرض كفيديو أو رابط احتياطي
                 videoContent.innerHTML = `
                     <video controls>
                         <source src="${url}" type="video/mp4">
@@ -213,20 +221,43 @@
         function checkAnswer(index) {
             const question = questions.filter(q => q.courseId === courseId)[index];
             const resultDiv = document.getElementById(`result${index}`);
-            
+            let studentAnswers = JSON.parse(localStorage.getItem('studentAnswers')) || [];
+
             if (question.type === "multiple") {
                 const selected = document.querySelector(`input[name="question${index}"]:checked`);
                 if (selected) {
                     const answer = parseInt(selected.value);
-                    resultDiv.textContent = answer === question.correctAnswer ? "إجابة صحيحة!" : "إجابة خاطئة!";
-                    resultDiv.style.color = answer === question.correctAnswer ? "green" : "red";
+                    const isCorrect = answer === question.correctAnswer;
+                    resultDiv.textContent = isCorrect ? "إجابة صحيحة!" : "إجابة خاطئة!";
+                    resultDiv.style.color = isCorrect ? "green" : "red";
+
+                    studentAnswers.push({
+                        studentCode: parseInt(studentCode),
+                        courseId,
+                        questionId: question.id || `${courseId}-${index}`,
+                        studentAnswer: question.options[answer],
+                        isCorrect,
+                        timestamp: new Date().toISOString()
+                    });
                 }
             } else {
                 const answer = document.getElementById(`openAnswer${index}`).value.trim().toLowerCase();
                 const modelAnswer = question.modelAnswer.trim().toLowerCase();
-                resultDiv.textContent = answer === modelAnswer ? "إجابة صحيحة!" : "إجابة خاطئة!";
-                resultDiv.style.color = answer === modelAnswer ? "green" : "red";
+                const isCorrect = answer === modelAnswer;
+                resultDiv.textContent = isCorrect ? "إجابة صحيحة!" : "إجابة خاطئة!";
+                resultDiv.style.color = isCorrect ? "green" : "red";
+
+                studentAnswers.push({
+                    studentCode: parseInt(studentCode),
+                    courseId,
+                    questionId: question.id || `${courseId}-${index}`,
+                    studentAnswer: answer,
+                    isCorrect,
+                    timestamp: new Date().toISOString()
+                });
             }
+
+            localStorage.setItem('studentAnswers', JSON.stringify(studentAnswers));
         }
 
         function renderQuestions() {
