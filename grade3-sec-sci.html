@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مقرر الصف الثالث الثانوي علمي</title>
+    <title>مقرر الصف الثالث الثانوي</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -35,6 +35,7 @@
             color: var(--color-white);
             border-radius: 5px;
             margin: 5px 0;
+            cursor: pointer;
         }
         .video-item img {
             width: 120px;
@@ -42,9 +43,8 @@
             margin-left: 10px;
             border-radius: 5px;
         }
-        .video-item a {
+        .video-item span {
             color: var(--color-white);
-            text-decoration: none;
         }
         .question-item {
             padding: 15px;
@@ -81,11 +81,48 @@
         .back-link:hover {
             text-decoration: underline;
         }
+        .video-player {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .video-player-content {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .video-player-content iframe, .video-player-content video {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 5px;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #ff204e;
+            color: var(--color-white);
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>مقرر الصف الثالث الثانوي علمي</h1>
+        <h1>مقرر الصف الثالث الثانوي</h1>
         <h3>الفيديوهات</h3>
         <div class="video-list" id="videoList"></div>
         <h3>الأسئلة</h3>
@@ -93,15 +130,32 @@
         <a href="index.html" class="back-link">العودة إلى المقررات</a>
     </div>
 
+    <div class="video-player" id="videoPlayer">
+        <div class="video-player-content">
+            <button class="close-btn" onclick="closeVideo()">إغلاق</button>
+            <div id="videoContent"></div>
+        </div>
+    </div>
+
     <script>
         // تحميل البيانات من localStorage
         const videos = JSON.parse(localStorage.getItem('videos')) || [];
         const questions = JSON.parse(localStorage.getItem('questions')) || [];
-        const courseId = "course7"; // غيّره لكل صفحة (course2, course3, إلخ)
+        const courseId = "course7"; // غيّره لكل صفحة (course2, course1, إلخ)
 
         function getYouTubeThumbnail(url) {
             const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1];
             return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/120x68?text=فيديو';
+        }
+
+        function getYouTubeEmbedUrl(url) {
+            const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1];
+            return videoId ? `https://www.youtube.com/embed/${videoId}?rel=0` : url;
+        }
+
+        function getGoogleDriveEmbedUrl(url) {
+            const fileId = url.match(/\/d\/(.+?)\//)?.[1];
+            return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : url;
         }
 
         function renderVideos() {
@@ -109,16 +163,51 @@
             videoList.innerHTML = "";
             videos.filter(video => video.courseId === courseId).forEach((video, index) => {
                 const thumbnail = video.thumbnail || getYouTubeThumbnail(video.url);
-                const isYouTube = video.url.includes("youtube.com") || video.url.includes("youtu.be");
-                const videoUrl = isYouTube ? video.url.replace("watch?v=", "embed/") + "?autoplay=1" : video.url;
                 const div = document.createElement("div");
                 div.className = "video-item";
                 div.innerHTML = `
                     <img src="${thumbnail}" alt="${video.title}">
-                    <a href="${videoUrl}" target="_blank">${video.title || `فيديو ${index + 1}`}</a>
+                    <span>${video.title || `فيديو ${index + 1}`}</span>
                 `;
+                div.onclick = () => playVideo(video.url, video.title);
                 videoList.appendChild(div);
             });
+        }
+
+        function playVideo(url, title) {
+            const videoPlayer = document.getElementById("videoPlayer");
+            const videoContent = document.getElementById("videoContent");
+            let embedUrl = url;
+
+            // تحديد نوع الفيديو
+            if (url.includes("youtube.com") || url.includes("youtu.be")) {
+                embedUrl = getYouTubeEmbedUrl(url);
+                videoContent.innerHTML = `
+                    <iframe src="${embedUrl}" title="${title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                `;
+            } else if (url.includes("drive.google.com")) {
+                embedUrl = getGoogleDriveEmbedUrl(url);
+                videoContent.innerHTML = `
+                    <iframe src="${embedUrl}" title="${title}" allow="autoplay" allowfullscreen></iframe>
+                `;
+            } else {
+                // روابط أخرى: محاولة عرض كفيديو أو رابط احتياطي
+                videoContent.innerHTML = `
+                    <video controls>
+                        <source src="${url}" type="video/mp4">
+                        المتصفح لا يدعم تشغيل هذا الفيديو.
+                    </video>
+                `;
+            }
+
+            videoPlayer.style.display = "flex";
+        }
+
+        function closeVideo() {
+            const videoPlayer = document.getElementById("videoPlayer");
+            const videoContent = document.getElementById("videoContent");
+            videoPlayer.style.display = "none";
+            videoContent.innerHTML = "";
         }
 
         function checkAnswer(index) {
