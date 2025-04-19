@@ -169,6 +169,10 @@
         .btn-danger:hover {
             background: #c0392b;
         }
+        .export-btn {
+            margin-bottom: 20px;
+            margin-left: 10px;
+        }
         .error {
             color: #e74c3c;
             display: none;
@@ -304,6 +308,29 @@
             font-size: 0.9rem;
             font-weight: 400;
         }
+        .exam-list table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--color-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        .exam-list th, .exam-list td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+        .exam-list th {
+            background: var(--first-color);
+            color: var(--color-white);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .exam-list td {
+            font-size: 1rem;
+            color: var(--text-color-second);
+        }
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
@@ -349,9 +376,15 @@
             .modal-content {
                 width: 95%;
             }
-            .btn {
+            .btn, .export-btn {
                 width: 100%;
                 margin: 5px 0;
+            }
+            .exam-list table {
+                font-size: 0.9rem;
+            }
+            .exam-list th, .exam-list td {
+                padding: 8px;
             }
         }
         @media (max-width: 600px) {
@@ -359,6 +392,11 @@
                 flex-direction: column;
                 align-items: flex-end;
                 gap: 10px;
+            }
+            .exam-list table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
             }
         }
     </style>
@@ -435,8 +473,13 @@
                         <select id="videoCourse" required>
                             <option value="">اختر المقرر</option>
                         </select>
+                        <select id="videoType" required>
+                            <option value="stream">رابط بث (يوتيوب، Google Drive)</option>
+                            <option value="file">ملف فيديو قابل للتنزيل</option>
+                        </select>
                         <input type="text" id="videoTitle" placeholder="عنوان الفيديو" required>
-                        <input type="url" id="videoUrl" placeholder="رابط الفيديو (يوتيوب، Google Drive، إلخ)" required>
+                        <input type="url" id="videoUrl" placeholder="رابط الفيديو" style="display: block;" required>
+                        <input type="file" id="videoFile" accept="video/*" style="display: none;">
                         <input type="url" id="videoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
                         <select id="videoStudentOption" onchange="toggleStudentSelect('video')" required>
                             <option value="">اختر خيار الطلاب</option>
@@ -517,6 +560,7 @@
 
                 <div class="section">
                     <h3>إضافة اختبار إلكتروني</h3>
+                    <button class="btn export-btn" onclick="exportExamsToExcel()">تصدير الاختبارات إلى Excel</button>
                     <form id="examForm">
                         <select id="examCourse" onchange="populateExamQuestions()" required>
                             <option value="">اختر المقرر</option>
@@ -544,7 +588,20 @@
                         <select id="examExceptStudents" multiple style="display: none;"></select>
                         <button type="submit" class="btn" onclick="addExam()">إضافة اختبار</button>
                     </form>
-                    <div class="section exam-list" id="examList"></div>
+                    <div class="section exam-list" id="examList">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>معرف الاختبار</th>
+                                    <th>العنوان</th>
+                                    <th>الصف</th>
+                                    <th>عدد الأسئلة</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="examsBody"></tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <a href="admin.html" class="back-link">العودة إلى لوحة الأدمن</a>
@@ -606,8 +663,13 @@
             <select id="editVideoCourse" required>
                 <option value="">اختر المقرر</option>
             </select>
+            <select id="editVideoType" required>
+                <option value="stream">رابط بث (يوتيوب، Google Drive)</option>
+                <option value="file">ملف فيديو قابل للتنزيل</option>
+            </select>
             <input type="text" id="editVideoTitle" placeholder="عنوان الفيديو" required>
-            <input type="url" id="editVideoUrl" placeholder="رابط الفيديو" required>
+            <input type="url" id="editVideoUrl" placeholder="رابط الفيديو" style="display: block;">
+            <input type="file" id="editVideoFile" accept="video/*" style="display: none;">
             <input type="url" id="editVideoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
             <select id="editVideoStudentOption" onchange="toggleStudentSelect('editVideo')" required>
                 <option value="">اختر خيار الطلاب</option>
@@ -700,6 +762,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         const ADMIN_USERNAME = "mahdi2hassan";
         const ADMIN_PASSWORD = "01007586279";
@@ -733,32 +796,37 @@
         }
 
         // تحميل البيانات من localStorage
-        try {
-            courses = JSON.parse(localStorage.getItem('courses')) || [];
-            videos = JSON.parse(localStorage.getItem('videos')) || [];
-            questions = JSON.parse(localStorage.getItem('questions')) || [];
-            documents = JSON.parse(localStorage.getItem('documents')) || [];
-            accounts = JSON.parse(localStorage.getItem('accounts')) || [];
-            exams = JSON.parse(localStorage.getItem('exams')) || [];
-        } catch (error) {
-            console.error('خطأ في تحليل البيانات:', error);
-            Swal.fire({
-                title: 'خطأ',
-                text: 'حدث خطأ في تحميل البيانات!',
-                icon: 'error',
-                confirmButtonColor: '#005eff'
-            });
+        function loadData() {
+            try {
+                courses = JSON.parse(localStorage.getItem('courses')) || [];
+                videos = JSON.parse(localStorage.getItem('videos')) || [];
+                questions = JSON.parse(localStorage.getItem('questions')) || [];
+                documents = JSON.parse(localStorage.getItem('documents')) || [];
+                accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+                exams = JSON.parse(localStorage.getItem('exams')) || [];
+            } catch (error) {
+                console.error('خطأ في تحليل البيانات:', error);
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'حدث خطأ في تحميل البيانات!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
+            }
         }
 
-        // التحقق من تسجيل الدخول عند تحميل الصفحة
+        // تحميل البيانات وعرضها عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
             if (isAdminLoggedIn) {
+                loadData();
                 renderCourses();
                 renderVideos();
                 renderQuestions();
                 renderDocuments();
                 renderExams();
                 populateCourseSelects();
+                toggleVideoInput();
+                toggleEditVideoInput();
             }
         });
 
@@ -772,6 +840,7 @@
                 document.getElementById("loginForm").style.display = "none";
                 document.getElementById("adminPanel").style.display = "block";
                 errorMessage.style.display = "none";
+                loadData();
                 renderCourses();
                 renderVideos();
                 renderQuestions();
@@ -867,6 +936,128 @@
             const exceptStudentsSelect = document.getElementById(`${prefix}ExceptStudents`);
             studentCountInput.style.display = studentOption === 'count' ? 'block' : 'none';
             exceptStudentsSelect.style.display = studentOption === 'except' ? 'block' : 'none';
+        }
+
+        function toggleVideoInput() {
+            const videoType = document.getElementById("videoType").value;
+            document.getElementById("videoUrl").style.display = videoType === 'stream' ? 'block' : 'none';
+            document.getElementById("videoFile").style.display = videoType === 'file' ? 'block' : 'none';
+        }
+
+        function toggleEditVideoInput() {
+            const videoType = document.getElementById("editVideoType").value;
+            document.getElementById("editVideoUrl").style.display = videoType === 'stream' ? 'block' : 'none';
+            document.getElementById("editVideoFile").style.display = videoType === 'file' ? 'block' : 'none';
+        }
+
+        // تحسين عرض المقررات
+        function renderCourses() {
+            const courseList = document.getElementById("courseList");
+            courseList.innerHTML = '';
+            courses.forEach((course, index) => {
+                const div = document.createElement("div");
+                div.className = "item";
+                div.innerHTML = `
+                    <span>${course.name} (${course.id}) - ${course.grade}</span>
+                    <div>
+                        <button class="btn" onclick="editCourse(${index})" aria-label="تعديل المقرر ${course.name}"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="deleteCourse(${index})" aria-label="حذف المقرر ${course.name}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                courseList.appendChild(div);
+            });
+        }
+
+        // تحسين عرض الفيديوهات
+        function renderVideos() {
+            const videoList = document.getElementById("videoList");
+            videoList.innerHTML = '';
+            videos.forEach((video, index) => {
+                const div = document.createElement("div");
+                div.className = "item";
+                const course = courses.find(c => c.id === video.courseId);
+                const courseName = course ? course.name : 'غير معروف';
+                const downloadButton = video.type === 'file' && video.file ? `
+                    <a href="${video.file}" download="${video.title}.mp4" class="btn" aria-label="تحميل الفيديو ${video.title}">
+                        <i class="fas fa-download"></i> تحميل
+                    </a>
+                ` : '';
+                div.innerHTML = `
+                    <span>${video.title} - ${courseName}</span>
+                    <div>
+                        ${video.type === 'stream' ? `<a href="${video.url}" target="_blank" class="btn" aria-label="عرض الفيديو ${video.title}"><i class="fas fa-play"></i> عرض</a>` : downloadButton}
+                        <button class="btn" onclick="editVideo(${index})" aria-label="تعديل الفيديو ${video.title}"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="deleteVideo(${index})" aria-label="حذف الفيديو ${video.title}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                videoList.appendChild(div);
+            });
+        }
+
+        // تحسين عرض الأسئلة
+        function renderQuestions() {
+            const questionList = document.getElementById("questionList");
+            questionList.innerHTML = '';
+            questions.forEach((question, index) => {
+                const div = document.createElement("div");
+                div.className = "item";
+                const course = courses.find(c => c.id === question.courseId);
+                const courseName = course ? course.name : 'غير معروف';
+                div.innerHTML = `
+                    <span>${question.text} (${question.type === 'multiple' ? 'موضوعي' : 'مفتوح'}) - ${courseName}</span>
+                    <div>
+                        <button class="btn" onclick="editQuestion(${index})" aria-label="تعديل السؤال ${question.text}"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="deleteQuestion(${index})" aria-label="حذف السؤال ${question.text}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                questionList.appendChild(div);
+            });
+        }
+
+        // تحسين عرض المستندات
+        function renderDocuments() {
+            const documentList = document.getElementById("documentList");
+            documentList.innerHTML = '';
+            documents.forEach((doc, index) => {
+                const div = document.createElement("div");
+                div.className = "item";
+                const course = courses.find(c => c.id === doc.courseId);
+                const courseName = course ? course.name : 'غير معروف';
+                div.innerHTML = `
+                    <span>${doc.title} - ${courseName}</span>
+                    <div>
+                        <a href="${doc.file}" download="${doc.title}.pdf" class="btn" aria-label="تحميل المستند ${doc.title}">
+                            <i class="fas fa-download"></i> تحميل
+                        </a>
+                        <button class="btn" onclick="editDocument(${index})" aria-label="تعديل المستند ${doc.title}"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="deleteDocument(${index})" aria-label="حذف المستند ${doc.title}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                documentList.appendChild(div);
+            });
+        }
+
+        // عرض الاختبارات
+        function renderExams() {
+            const examsBody = document.getElementById("examsBody");
+            examsBody.innerHTML = '';
+            exams.forEach((exam, index) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${exam.id}</td>
+                    <td>${exam.title}</td>
+                    <td>${exam.grade}</td>
+                    <td>${exam.questionIds ? exam.questionIds.length : 0}</td>
+                    <td>
+                        <button class="btn" onclick="editExam(${index})" aria-label="تعديل الاختبار ${exam.title}"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="deleteExam(${index})" aria-label="حذف الاختبار ${exam.title}"><i class="fas fa-trash"></i></button>
+                        <button class="btn" onclick="shareExam('${exam.id}', '${exam.title}')" aria-label="مشاركة الاختبار ${exam.title}">
+                            <i class="fas fa-share-alt"></i> مشاركة
+                        </button>
+                    </td>
+                `;
+                examsBody.appendChild(tr);
+            });
         }
 
         async function addCourse() {
@@ -1072,14 +1263,16 @@
 
         async function addVideo() {
             const courseId = document.getElementById("videoCourse").value;
+            const videoType = document.getElementById("videoType").value;
             const title = document.getElementById("videoTitle").value;
             const url = document.getElementById("videoUrl").value;
+            const file = document.getElementById("videoFile").files[0];
             const thumbnail = document.getElementById("videoThumbnail").value;
             const studentOption = document.getElementById("videoStudentOption").value;
             const studentCount = document.getElementById("videoStudentCount").value;
             const exceptStudents = Array.from(document.getElementById("videoExceptStudents").selectedOptions).map(opt => opt.value);
 
-            if (!courseId || !title || !url || !studentOption) {
+            if (!courseId || !title || !studentOption || (videoType === 'stream' && !url) || (videoType === 'file' && !file)) {
                 Swal.fire({
                     title: 'خطأ',
                     text: 'يرجى ملء جميع الحقول المطلوبة!',
@@ -1107,339 +1300,104 @@
                 return;
             }
 
-            videos.push({
+            let videoData = {
                 courseId,
+                type: videoType,
                 title,
-                url,
+                url: videoType === 'stream' ? url : null,
+                file: null,
                 thumbnail,
                 studentOption,
                 studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
                 exceptStudents: studentOption === 'except' ? exceptStudents : [],
                 studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
-            });
+            };
+
+            if (videoType === 'file') {
+                try {
+                    videoData.file = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                } catch (error) {
+                    console.error('خطأ أثناء قراءة ملف الفيديو:', error);
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'حدث خطأ أثناء رفع ملف الفيديو!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                    return;
+                }
+            }
+
+            videos.push(videoData);
             localStorage.setItem('videos', JSON.stringify(videos));
             renderVideos();
             document.getElementById("videoForm").reset();
             document.getElementById("videoStudentCount").style.display = 'none';
             document.getElementById("videoExceptStudents").style.display = 'none';
+            toggleVideoInput();
             Swal.fire({
                 title: 'تم',
                 text: 'تم إضافة الفيديو بنجاح.',
                 icon: 'success',
                 confirmButtonColor: '#005eff'
-                });
-            }
+            });
+        }
 
-            function editVideo(index) {
-                editVideoIndex = index;
-                const video = videos[index];
-                document.getElementById("editVideoCourse").value = video.courseId;
-                document.getElementById("editVideoTitle").value = video.title;
-                document.getElementById("editVideoUrl").value = video.url;
-                document.getElementById("editVideoThumbnail").value = video.thumbnail || "";
-                document.getElementById("editVideoStudentOption").value = video.studentOption;
-                document.getElementById("editVideoStudentCount").value = video.studentCount || '';
-                updateStudentOptions('editVideo');
-                const exceptStudentsSelect = document.getElementById("editVideoExceptStudents");
-                Array.from(exceptStudentsSelect.options).forEach(opt => {
-                    opt.selected = video.exceptStudents.includes(opt.value);
-                });
-                toggleStudentSelect('editVideo');
-                document.getElementById("editVideoModal").style.display = "flex";
-            }
+        function editVideo(index) {
+            editVideoIndex = index;
+            const video = videos[index];
+            document.getElementById("editVideoCourse").value = video.courseId;
+            document.getElementById("editVideoType").value = video.type;
+            document.getElementById("editVideoTitle").value = video.title;
+            document.getElementById("editVideoUrl").value = video.url || "";
+            document.getElementById("editVideoThumbnail").value = video.thumbnail || "";
+            document.getElementById("editVideoStudentOption").value = video.studentOption;
+            document.getElementById("editVideoStudentCount").value = video.studentCount || '';
+            updateStudentOptions('editVideo');
+            const exceptStudentsSelect = document.getElementById("editVideoExceptStudents");
+            Array.from(exceptStudentsSelect.options).forEach(opt => {
+                opt.selected = video.exceptStudents.includes(opt.value);
+            });
+            toggleStudentSelect('editVideo');
+            toggleEditVideoInput();
+            document.getElementById("editVideoModal").style.display = "flex";
+        }
 
-            async function saveVideoEdit() {
-                const courseId = document.getElementById("editVideoCourse").value;
-                const title = document.getElementById("editVideoTitle").value;
-                const url = document.getElementById("editVideoUrl").value;
-                const thumbnail = document.getElementById("editVideoThumbnail").value;
-                const studentOption = document.getElementById("editVideoStudentOption").value;
-                const studentCount = document.getElementById("editVideoStudentCount").value;
-                const exceptStudents = Array.from(document.getElementById("editVideoExceptStudents").selectedOptions).map(opt => opt.value);
+        async function saveVideoEdit() {
+            const courseId = document.getElementById("editVideoCourse").value;
+            const videoType = document.getElementById("editVideoType").value;
+            const title = document.getElementById("editVideoTitle").value;
+            const url = document.getElementById("editVideoUrl").value;
+            const file = document.getElementById("editVideoFile").files[0];
+            const thumbnail = document.getElementById("editVideoThumbnail").value;
+            const studentOption = document.getElementById("editVideoStudentOption").value;
+            const studentCount = document.getElementById("editVideoStudentCount").value;
+            const exceptStudents = Array.from(document.getElementById("editVideoExceptStudents").selectedOptions).map(opt => opt.value);
 
-                if (!courseId || !title || !url || !studentOption) {
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'يرجى ملء جميع الحقول المطلوبة!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
-                if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'يرجى إدخال عدد صالح للطلاب!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
-                if (studentOption === 'except' && exceptStudents.length === 0) {
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'يرجى اختيار طلاب للاستثناء!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
-
-                videos[editVideoIndex] = {
-                    courseId,
-                    title,
-                    url,
-                    thumbnail,
-                    studentOption,
-                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
-                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
-                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
-                };
-                localStorage.setItem('videos', JSON.stringify(videos));
-                renderVideos();
-                closeModal('editVideoModal');
+            if (!courseId || !title || !studentOption || (videoType === 'stream' && !url) || (videoType === 'file' && !file && !videos[editVideoIndex].file)) {
                 Swal.fire({
-                    title: 'تم',
-                    text: 'تم تعديل الفيديو بنجاح.',
-                    icon: 'success',
+                    title: 'خطأ',
+                    text: 'يرجى ملء جميع الحقول المطلوبة!',
+                    icon: 'error',
                     confirmButtonColor: '#005eff'
                 });
+                return;
             }
-
-            async function deleteVideo(index) {
-                const video = videos[index];
-                const result = await Swal.fire({
-                    title: 'تأكيد الحذف',
-                    text: `هل أنت متأكد من حذف فيديو ${video.title}؟`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#e74c3c',
-                    cancelButtonColor: '#005eff',
-                    confirmButtonText: 'نعم، احذف',
-                    cancelButtonText: 'إلغاء'
-                });
-
-                if (result.isConfirmed) {
-                    videos.splice(index, 1);
-                    localStorage.setItem('videos', JSON.stringify(videos));
-                    renderVideos();
-                    Swal.fire({
-                        title: 'تم',
-                        text: 'تم حذف الفيديو بنجاح.',
-                        icon: 'success',
-                        confirmButtonColor: '#005eff'
-                    });
-                }
-            }
-
-            function toggleQuestionForm() {
-                const questionType = document.getElementById("questionType").value;
-                document.getElementById("multipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
-                document.getElementById("openEndedForm").style.display = questionType === "open" ? "block" : "none";
-            }
-
-            function toggleEditQuestionForm() {
-                const questionType = document.getElementById("editQuestionType").value;
-                document.getElementById("editMultipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
-                document.getElementById("editOpenEndedForm").style.display = questionType === "open" ? "block" : "none";
-            }
-
-            async function addQuestion() {
-                const courseId = document.getElementById("questionCourse").value;
-                const questionType = document.getElementById("questionType").value;
-                const studentOption = document.getElementById("questionStudentOption").value;
-                const studentCount = document.getElementById("questionStudentCount").value;
-                const exceptStudents = Array.from(document.getElementById("questionExceptStudents").selectedOptions).map(opt => opt.value);
-
-                if (!courseId || !studentOption) {
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'يرجى ملء جميع الحقول المطلوبة!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
-                if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'يرجى إدخال عدد صالح للطلاب!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
-                if (studentOption === 'except' && exceptStudents.length === 0) {
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'يرجى اختيار طلاب للاستثناء!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
-
-                if (questionType === "multiple") {
-                    const questionText = document.getElementById("questionText").value;
-                    const options = [
-                        document.getElementById("option1").value,
-                        document.getElementById("option2").value,
-                        document.getElementById("option3").value,
-                        document.getElementById("option4").value
-                    ].filter(opt => opt);
-                    const correctAnswer = document.getElementById("correctAnswer").value;
-
-                    if (!questionText || options.length < 2 || correctAnswer === "") {
-                        Swal.fire({
-                            title: 'خطأ',
-                            text: 'يرجى ملء جميع الحقول المطلوبة للسؤال الموضوعي!',
-                            icon: 'error',
-                            confirmButtonColor: '#005eff'
-                        });
-                        return;
-                    }
-
-                    const questionId = `q${Date.now()}`;
-                    questions.push({
-                        id: questionId,
-                        courseId,
-                        type: "multiple",
-                        text: questionText,
-                        options,
-                        correctAnswer: parseInt(correctAnswer),
-                        studentOption,
-                        studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
-                        exceptStudents: studentOption === 'except' ? exceptStudents : [],
-                        studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
-                    });
-                } else {
-                    const questionText = document.getElementById("openQuestionText").value;
-                    const modelAnswer = document.getElementById("modelAnswer").value;
-
-                    if (!questionText || !modelAnswer) {
-                        Swal.fire({
-                            title: 'خطأ',
-                            text: 'يرجى ملء جميع الحقول المطلوبة للسؤال المفتوح!',
-                            icon: 'error',
-                            confirmButtonColor: '#005eff'
-                        });
-                        return;
-                    }
-
-                    const questionId = `q${Date.now()}`;
-                    questions.push({
-                        id: questionId,
-                        courseId,
-                        type: "open",
-                        text: questionText,
-                        modelAnswer,
-                        studentOption,
-                        studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
-                        exceptStudents: studentOption === 'except' ? exceptStudents : [],
-                        studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
-                    });
-                }
-
-                localStorage.setItem('questions', JSON.stringify(questions));
-                renderQuestions();
-                document.getElementById("questionForm").reset();
-                document.getElementById("multipleChoiceForm").style.display = "block";
-                document.getElementById("openEndedForm").style.display = "none";
-                document.getElementById("questionStudentCount").style.display = 'none';
-                document.getElementById("questionExceptStudents").style.display = 'none';
+            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
                 Swal.fire({
-                    title: 'تم',
-                    text: 'تم إضافة السؤال بنجاح.',
-                    icon: 'success',
+                    title: 'خطأ',
+                    text: 'يرجى إدخال عدد صالح للطلاب!',
+                    icon: 'error',
                     confirmButtonColor: '#005eff'
                 });
+                return;
             }
-
-            function editQuestion(index) {
-                editQuestionIndex = index;
-                const question = questions[index];
-                document.getElementById("editQuestionCourse").value = question.courseId;
-                document.getElementById("editQuestionType").value = question.type;
-                document.getElementById("editQuestionStudentOption").value = question.studentOption;
-                document.getElementById("editQuestionStudentCount").value = question.studentCount || '';
-                updateStudentOptions('editQuestion');
-                const exceptStudentsSelect = document.getElementById("editQuestionExceptStudents");
-                Array.from(exceptStudentsSelect.options).forEach(opt => {
-                    opt.selected = question.exceptStudents.includes(opt.value);
-                });
-                toggleStudentSelect('editQuestion');
-                if (question.type === "multiple") {
-                    document.getElementById("editQuestionText").value = question.text;
-                    document.getElementById("editOption1").value = question.options[0] || "";
-                    document.getElementById("editOption2").value = question.options[1] || "";
-                    document.getElementById("editOption3").value = question.options[2] || "";
-                    document.getElementById("editOption4").value = question.options[3] || "";
-                    document.getElementById("editCorrectAnswer").value = question.correctAnswer;
-                } else {
-                    document.getElementById("editOpenQuestionText").value = question.text;
-                    document.getElementById("editModelAnswer").value = question.modelAnswer;
-                }
-                toggleEditQuestionForm();
-                document.getElementById("editQuestionModal").style.display = "flex";
-            }
-
-            async function saveQuestionEdit() {
-                const courseId = document.getElementById("editQuestionCourse").value;
-                const questionType = document.getElementById("editQuestionType").value;
-                const studentOption = document.getElementById("editQuestionStudentOption").value;
-                const studentCount = document.getElementById("editQuestionStudentCount").value;
-                const exceptStudents = Array.from(document.getElementById("editQuestionExceptStudents").selectedOptions).map(opt => opt.value);
-
-                if (!courseId || !studentOption) {
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'يرجى ملء جميع الحقول المطلوبة!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
-                if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'يرجى إدخال عدد صالح للطلاب!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
-                if (studentOption === 'except' && exceptStudents.length === 0) {
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'يرجى اختيار طلاب للاستثناء!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
-
-                if (questionType === "multiple") {
-                    const questionText = document.getElementById("editQuestionText").value;
-                    const options = [
-                        document.getElementById("editOption1").value,
-                        document.getElementById("editOption2").value,
-                        document.getElementById("editOption3").value,
-                        document.getElementById("editOption4").value
-                    ].filter(opt => opt);
-                    const correctAnswer = document.getElementById("editCorrectAnswer").value;
-
-                    if (!questionText || options.length < 2 || correctAnswer === "") {
-                        Swal.fire({
-                            title: 'خطأ',
-                            text: 'يرجى ملء جميع الحقول المطلوبة للسؤال الموضوعي!',
-                            icon: 'error',
-                            confirmButtonColor: '#005eff'
-                        });
-                        return;
-                    }
-
-                    questions[editQuestionIndex] = {
-                        id: questions[editQuestionIndex].id,
-                        courseId,
-                        type: "multiple",
-                        text: questionText,
+            if (studentOption === 'except' && exceptStudents.length === 0) {
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى

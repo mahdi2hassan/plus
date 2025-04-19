@@ -128,6 +128,7 @@
         .export-btn {
             display: inline-block;
             margin-bottom: 20px;
+            margin-left: 10px;
             padding: 10px 20px;
             background: var(--first-color);
             color: var(--color-white);
@@ -218,6 +219,16 @@
             color: var(--first-color-hover);
             text-decoration: underline;
         }
+        .exams-section {
+            margin-top: 40px;
+        }
+        .exams-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--first-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
         footer {
             text-align: center;
             padding: 20px;
@@ -300,12 +311,14 @@
             .nav-menu-btn {
                 display: block;
             }
-            .accounts-section h1 {
+            .accounts-section h1, .exams-section h2 {
                 font-size: 1.5rem;
             }
             .export-btn {
                 width: 100%;
                 text-align: center;
+                margin-left: 0;
+                margin-bottom: 10px;
             }
             table {
                 font-size: 0.9rem;
@@ -355,7 +368,10 @@
         </nav>
         <main class="accounts-section">
             <h1>إدارة الحسابات</h1>
-            <button class="export-btn" onclick="exportToExcel()">تصدير الدرجات إلى Excel</button>
+            <div>
+                <button class="export-btn" onclick="exportToExcel()">تصدير الدرجات إلى Excel</button>
+                <button class="export-btn" onclick="exportExamsToExcel()">تصدير الاختبارات إلى Excel</button>
+            </div>
             <table id="accountsTable">
                 <thead>
                     <tr>
@@ -373,6 +389,21 @@
                 </thead>
                 <tbody id="accountsBody"></tbody>
             </table>
+            <div class="exams-section">
+                <h2>الاختبارات الإلكترونية</h2>
+                <table id="examsTable">
+                    <thead>
+                        <tr>
+                            <th>معرف الاختبار</th>
+                            <th>العنوان</th>
+                            <th>الصف</th>
+                            <th>عدد الأسئلة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="examsBody"></tbody>
+                </table>
+            </div>
             <a href="admin.html" class="back-link">العودة إلى لوحة الأدمن</a>
         </main>
         <footer>
@@ -462,6 +493,27 @@
                     <td><button class="btn btn-danger" onclick="deleteAccount(${index})">حذف الحساب</button></td>
                 `;
                 accountsBody.appendChild(tr);
+            });
+        }
+
+        // عرض الاختبارات
+        function renderExams() {
+            const examsBody = document.getElementById('examsBody');
+            examsBody.innerHTML = '';
+            exams.forEach((exam, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${exam.id}</td>
+                    <td>${exam.title}</td>
+                    <td>${exam.grade}</td>
+                    <td>${exam.questionIds ? exam.questionIds.length : 0}</td>
+                    <td>
+                        <button class="btn" onclick="shareExam('${exam.id}', '${exam.title}')" aria-label="مشاركة اختبار ${exam.title}">
+                            <i class="fas fa-share-alt"></i> مشاركة
+                        </button>
+                    </td>
+                `;
+                examsBody.appendChild(tr);
             });
         }
 
@@ -560,6 +612,7 @@
                     localStorage.setItem('documents', JSON.stringify(documents));
                     localStorage.setItem('exams', JSON.stringify(exams));
                     renderAccounts();
+                    renderExams();
                     Swal.fire({
                         title: 'تم',
                         text: `تم حذف حساب ${account.name} بنجاح.`,
@@ -580,7 +633,6 @@
 
         // تصدير الدرجات إلى Excel
         function exportToExcel() {
-            // إعداد البيانات
             const data = accounts.map(account => ({
                 'كود الطالب': account.code,
                 'الاسم': account.name,
@@ -589,15 +641,12 @@
                 'المحافظة': account.governorate,
                 'المنطقة': account.area,
                 'الحالة': account.pending ? 'معلق' : (account.active ? 'مفعل' : 'غير مفعل'),
-                'الدرجة': account.gradeScore || 'غير متوفر' // يمكن استبدالها بحساب درجات من exams
+                'الدرجة': account.gradeScore || 'غير متوفر'
             }));
 
-            // إنشاء ورقة عمل
             const ws = XLSX.utils.json_to_sheet(data);
-
-            // تنسيق رأس الجدول
             const header = ['كود الطالب', 'الاسم', 'الصف', 'رقم الهاتف', 'المحافظة', 'المنطقة', 'الحالة', 'الدرجة'];
-            ws['!cols'] = header.map(() => ({ wch: 20 })); // تحديد عرض الأعمدة
+            ws['!cols'] = header.map(() => ({ wch: 20 }));
             for (let i = 0; i < header.length; i++) {
                 const cell = XLSX.utils.encode_cell({ r: 0, c: i });
                 ws[cell].s = {
@@ -612,8 +661,6 @@
                     }
                 };
             }
-
-            // تنسيق الخلايا
             for (let r = 1; r <= accounts.length; r++) {
                 for (let c = 0; c < header.length; c++) {
                     const cell = XLSX.utils.encode_cell({ r, c });
@@ -630,18 +677,121 @@
                     }
                 }
             }
-
-            // إنشاء ملف Excel
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Students Grades');
             XLSX.writeFile(wb, 'Students_Grades.xlsx');
-
-            // تنبيه التأكيد
             Swal.fire({
                 title: 'تم',
                 text: 'تم تصدير درجات الطلاب إلى ملف Excel!',
                 icon: 'success',
                 confirmButtonColor: '#005eff'
+            });
+        }
+
+        // تصدير الاختبارات إلى Excel
+        function exportExamsToExcel() {
+            const data = exams.map(exam => ({
+                'معرف الاختبار': exam.id,
+                'العنوان': exam.title,
+                'الصف': exam.grade,
+                'عدد الأسئلة': exam.questionIds ? exam.questionIds.length : 0,
+                'كود الطالب': exam.studentCode || 'جميع الطلاب',
+                'خيار الطلاب': exam.studentOption || 'الكل',
+                'الطلاب المستثنون': exam.exceptStudents ? exam.exceptStudents.join(', ') : 'لا يوجد'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const header = ['معرف الاختبار', 'العنوان', 'الصف', 'عدد الأسئلة', 'كود الطالب', 'خيار الطلاب', 'الطلاب المستثنون'];
+            ws['!cols'] = header.map(() => ({ wch: 20 }));
+            for (let i = 0; i < header.length; i++) {
+                const cell = XLSX.utils.encode_cell({ r: 0, c: i });
+                ws[cell].s = {
+                    fill: { fgColor: { rgb: '005eff' } },
+                    font: { color: { rgb: 'FFFFFF' }, bold: true },
+                    alignment: { horizontal: 'center', vertical: 'center' },
+                    border: {
+                        top: { style: 'thin', color: { rgb: '000000' } },
+                        bottom: { style: 'thin', color: { rgb: '000000' } },
+                        left: { style: 'thin', color: { rgb: '000000' } },
+                        right: { style: 'thin', color: { rgb: '000000' } }
+                    }
+                };
+            }
+            for (let r = 1; r <= exams.length; r++) {
+                for (let c = 0; c < header.length; c++) {
+                    const cell = XLSX.utils.encode_cell({ r, c });
+                    if (ws[cell]) {
+                        ws[cell].s = {
+                            alignment: { horizontal: 'center', vertical: 'center' },
+                            border: {
+                                top: { style: 'thin', color: { rgb: '000000' } },
+                                bottom: { style: 'thin', color: { rgb: '000000' } },
+                                left: { style: 'thin', color: { rgb: '000000' } },
+                                right: { style: 'thin', color: { rgb: '000000' } }
+                            }
+                        };
+                    }
+                }
+            }
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Exams');
+            XLSX.writeFile(wb, 'Exams_List.xlsx');
+            Swal.fire({
+                title: 'تم',
+                text: 'تم تصدير الاختبارات إلى ملف Excel!',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
+            });
+        }
+
+        // مشاركة الاختبار
+        async function shareExam(examId, examTitle) {
+            const baseUrl = window.location.origin || 'https://your-domain.com'; // استبدل بـ النطاق الفعلي
+            const examUrl = `${baseUrl}/exam.html?examId=${examId}`;
+            const shareText = `اختبار: ${examTitle}\nالرابط: ${examUrl}`;
+
+            await Swal.fire({
+                title: 'مشاركة الاختبار',
+                html: `
+                    <p>رابط الاختبار: <a href="${examUrl}" target="_blank">${examUrl}</a></p>
+                    <button class="btn" onclick="copyToClipboard('${examUrl}')">
+                        <i class="fas fa-copy"></i> نسخ الرابط
+                    </button>
+                    <button class="btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent(shareText)}')">
+                        <i class="fab fa-whatsapp"></i> مشاركة عبر واتساب
+                    </button>
+                    <button class="btn" onclick="window.open('https://t.me/share/url?url=${encodeURIComponent(examUrl)}&text=${encodeURIComponent(examTitle)}')">
+                        <i class="fab fa-telegram"></i> مشاركة عبر تليجرام
+                    </button>
+                `,
+                showConfirmButton: false,
+                showCancelButton: true,
+                cancelButtonText: 'إغلاق',
+                cancelButtonColor: '#e74c3c',
+                customClass: {
+                    popup: 'swal2-share-popup'
+                }
+            });
+        }
+
+        // نسخ الرابط إلى الحافظة
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                Swal.fire({
+                    title: 'تم',
+                    text: 'تم نسخ رابط الاختبار إلى الحافظة!',
+                    icon: 'success',
+                    confirmButtonColor: '#005eff',
+                    timer: 1500
+                });
+            }).catch(err => {
+                console.error('خطأ أثناء النسخ:', err);
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'حدث خطأ أثناء نسخ الرابط!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
             });
         }
 
@@ -663,8 +813,11 @@
             document.getElementById('navMenu').classList.toggle('responsive');
         });
 
-        // تحميل الحسابات عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', renderAccounts);
+        // تحميل الحسابات والاختبارات عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAccounts();
+            renderExams();
+        });
     </script>
 </body>
 </html>
