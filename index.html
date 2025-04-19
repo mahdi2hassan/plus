@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plus 360</title>
+    <title>Plus 360 - المقررات</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
@@ -33,64 +32,81 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
-        header {
-            background-image: url('/images/n.png');
-            background-size: cover;
-            background-position: center;
-            height: 300px;
-            border-radius: 10px 10px 0 0;
+        nav {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            color: var(--color-white);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            background: var(--color-white);
+            box-shadow: 0 2px 4px var(--first-shadow-color);
         }
-        .nav-logo p {
-            font-size: 2rem;
+        .nav-logo a {
+            font-size: 1.8rem;
             font-weight: bold;
+            color: var(--first-color);
+            text-decoration: none;
         }
-        .course-list {
+        .nav-menu {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 20px;
         }
-        .course-item {
+        .nav-menu ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-menu a {
+            color: var(--text-color-second);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .nav-menu a:hover {
+            color: var(--first-color);
+        }
+        .nav-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .course-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .course-box {
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px var(--first-shadow-color);
             padding: 15px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+        }
+        .course-box h3 {
+            color: var(--text-color-second);
+            margin-bottom: 10px;
+        }
+        .course-box a {
+            display: inline-block;
+            padding: 10px 20px;
             background: var(--first-color);
             color: var(--color-white);
             border-radius: 5px;
             text-decoration: none;
-            text-align: center;
             transition: background 0.3s;
         }
-        .course-item:hover {
+        .course-box a:hover {
             background: var(--first-color-hover);
         }
-        .subscribe-btn {
-            background: #ff204e;
-            color: var(--color-white);
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background 0.3s;
-        }
-        .subscribe-btn:hover {
-            background: #e01b3d;
-        }
-        .admin-link, .register-link {
-            margin-top: 20px;
-            display: inline-block;
-            color: var(--first-color);
-            text-decoration: none;
-            margin-left: 20px;
-            transition: color 0.3s;
-        }
-        .admin-link:hover, .register-link:hover {
-            text-decoration: underline;
-            color: var(--first-color-hover);
+        .no-courses {
+            color: var(--text-color-second);
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 20px 0;
         }
         .dark-mode-btn {
             position: fixed;
@@ -109,24 +125,6 @@
         .dark-mode-btn:hover {
             background: var(--first-color-hover);
         }
-        .featured-box {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .featured-text-card span {
-            background: var(--first-color);
-            padding: 10px;
-            border-radius: 5px;
-            color: var(--color-white);
-        }
-        .featured-name p {
-            font-size: 1.5rem;
-            margin: 10px 0;
-        }
-        .featured-text-info p {
-            font-size: 1rem;
-            line-height: 1.6;
-        }
         footer {
             text-align: center;
             padding: 20px;
@@ -142,12 +140,12 @@
             margin: 20px 0;
         }
         .footer-social-icons .icon a {
-            color: #005eff;
+            color: var(--color-white);
             font-size: 1.5rem;
             transition: color 0.3s;
         }
         .footer-social-icons .icon a:hover {
-            color: var(--color-white);
+            color: var(--second-color);
         }
         .footer-menu {
             list-style: none;
@@ -163,18 +161,7 @@
             transition: color 0.3s;
         }
         .footer-menu a:hover {
-            text-decoration: underline;
-            color: var(--first-color-hover);
-        }
-        .bottom-footer p {
-            margin: 0;
-        }
-        .bottom-footer a {
-            color: var(--color-white);
-            text-decoration: none;
-        }
-        .bottom-footer a:hover {
-            text-decoration: underline;
+            color: var(--second-color);
         }
         .dark-mode {
             --body-color: #1a1a1a;
@@ -183,159 +170,128 @@
             --first-shadow-color: rgba(255, 255, 255, 0.1);
         }
         @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            .nav-menu.responsive {
+                display: block;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background: var(--color-white);
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px var(--first-shadow-color);
+            }
+            .nav-menu ul {
+                flex-direction: column;
+            }
+            .nav-menu-btn {
+                display: block;
+            }
             .container {
                 padding: 10px;
-            }
-            header {
-                height: 200px;
-            }
-            .nav-logo p {
-                font-size: 1.5rem;
-            }
-            .footer-menu {
-                flex-direction: column;
-                gap: 10px;
             }
         }
     </style>
 </head>
-<body id="bd">
-    <button id="dar" class="dark-mode-btn" title="تبديل الوضع الغامق">🌙</button>
+<body>
+    <button id="darkModeBtn" class="dark-mode-btn" title="تبديل الوضع الغامق">🌙</button>
     <div class="container">
-        <!-- التنقل -->
-        <header id="header">
+        <nav>
             <div class="nav-logo">
-                <p>Plus 360</p>
+                <a href="#" class="nav-name">Plus 360</a>
             </div>
-        </header>
-
-        <!-- المحتوى الرئيسي -->
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav_menu_list">
+                    <li class="nav_list"><a href="index.html" class="nav-link active-link">الرئيسية</a></li>
+                    <li class="nav_list"><a href="login.html" class="nav-link">تسجيل الدخول</a></li>
+                    <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
+                </ul>
+            </div>
+            <div class="nav-menu-btn"><i class="fa-solid fa-bars"></i></div>
+        </nav>
         <main class="wrapper">
-            <!-- القسم المميز -->
-            <section class="featured-box" id="home">
-                <div class="featured-text">
-                    <div class="featured-text-card">
-                        <span>"Let's start over as if nothing happened." 🫀🤍</span>
-                    </div>
-                    <div class="featured-name">
-                        <p>Mr. Mahdi Hassan <span class="typedText"></span></p>
-                    </div>
-                    <div class="featured-text-info">
-                        <p>
-                            بلس موقع وتطبيق خاص بالرياضيات لكل المراحل ♥<br>
-                            مع بلس التعليم الإلكتروني كما يجب أن يكون 🫡<br>
-                            بلس سابق بكتير 🫣.
-                        </p>
-                    </div>
+            <section class="section">
+                <div class="top-header">
+                    <h1>مقرراتك الدراسية</h1>
+                    <span>اختر المقرر المناسب لك</span>
                 </div>
-                <h1>المقررات الدراسية</h1>
-                <div class="course-list" id="courseList"></div>
-                <button class="subscribe-btn" onclick="sendWhatsApp()">اشترك الآن</button>
-                <div class="links">
-                    <a href="register.html" class="register-link">تسجيل حساب جديد</a>
-                </div>
+                <div class="course-container" id="courseContainer"></div>
             </section>
         </main>
-
-        <!-- التذييل -->
         <footer>
-            <div class="top-footer">
-                <p><span>Mahdi</span> <span>Hassan</span></p>
-            </div>
+            <div class="top-footer"><p>Plus 360</p></div>
             <div class="middle-footer">
                 <ul class="footer-menu">
-                    <li class="footer_menu_list"><a href="#home">الرئيسية</a></li>
-                    <li class="footer_menu_list"><a href="#courses">الصفوف</a></li>
-                    <li class="footer_menu_list"><a href="#courses">الكورسات</a></li>
-                    <li class="footer_menu_list"><a href="#contact">التواصل</a></li>
+                    <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
+                    <li class="footer_menu_list"><a href="login.html">تسجيل الدخول</a></li>
                 </ul>
             </div>
             <div class="footer-social-icons">
-                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="uil uil-whatsapp"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="uil uil-telegram"></i></a></div>
-                <div class="icon"><a target="_blank" href="tel:01558870907"><i class="uil uil-phone"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fa-brands fa-facebook-f"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="uil uil-instagram"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://ipn.eg/S/mahdihassan/instapay/51rzLz"><i class="uil uil-paypal"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="fab fa-whatsapp"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="fab fa-telegram"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fab fa-facebook-f"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="fab fa-instagram"></i></a></div>
             </div>
-            <div class="bottom-footer">
-                <p>Copyright © <a href="https://www.facebook.com/ma7di2hassan">Mahdi Hassan</a> - هذه المنصة من أجل تهيئة الطالب للجوانب المعرفية</p>
-            </div>
+            <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
         </footer>
     </div>
-
-    <!-- السكربتات -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-    <script src="https://unpkg.com/scrollreveal"></script>
     <script>
-        // تحميل المقررات من localStorage
-        const courses = JSON.parse(localStorage.getItem('courses')) || [
-            { id: "course1", name: "مقرر الصف الأول الإعدادي", url: "grade1-prep.html" },
-            { id: "course2", name: "مقرر الصف الثاني الإعدادي", url: "grade2-prep.html" },
-            { id: "course3", name: "مقرر الصف الثالث الإعدادي", url: "grade3-prep.html" },
-            { id: "course4", name: "مقرر الصف الأول الثانوي", url: "grade1-sec.html" },
-            { id: "course5", name: "مقرر الصف الثاني الثانوي علمي", url: "grade2-sec-sci.html" },
-            { id: "course6", name: "مقرر الصف الثاني الثانوي أدبي", url: "grade2-sec-lit.html" },
-            { id: "course7", name: "مقرر الصف الثالث الثانوي علمي", url: "grade3-sec-sci.html" },
-            { id: "course8", name: "مقرر الصف الثالث الثانوي أدبي إحصاء", url: "grade3-sec-lit.html" }
-        ];
-
-        function renderCourses() {
-            const courseList = document.getElementById("courseList");
-            courseList.innerHTML = "";
-            courses.forEach(course => {
-                const a = document.createElement("a");
-                a.href = `password.html?course=${course.id}`;
-                a.className = "course-item";
-                a.textContent = course.name;
-                courseList.appendChild(a);
-            });
+        // التحقق من تسجيل الدخول
+        const currentStudentCode = localStorage.getItem('currentStudentCode');
+        if (!currentStudentCode) {
+            window.location.href = 'login.html';
         }
 
-        renderCourses();
-
-        function sendWhatsApp() {
-            const phoneNumber = "+201558870907";
-            const message = "أسعار الاشتراك";
-            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(url, "_blank");
+        // جلب المقررات
+        let courses = [];
+        try {
+            courses = JSON.parse(localStorage.getItem('courses')) || [];
+        } catch (error) {
+            console.error('خطأ في تحليل courses:', error);
         }
 
-        // تأثير الكتابة باستخدام Typed.js
-        if (typeof Typed !== 'undefined') {
-            new Typed('.typedText', {
-                strings: ["معلم رياضيات", "مبتكر تعليمي", "بلس 360"],
-                loop: true,
-                typeSpeed: 100,
-                backSpeed: 80,
-                backDelay: 2000
-            });
+        const courseContainer = document.getElementById('courseContainer');
+
+        // تصفية المقررات بناءً على كود الطالب
+        const studentCourses = courses.filter(course => course.studentCode === currentStudentCode);
+
+        if (studentCourses.length === 0) {
+            courseContainer.innerHTML = '<p class="no-courses">لا توجد مقررات متاحة لحسابك.</p>';
         } else {
-            document.querySelector('.typedText').textContent = "معلم رياضيات";
+            studentCourses.forEach(course => {
+                const div = document.createElement('div');
+                div.className = 'course-box';
+                div.innerHTML = `
+                    <h3>${course.name}</h3>
+                    <a href="${course.url}">عرض المقرر</a>
+                `;
+                courseContainer.appendChild(div);
+            });
         }
 
-        // تأثيرات التمرير باستخدام ScrollReveal
-        if (typeof ScrollReveal !== 'undefined') {
-            ScrollReveal().reveal('.featured-text', { delay: 200 });
-            ScrollReveal().reveal('.course-list', { delay: 400 });
+        // تسجيل الخروج
+        function logout() {
+            localStorage.removeItem('currentStudentCode');
+            window.location.href = 'login.html';
         }
+
+        // قائمة التنقل المحمولة
+        document.querySelector('.nav-menu-btn').addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('responsive');
+        });
 
         // تبديل الوضع الغامق
-        document.getElementById('dar').addEventListener('click', () => {
+        document.getElementById('darkModeBtn').addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-                document.getElementById('dar').innerHTML = '☀️';
-            } else {
-                localStorage.removeItem('theme');
-                document.getElementById('dar').innerHTML = '🌙';
-            }
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : '');
+            document.getElementById('darkModeBtn').innerHTML = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
         });
 
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
-            document.getElementById('dar').innerHTML = '☀️';
+            document.getElementById('darkModeBtn').innerHTML = '☀️';
         }
     </script>
 </body>

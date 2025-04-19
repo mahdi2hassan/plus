@@ -28,6 +28,8 @@
             border: 2px solid var(--text-color-second);
             border-radius: 5px;
             font-family: 'Cairo', sans-serif;
+            background: var(--color-white);
+            color: var(--text-color-second);
         }
         button {
             padding: 10px 20px;
@@ -37,12 +39,13 @@
             border-radius: 5px;
             cursor: pointer;
             margin: 5px;
+            transition: background 0.3s;
         }
         button:hover {
             background: var(--first-color-hover);
         }
         .error {
-            color: red;
+            color: #FF4D4F;
             display: none;
             margin: 10px 0;
         }
@@ -53,6 +56,7 @@
             text-decoration: none;
         }
         .back-link:hover {
+            color: var(--first-color-hover);
             text-decoration: underline;
         }
         .admin-panel {
@@ -63,17 +67,21 @@
         }
         .course-item, .video-item, .question-item, .document-item {
             padding: 10px;
-            background: var(--second-color);
-            color: var(--color-white);
+            background: var(--color-white);
+            color: var(--text-color-second);
             border-radius: 5px;
             margin: 5px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 5px var(--first-shadow-color);
         }
         .course-item button, .video-item button, .question-item button, .document-item button {
-            background: #ff204e;
+            background: #FF4D4F;
             padding: 5px 10px;
+        }
+        .course-item button:hover, .video-item button:hover, .question-item button:hover, .document-item button:hover {
+            background: #D9363E;
         }
         .option-container {
             margin-top: 10px;
@@ -102,15 +110,19 @@
         }
         .modal-content h3 {
             margin-bottom: 20px;
+            color: var(--text-color-second);
         }
         .close-btn {
-            background: #ff204e;
+            background: #FF4D4F;
             color: var(--color-white);
             padding: 5px 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             float: left;
+        }
+        .close-btn:hover {
+            background: #D9363E;
         }
     </style>
 </head>
@@ -134,6 +146,7 @@
         <input type="text" id="courseName" placeholder="اسم المقرر">
         <input type="text" id="courseId" placeholder="معرف المقرر (مثل course9)">
         <input type="text" id="courseUrl" placeholder="رابط صفحة المقرر (مثل course9.html)">
+        <input type="text" id="courseStudentCode" placeholder="كود الطالب">
         <button onclick="addCourse()">إضافة مقرر جديد</button>
         <div class="course-list" id="courseList"></div>
 
@@ -144,6 +157,7 @@
         <input type="text" id="videoTitle" placeholder="عنوان الفيديو">
         <input type="text" id="videoUrl" placeholder="رابط الفيديو (يوتيوب، Google Drive، إلخ)">
         <input type="text" id="videoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
+        <input type="text" id="videoStudentCode" placeholder="كود الطالب">
         <button onclick="addVideo()">إضافة فيديو</button>
         <div class="video-list" id="videoList"></div>
 
@@ -151,6 +165,7 @@
         <select id="questionCourse">
             <option value="">اختر المقرر</option>
         </select>
+        <input type="text" id="questionStudentCode" placeholder="كود الطالب">
         <select id="questionType" onchange="toggleQuestionForm()">
             <option value="multiple">سؤال موضوعي (متعدد الخيارات)</option>
             <option value="open">سؤال غير موضوعي (مفتوح)</option>
@@ -184,6 +199,7 @@
         </select>
         <input type="text" id="documentTitle" placeholder="عنوان المستند">
         <input type="file" id="documentFile" accept="application/pdf" required>
+        <input type="text" id="documentStudentCode" placeholder="كود الطالب">
         <button onclick="addDocument()">إضافة مستند</button>
         <div class="document-list" id="documentList"></div>
 
@@ -197,6 +213,7 @@
             <input type="text" id="editCourseName" placeholder="اسم المقرر">
             <input type="text" id="editCourseId" placeholder="معرف المقرر">
             <input type="text" id="editCourseUrl" placeholder="رابط الصفحة">
+            <input type="text" id="editCourseStudentCode" placeholder="كود الطالب">
             <button onclick="saveCourseEdit()">حفظ التعديلات</button>
             <button class="close-btn" onclick="closeModal()">إغلاق</button>
         </div>
@@ -212,6 +229,7 @@
             <input type="text" id="editVideoTitle" placeholder="عنوان الفيديو">
             <input type="text" id="editVideoUrl" placeholder="رابط الفيديو">
             <input type="text" id="editVideoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
+            <input type="text" id="editVideoStudentCode" placeholder="كود الطالب">
             <button onclick="saveVideoEdit()">حفظ التعديلات</button>
             <button class="close-btn" onclick="closeModal()">إغلاق</button>
         </div>
@@ -225,6 +243,7 @@
                 <option value="multiple">سؤال موضوعي</option>
                 <option value="open">سؤال غير موضوعي</option>
             </select>
+            <input type="text" id="editQuestionStudentCode" placeholder="كود الطالب">
             <div id="editMultipleChoiceForm">
                 <textarea id="editQuestionText" placeholder="نص السؤال"></textarea>
                 <div class="option-container">
@@ -254,16 +273,7 @@
         const ADMIN_USERNAME = "mahdi2hassan";
         const ADMIN_PASSWORD = "01007586279";
 
-        let courses = JSON.parse(localStorage.getItem('courses')) || [
-            { id: "course1", name: "مقرر الصف الأول الإعدادي", url: "grade1-prep.html" },
-            { id: "course2", name: "مقرر الصف الثاني الإعدادي", url: "grade2-prep.html" },
-            { id: "course3", name: "مقرر الصف الثالث الإعدادي", url: "grade3-prep.html" },
-            { id: "course4", name: "مقرر الصف الأول الثانوي", url: "grade1-sec.html" },
-            { id: "course5", name: "مقرر الصف الثاني الثانوي علمي", url: "grade2-sec-sci.html" },
-            { id: "course6", name: "مقرر الصف الثاني الثانوي أدبي", url: "grade2-sec-lit.html" },
-            { id: "course7", name: "مقرر الصف الثالث الثانوي علمي", url: "grade3-sec-sci.html" },
-            { id: "course8", name: "مقرر الصف الثالث الثانوي أدبي إحصاء", url: "grade3-sec-lit.html" }
-        ];
+        let courses = JSON.parse(localStorage.getItem('courses')) || [];
         let videos = JSON.parse(localStorage.getItem('videos')) || [];
         let questions = JSON.parse(localStorage.getItem('questions')) || [];
         let documents = JSON.parse(localStorage.getItem('documents')) || [];
@@ -325,14 +335,16 @@
             const courseName = document.getElementById("courseName").value;
             const courseId = document.getElementById("courseId").value;
             const courseUrl = document.getElementById("courseUrl").value;
-            if (courseName && courseId && courseUrl) {
-                courses.push({ id: courseId, name: courseName, url: courseUrl });
+            const studentCode = document.getElementById("courseStudentCode").value;
+            if (courseName && courseId && courseUrl && studentCode) {
+                courses.push({ id: courseId, name: courseName, url: courseUrl, studentCode });
                 localStorage.setItem('courses', JSON.stringify(courses));
                 renderCourses();
                 populateCourseSelects();
                 document.getElementById("courseName").value = "";
                 document.getElementById("courseId").value = "";
                 document.getElementById("courseUrl").value = "";
+                document.getElementById("courseStudentCode").value = "";
             }
         }
 
@@ -342,6 +354,7 @@
             document.getElementById("editCourseName").value = course.name;
             document.getElementById("editCourseId").value = course.id;
             document.getElementById("editCourseUrl").value = course.url;
+            document.getElementById("editCourseStudentCode").value = course.studentCode || "";
             document.getElementById("editCourseModal").style.display = "flex";
         }
 
@@ -349,8 +362,9 @@
             const courseName = document.getElementById("editCourseName").value;
             const courseId = document.getElementById("editCourseId").value;
             const courseUrl = document.getElementById("editCourseUrl").value;
-            if (courseName && courseId && courseUrl) {
-                courses[editCourseIndex] = { id: courseId, name: courseName, url: courseUrl };
+            const studentCode = document.getElementById("editCourseStudentCode").value;
+            if (courseName && courseId && courseUrl && studentCode) {
+                courses[editCourseIndex] = { id: courseId, name: courseName, url: courseUrl, studentCode };
                 localStorage.setItem('courses', JSON.stringify(courses));
                 renderCourses();
                 populateCourseSelects();
@@ -370,14 +384,16 @@
             const videoUrl = document.getElementById("videoUrl").value;
             const videoThumbnail = document.getElementById("videoThumbnail").value;
             const courseId = document.getElementById("videoCourse").value;
-            if (videoTitle && videoUrl && courseId) {
-                videos.push({ courseId, title: videoTitle, url: videoUrl, thumbnail: videoThumbnail });
+            const studentCode = document.getElementById("videoStudentCode").value;
+            if (videoTitle && videoUrl && courseId && studentCode) {
+                videos.push({ courseId, title: videoTitle, url: videoUrl, thumbnail: videoThumbnail, studentCode });
                 localStorage.setItem('videos', JSON.stringify(videos));
                 renderVideos();
                 document.getElementById("videoTitle").value = "";
                 document.getElementById("videoUrl").value = "";
                 document.getElementById("videoThumbnail").value = "";
                 document.getElementById("videoCourse").value = "";
+                document.getElementById("videoStudentCode").value = "";
             }
         }
 
@@ -388,6 +404,7 @@
             document.getElementById("editVideoTitle").value = video.title;
             document.getElementById("editVideoUrl").value = video.url;
             document.getElementById("editVideoThumbnail").value = video.thumbnail || "";
+            document.getElementById("editVideoStudentCode").value = video.studentCode || "";
             document.getElementById("editVideoModal").style.display = "flex";
         }
 
@@ -396,8 +413,9 @@
             const videoTitle = document.getElementById("editVideoTitle").value;
             const videoUrl = document.getElementById("editVideoUrl").value;
             const videoThumbnail = document.getElementById("editVideoThumbnail").value;
-            if (videoTitle && videoUrl && courseId) {
-                videos[editVideoIndex] = { courseId, title: videoTitle, url: videoUrl, thumbnail: videoThumbnail };
+            const studentCode = document.getElementById("editVideoStudentCode").value;
+            if (videoTitle && videoUrl && courseId && studentCode) {
+                videos[editVideoIndex] = { courseId, title: videoTitle, url: videoUrl, thumbnail: videoThumbnail, studentCode };
                 localStorage.setItem('videos', JSON.stringify(videos));
                 renderVideos();
                 closeModal();
@@ -425,8 +443,9 @@
         function addQuestion() {
             const courseId = document.getElementById("questionCourse").value;
             const questionType = document.getElementById("questionType").value;
+            const studentCode = document.getElementById("questionStudentCode").value;
 
-            if (!courseId) return;
+            if (!courseId || !studentCode) return;
 
             if (questionType === "multiple") {
                 const questionText = document.getElementById("questionText").value;
@@ -446,7 +465,8 @@
                         type: "multiple",
                         text: questionText,
                         options,
-                        correctAnswer: parseInt(correctAnswer)
+                        correctAnswer: parseInt(correctAnswer),
+                        studentCode
                     });
                     localStorage.setItem('questions', JSON.stringify(questions));
                     renderQuestions();
@@ -457,6 +477,7 @@
                     document.getElementById("option4").value = "";
                     document.getElementById("correctAnswer").value = "";
                     document.getElementById("questionCourse").value = "";
+                    document.getElementById("questionStudentCode").value = "";
                 }
             } else {
                 const questionText = document.getElementById("openQuestionText").value;
@@ -469,13 +490,15 @@
                         courseId,
                         type: "open",
                         text: questionText,
-                        modelAnswer
+                        modelAnswer,
+                        studentCode
                     });
                     localStorage.setItem('questions', JSON.stringify(questions));
                     renderQuestions();
                     document.getElementById("openQuestionText").value = "";
                     document.getElementById("modelAnswer").value = "";
                     document.getElementById("questionCourse").value = "";
+                    document.getElementById("questionStudentCode").value = "";
                 }
             }
         }
@@ -484,6 +507,7 @@
             editQuestionIndex = index;
             const question = questions[index];
             document.getElementById("editQuestionType").value = question.type;
+            document.getElementById("editQuestionStudentCode").value = question.studentCode || "";
             if (question.type === "multiple") {
                 document.getElementById("editQuestionText").value = question.text;
                 document.getElementById("editOption1").value = question.options[0] || "";
@@ -501,6 +525,9 @@
 
         function saveQuestionEdit() {
             const questionType = document.getElementById("editQuestionType").value;
+            const studentCode = document.getElementById("editQuestionStudentCode").value;
+
+            if (!studentCode) return;
 
             if (questionType === "multiple") {
                 const questionText = document.getElementById("editQuestionText").value;
@@ -519,7 +546,8 @@
                         type: "multiple",
                         text: questionText,
                         options,
-                        correctAnswer: parseInt(correctAnswer)
+                        correctAnswer: parseInt(correctAnswer),
+                        studentCode
                     };
                     localStorage.setItem('questions', JSON.stringify(questions));
                     renderQuestions();
@@ -535,7 +563,8 @@
                         courseId: questions[editQuestionIndex].courseId,
                         type: "open",
                         text: questionText,
-                        modelAnswer
+                        modelAnswer,
+                        studentCode
                     };
                     localStorage.setItem('questions', JSON.stringify(questions));
                     renderQuestions();
@@ -554,8 +583,9 @@
             const documentTitle = document.getElementById("documentTitle").value;
             const documentFile = document.getElementById("documentFile").files[0];
             const courseId = document.getElementById("documentCourse").value;
+            const studentCode = document.getElementById("documentStudentCode").value;
 
-            if (!documentTitle || !documentFile || !courseId) return;
+            if (!documentTitle || !documentFile || !courseId || !studentCode) return;
             if (documentFile.type !== "application/pdf") {
                 alert("يرجى رفع ملف PDF فقط!");
                 return;
@@ -568,13 +598,15 @@
                     id: `doc${Date.now()}`,
                     courseId,
                     title: documentTitle,
-                    data: documentData
+                    data: documentData,
+                    studentCode
                 });
                 localStorage.setItem('documents', JSON.stringify(documents));
                 renderDocuments();
                 document.getElementById("documentTitle").value = "";
                 document.getElementById("documentFile").value = "";
                 document.getElementById("documentCourse").value = "";
+                document.getElementById("documentStudentCode").value = "";
             };
             reader.readAsDataURL(documentFile);
         }
@@ -587,7 +619,7 @@
                 const div = document.createElement("div");
                 div.className = "document-item";
                 div.innerHTML = `
-                    ${doc.title} (${course ? course.name : 'غير مرتبط'})
+                    ${doc.title} (${course ? course.name : 'غير مرتبط'}) - للطالب: ${doc.studentCode}
                     <button onclick="deleteDocument(${index})">حذف</button>
                 `;
                 documentList.appendChild(div);
@@ -607,7 +639,7 @@
                 const div = document.createElement("div");
                 div.className = "course-item";
                 div.innerHTML = `
-                    ${course.name}
+                    ${course.name} - للطالب: ${course.studentCode}
                     <div>
                         <button onclick="editCourse(${index})">تعديل</button>
                         <button onclick="deleteCourse(${index})">حذف</button>
@@ -625,7 +657,7 @@
                 const div = document.createElement("div");
                 div.className = "video-item";
                 div.innerHTML = `
-                    ${video.title} (${course ? course.name : 'غير مرتبط'})
+                    ${video.title} (${course ? course.name : 'غير مرتبط'}) - للطالب: ${video.studentCode}
                     <div>
                         <button onclick="editVideo(${index})">تعديل</button>
                         <button onclick="deleteVideo(${index})">حذف</button>
@@ -643,7 +675,7 @@
                 const div = document.createElement("div");
                 div.className = "question-item";
                 div.innerHTML = `
-                    سؤال ${index + 1}: ${question.text} (${question.type === "multiple" ? "موضوعي" : "مفتوح"}) (${course ? course.name : 'غير مرتبط'})
+                    سؤال ${index + 1}: ${question.text} (${question.type === "multiple" ? "موضوعي" : "مفتوح"}) (${course ? course.name : 'غير مرتبط'}) - للطالب: ${question.studentCode}
                     <div>
                         <button onclick="editQuestion(${index})">تعديل</button>
                         <button onclick="deleteQuestion(${index})">حذف</button>
@@ -663,16 +695,6 @@
             document.getElementById("loginForm").style.display = "block";
             document.getElementById("adminPanel").style.display = "none";
         }
-
-        // تبديل الوضع الغامق
-        document.getElementById('dar')?.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.removeItem('theme');
-            }
-        });
 
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');

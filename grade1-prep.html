@@ -3,203 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مقرر الصف الأول الإعدادي</title>
+    <title>الصف الأول الإعدادي</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            padding: 50px;
-            background: var(--body-color);
-            color: var(--text-color-second);
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: var(--color-white);
+        .content-container {
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px var(--first-shadow-color);
-        }
-        h1, h3 {
-            text-align: center;
-            margin-bottom: 20px;
+            max-width: 1200px;
+            margin: auto;
         }
         .video-list, .question-list, .document-list {
             margin-top: 20px;
         }
-        .video-item, .document-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: var(--second-color);
-            color: var(--color-white);
-            border-radius: 5px;
-            margin: 5px 0;
-            cursor: pointer;
-        }
-        .video-item img {
-            width: 120px;
-            height: 68px;
-            margin-left: 10px;
-            border-radius: 5px;
-        }
-        .video-item span, .document-item span {
-            color: var(--color-white);
-        }
-        .question-item {
+        .video-item, .question-item, .document-item {
+            background: var(--color-white);
             padding: 15px;
-            background: var(--second-color);
-            color: var(--color-white);
-            border-radius: 5px;
-            margin: 5px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px var(--first-shadow-color);
+            margin-bottom: 10px;
         }
-        .question-item label {
-            display: block;
-            margin: 10px 0;
-            cursor: pointer;
-        }
-        .question-item textarea {
+        .video-item iframe {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
+            max-width: 560px;
+            height: 315px;
+        }
+        .question-item form {
+            margin-top: 10px;
+        }
+        .question-item input[type="radio"] {
+            margin-left: 10px;
         }
         .question-item button {
+            padding: 10px 20px;
             background: var(--first-color);
-            padding: 8px 15px;
-        }
-        .result {
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             margin-top: 10px;
-            font-weight: bold;
         }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
+        .question-item button:hover {
+            background: var(--first-color-hover);
+        }
+        .document-item a {
             color: var(--first-color);
             text-decoration: none;
         }
-        .back-link:hover {
+        .document-item a:hover {
             text-decoration: underline;
-        }
-        .video-player, .document-viewer {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .video-player-content, .document-viewer-content {
-            position: relative;
-            width: 80%;
-            max-width: 800px;
-            background: var(--color-white);
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .video-player-content iframe, .video-player-content video {
-            width: 100%;
-            height: 400px;
-            border: none;
-            border-radius: 5px;
-        }
-        .document-viewer-content iframe {
-            width: 100%;
-            height: 500px;
-            border: none;
-            border-radius: 5px;
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #ff204e;
-            color: var(--color-white);
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>مقرر الصف الأول الإعدادي</h1>
-        <h3>الفيديوهات</h3>
-        <div class="video-list" id="videoList"></div>
-        <h3>الأسئلة</h3>
-        <div class="question-list" id="questionList"></div>
-        <h3>المستندات</h3>
-        <div class="document-list" id="documentList"></div>
-        <a href="index.html" class="back-link">العودة إلى المقررات</a>
-    </div>
-
-    <div class="video-player" id="videoPlayer">
-        <div class="video-player-content">
-            <button class="close-btn" onclick="closeVideo()">إغلاق</button>
-            <div id="videoContent"></div>
+    <nav>
+        <div class="nav-logo">
+            <a href="index.html" class="nav-name">Plus 360</a>
+            <span>.</span>
         </div>
-    </div>
-
-    <div class="document-viewer" id="documentViewer">
-        <div class="document-viewer-content">
-            <button class="close-btn" onclick="closeDocument()">إغلاق</button>
-            <div id="documentContent"></div>
+        <div class="nav-menu" id="navMenu">
+            <ul class="nav_menu_list">
+                <li class="nav_list"><a href="index.html" class="nav-link">الرئيسية</a></li>
+                <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
+            </ul>
         </div>
+        <div class="nav-menu-btn"><i class="fa-solid fa-bars"></i></div>
+    </nav>
+
+    <div class="wrapper">
+        <section class="section content-container">
+            <div class="top-header">
+                <h1>مقرر الصف الأول الإعدادي</h1>
+            </div>
+            <div class="video-list" id="videoList"></div>
+            <div class="question-list" id="questionList"></div>
+            <div class="document-list" id="documentList"></div>
+        </section>
     </div>
 
     <script>
-        // تحميل البيانات من localStorage
+        const currentStudentCode = localStorage.getItem('currentStudentCode');
+        if (!currentStudentCode) {
+            window.location.href = 'login.html';
+        }
+
         const videos = JSON.parse(localStorage.getItem('videos')) || [];
         const questions = JSON.parse(localStorage.getItem('questions')) || [];
         const documents = JSON.parse(localStorage.getItem('documents')) || [];
-        const courseId = "course1"; // غيّره لكل صفحة (course2, course3, إلخ)
-        let studentCode = localStorage.getItem('currentStudentCode') || prompt("أدخل كود الطالب:");
 
-        // التحقق من كود الطالب
-        const studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
-        if (!studentCodes.some(sc => sc.code === parseInt(studentCode) && sc.active && !sc.pending)) {
-            alert("كود الطالب غير صحيح أو الحساب غير مفعل!");
-            window.location.href = "password.html?course=" + courseId;
+        // تصفية المحتوى
+        const studentVideos = videos.filter(video => video.studentCode === currentStudentCode && video.courseId === 'course1');
+        const studentQuestions = questions.filter(question => question.studentCode === currentStudentCode && question.courseId === 'course1');
+        const studentDocuments = documents.filter(doc => doc.studentCode === currentStudentCode && doc.courseId === 'course1');
+
+        // عرض الفيديوهات
+        const videoList = document.getElementById('videoList');
+        if (studentVideos.length === 0) {
+            videoList.innerHTML = '<p>لا توجد فيديوهات متاحة.</p>';
         } else {
-            localStorage.setItem('currentStudentCode', studentCode);
-        }
-
-        function getYouTubeThumbnail(url) {
-            const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1];
-            return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/120x68?text=فيديو';
-        }
-
-        function getYouTubeEmbedUrl(url) {
-            const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1];
-            return videoId ? `https://www.youtube.com/embed/${videoId}?rel=0` : url;
-        }
-
-        function getGoogleDriveEmbedUrl(url) {
-            const fileId = url.match(/\/d\/(.+?)\//)?.[1];
-            return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : url;
-        }
-
-        function renderVideos() {
-            const videoList = document.getElementById("videoList");
-            videoList.innerHTML = "";
-            videos.filter(video => video.courseId === courseId).forEach((video, index) => {
-                const thumbnail = video.thumbnail || getYouTubeThumbnail(video.url);
-                const div = document.createElement("div");
-                div.className = "video-item";
+            studentVideos.forEach(video => {
+                const div = document.createElement('div');
+                div.className = 'video-item';
                 div.innerHTML = `
-                    <img src="${thumbnail}" alt="${video.title}">
-                    <span>${video.title || `فيديو ${index + 1}`}</span>
+                    <h3>${video.title}</h3>
+                    <iframe src="${video.url}" frameborder="0" allowfullscreen></iframe>
                 `;
-                div.onclick = () => playVideo(video.url, video.title);
                 videoList.appendChild(div);
             });
         }
 
-        function playVideo(url, title) {
-            const videoPlayer = document.getElementById("videoPlayer");
-            const videoContent = document.getElement
+        // عرض الأسئلة
+        const questionList = document.getElementById('questionList');
+        if (studentQuestions.length === 0) {
+            questionList.innerHTML = '<p>لا توجد أسئلة متاحة.</p>';
+        } else {
+            studentQuestions.forEach((question, index) => {
+                const div = document.createElement('div');
+                div.className = 'question-item';
+                let optionsHtml = '';
+                if (question.type === 'multiple') {
+                    optionsHtml = question.options.map((option, i) => `
+                        <label><input type="radio" name="q${index}" value="${i}"> ${option}</label><br>
+                    `).join('');
+                } else {
+                    optionsHtml = '<textarea placeholder="اكتب إجابتك هنا"></textarea>';
+                }
+                div.innerHTML = `
+                    <p>${question.text}</p>
+                    <form>
+                        ${optionsHtml}
+                        <button type="submit" onclick="submitAnswer(${index}, '${question.id}')">إرسال الإجابة</button>
+                    </form>
+                `;
+                questionList.appendChild(div);
+            });
+        }
+
+        // عرض المستندات
+        const documentList = document.getElementById('documentList');
+        if (studentDocuments.length === 0) {
+            documentList.innerHTML = '<p>لا توجد مستندات متاحة.</p>';
+        } else {
+            studentDocuments.forEach(doc => {
+                const div = document.createElement('div');
+                div.className = 'document-item';
+                div.innerHTML = `<a href="${doc.data}" download="${doc.title}.pdf">${doc.title}</a>`;
+                documentList.appendChild(div);
+            });
+        }
+
+        function submitAnswer(questionIndex, questionId) {
+            // تنفيذ منطق إرسال الإجابة (يمكن توسيعه لاحقًا)
+            alert('تم إرسال الإجابة!');
+        }
+
+        function logout() {
+            localStorage.removeItem('currentStudentCode');
+            window.location.href = 'login.html';
+        }
+
+        document.querySelector('.nav-menu-btn').addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('responsive');
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html>
