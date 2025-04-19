@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plus 360 - الرئيسية</title>
+    <title>Plus In Math - الرئيسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -17,6 +17,7 @@
             --color-white: #fff;
             --text-color-second: #333;
             --first-shadow-color: rgba(0, 0, 0, 0.1);
+            --gradient-bg: linear-gradient(135deg, #005eff, #4a90e2);
         }
         body {
             font-family: 'Tajawal', sans-serif;
@@ -34,18 +35,24 @@
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
         header {
-            background-image: url('/n.png');
-            background-size: cover;
-            background-position: center;
+            background: var(--gradient-bg);
             height: 200px;
             border-radius: 10px 10px 0 0;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .nav-logo img {
-            height: 50px;
-            width: auto;
+        .nav-logo .logo-text {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInPulse 2s ease-in-out;
+        }
+        @keyframes fadeInPulse {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
         }
         nav {
             display: flex;
@@ -54,6 +61,30 @@
             padding: 10px 20px;
             background: var(--color-white);
             box-shadow: 0 2px 4px var(--first-shadow-color);
+        }
+        .nav-logo a .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--first-color);
+            position: relative;
+            transition: transform 0.3s, text-shadow 0.3s;
+        }
+        .nav-logo a .logo-text:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--first-color);
+        }
+        .nav-logo a .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--first-color);
+            transition: width 0.3s;
+        }
+        .nav-logo a .logo-text:hover::after {
+            width: 100%;
         }
         .nav-menu {
             display: flex;
@@ -185,6 +216,15 @@
             color: var(--color-white);
             border-radius: 0 0 10px 10px;
         }
+        .top-footer .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: transform 0.3s, text-shadow 0.3s;
+        }
+        .top-footer .logo-text:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--color-white);
+        }
         .footer-menu {
             list-style: none;
             display: flex;
@@ -228,8 +268,8 @@
             header {
                 height: 150px;
             }
-            .nav-logo img {
-                height: 40px;
+            .nav-logo .logo-text {
+                font-size: 2rem;
             }
             .nav-menu {
                 display: none;
@@ -264,6 +304,9 @@
             .course-container {
                 grid-template-columns: 1fr;
             }
+            .top-footer .logo-text {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -271,12 +314,12 @@
     <div class="container">
         <header>
             <div class="nav-logo">
-                <img src="/n.png" alt="Plus 360 Logo">
+                <span class="logo-text">Plus In Math</span>
             </div>
         </header>
         <nav>
             <div class="nav-logo">
-                <a href="index.html"><img src="/n.png" alt="Plus 360 Logo"></a>
+                <a href="index.html"><span class="logo-text">Plus In Math</span></a>
             </div>
             <div class="nav-menu" id="navMenu">
                 <ul class="nav_menu_list">
@@ -301,7 +344,7 @@
             </section>
         </main>
         <footer>
-            <div class="top-footer"><img src="/n.png" alt="Plus 360 Logo" style="height: 40px;"></div>
+            <div class="top-footer"><span class="logo-text">Plus In Math</span></div>
             <ul class="footer-menu">
                 <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
                 <li class="footer_menu_list"><a href="login.html">تسجيل الدخول</a></li>
