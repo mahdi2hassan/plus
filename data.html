@@ -125,6 +125,22 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        .export-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .export-btn:hover {
+            background: var(--first-color-hover);
+            transform: translateY(-2px);
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -287,6 +303,10 @@
             .accounts-section h1 {
                 font-size: 1.5rem;
             }
+            .export-btn {
+                width: 100%;
+                text-align: center;
+            }
             table {
                 font-size: 0.9rem;
             }
@@ -335,6 +355,7 @@
         </nav>
         <main class="accounts-section">
             <h1>إدارة الحسابات</h1>
+            <button class="export-btn" onclick="exportToExcel()">تصدير الدرجات إلى Excel</button>
             <table id="accountsTable">
                 <thead>
                     <tr>
@@ -372,6 +393,7 @@
         </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         // التحقق من تسجيل دخول الأدمن
         const isAdminLoggedIn = localStorage.getItem('adminLoggedIn');
@@ -554,6 +576,73 @@
                     });
                 }
             }
+        }
+
+        // تصدير الدرجات إلى Excel
+        function exportToExcel() {
+            // إعداد البيانات
+            const data = accounts.map(account => ({
+                'كود الطالب': account.code,
+                'الاسم': account.name,
+                'الصف': account.grade,
+                'رقم الهاتف': account.phone,
+                'المحافظة': account.governorate,
+                'المنطقة': account.area,
+                'الحالة': account.pending ? 'معلق' : (account.active ? 'مفعل' : 'غير مفعل'),
+                'الدرجة': account.gradeScore || 'غير متوفر' // يمكن استبدالها بحساب درجات من exams
+            }));
+
+            // إنشاء ورقة عمل
+            const ws = XLSX.utils.json_to_sheet(data);
+
+            // تنسيق رأس الجدول
+            const header = ['كود الطالب', 'الاسم', 'الصف', 'رقم الهاتف', 'المحافظة', 'المنطقة', 'الحالة', 'الدرجة'];
+            ws['!cols'] = header.map(() => ({ wch: 20 })); // تحديد عرض الأعمدة
+            for (let i = 0; i < header.length; i++) {
+                const cell = XLSX.utils.encode_cell({ r: 0, c: i });
+                ws[cell].s = {
+                    fill: { fgColor: { rgb: '005eff' } },
+                    font: { color: { rgb: 'FFFFFF' }, bold: true },
+                    alignment: { horizontal: 'center', vertical: 'center' },
+                    border: {
+                        top: { style: 'thin', color: { rgb: '000000' } },
+                        bottom: { style: 'thin', color: { rgb: '000000' } },
+                        left: { style: 'thin', color: { rgb: '000000' } },
+                        right: { style: 'thin', color: { rgb: '000000' } }
+                    }
+                };
+            }
+
+            // تنسيق الخلايا
+            for (let r = 1; r <= accounts.length; r++) {
+                for (let c = 0; c < header.length; c++) {
+                    const cell = XLSX.utils.encode_cell({ r, c });
+                    if (ws[cell]) {
+                        ws[cell].s = {
+                            alignment: { horizontal: 'center', vertical: 'center' },
+                            border: {
+                                top: { style: 'thin', color: { rgb: '000000' } },
+                                bottom: { style: 'thin', color: { rgb: '000000' } },
+                                left: { style: 'thin', color: { rgb: '000000' } },
+                                right: { style: 'thin', color: { rgb: '000000' } }
+                            }
+                        };
+                    }
+                }
+            }
+
+            // إنشاء ملف Excel
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Students Grades');
+            XLSX.writeFile(wb, 'Students_Grades.xlsx');
+
+            // تنبيه التأكيد
+            Swal.fire({
+                title: 'تم',
+                text: 'تم تصدير درجات الطلاب إلى ملف Excel!',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
+            });
         }
 
         // تسجيل الخروج

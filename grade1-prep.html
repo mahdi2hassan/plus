@@ -163,15 +163,16 @@
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
         }
         .course-card a:hover {
             background: var(--first-color-hover);
+            transform: translateY(-2px);
         }
-        .video-list, .question-list, .document-list {
+        .video-list, .question-list, .document-list, .exam-list {
             margin-top: 30px;
         }
-        .video-item, .question-item, .document-item {
+        .video-item, .question-item, .document-item, .exam-item {
             background: var(--color-white);
             padding: 20px;
             border-radius: 10px;
@@ -179,20 +180,37 @@
             margin-bottom: 15px;
             transition: transform 0.3s, box-shadow 0.3s;
         }
-        .video-item:hover, .question-item:hover, .document-item:hover {
+        .video-item:hover, .question-item:hover, .document-item:hover, .exam-item:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 12px var(--first-shadow-color);
         }
-        .video-item h3, .question-item p, .document-item a {
+        .video-item h3, .question-item p, .document-item a, .exam-item h3 {
             font-size: 1.2rem;
             font-weight: 500;
             margin-bottom: 10px;
         }
-        .video-item iframe {
+        .video-item .thumbnail {
             width: 100%;
-            max-width: 560px;
-            height: 315px;
+            max-width: 300px;
+            height: 150px;
+            object-fit: cover;
             border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .video-item a {
+            display: inline-block;
+            padding: 8px 15px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .video-item a:hover {
+            background: var(--first-color-hover);
+            transform: translateY(-2px);
         }
         .question-item form {
             margin-top: 10px;
@@ -236,6 +254,21 @@
             color: var(--first-color-hover);
             text-decoration: underline;
         }
+        .exam-item a {
+            display: inline-block;
+            padding: 8px 15px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .exam-item a:hover {
+            background: var(--first-color-hover);
+            transform: translateY(-2px);
+        }
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
@@ -272,8 +305,9 @@
             .course-grid {
                 grid-template-columns: 1fr;
             }
-            .video-item iframe {
-                height: 200px;
+            .video-item .thumbnail {
+                max-width: 100%;
+                height: 120px;
             }
         }
     </style>
@@ -306,6 +340,7 @@
                 <div class="video-list" id="videoList"></div>
                 <div class="question-list" id="questionList"></div>
                 <div class="document-list" id="documentList"></div>
+                <div class="exam-list" id="examList"></div>
             </section>
         </div>
     </div>
@@ -329,11 +364,15 @@
         const videos = JSON.parse(localStorage.getItem('videos')) || [];
         const questions = JSON.parse(localStorage.getItem('questions')) || [];
         const documents = JSON.parse(localStorage.getItem('documents')) || [];
+        const exams = JSON.parse(localStorage.getItem('exams')) || [];
 
         // عرض المقررات
         function renderCourses() {
             const courseGrid = document.getElementById('courseGrid');
-            const gradeCourses = courses.filter(course => course.grade === 'الصف الأول الإعدادي');
+            const gradeCourses = courses.filter(course => 
+                course.grade === 'الصف الأول الإعدادي' && 
+                checkStudentAccess(course, currentStudentCode)
+            );
             courseGrid.innerHTML = '';
 
             if (gradeCourses.length === 0) {
@@ -353,24 +392,40 @@
             });
         }
 
-        // تحميل محتوى المقرر (فيديوهات، أسئلة، مستندات)
-        function loadCourseContent(courseId) {
-            const studentVideos = videos.filter(video => video.studentCode === currentStudentCode && video.courseId === courseId);
-            const studentQuestions = questions.filter(question => question.studentCode === currentStudentCode && question.courseId === courseId);
-            const studentDocuments = documents.filter(doc => doc.studentCode === currentStudentCode && doc.courseId === courseId);
+        // التحقق من صلاحية الوصول للطالب
+        function checkStudentAccess(item, studentCode) {
+            if (item.studentOption === 'all') {
+                return true;
+            } else if (item.studentOption === 'count') {
+                // هنا يمكن إضافة منطق إذا كان هناك عد محدد للطلاب
+                return true; // مؤقتًا، يسمح للجميع
+            } else if (item.studentOption === 'except') {
+                return !item.exceptStudents.includes(studentCode);
+            }
+            return false;
+        }
 
+        // تحميل محتوى المقرر (فيديوهات، أسئلة، مستندات، اختبارات)
+        function loadCourseContent(courseId) {
             // عرض الفيديوهات
             const videoList = document.getElementById('videoList');
             videoList.innerHTML = '';
+            const studentVideos = videos.filter(video => 
+                video.courseId === courseId && 
+                checkStudentAccess(video, currentStudentCode)
+            );
+
             if (studentVideos.length === 0) {
                 videoList.innerHTML = '<p style="text-align: center; font-size: 1.2rem;">لا توجد فيديوهات متاحة.</p>';
             } else {
                 studentVideos.forEach(video => {
                     const div = document.createElement('div');
                     div.className = 'video-item';
+                    const thumbnail = video.thumbnail || 'https://via.placeholder.com/300x150?text=فيديو';
                     div.innerHTML = `
                         <h3>${video.title}</h3>
-                        <iframe src="${video.url}" frameborder="0" allowfullscreen></iframe>
+                        <img src="${thumbnail}" alt="صورة مصغرة لفيديو ${video.title}" class="thumbnail">
+                        <a href="${video.url}" target="_blank" aria-label="تشغيل فيديو ${video.title}">تشغيل الفيديو</a>
                     `;
                     videoList.appendChild(div);
                 });
@@ -379,6 +434,11 @@
             // عرض الأسئلة
             const questionList = document.getElementById('questionList');
             questionList.innerHTML = '';
+            const studentQuestions = questions.filter(question => 
+                question.courseId === courseId && 
+                checkStudentAccess(question, currentStudentCode)
+            );
+
             if (studentQuestions.length === 0) {
                 questionList.innerHTML = '<p style="text-align: center; font-size: 1.2rem;">لا توجد أسئلة متاحة.</p>';
             } else {
@@ -407,16 +467,53 @@
             // عرض المستندات
             const documentList = document.getElementById('documentList');
             documentList.innerHTML = '';
+            const studentDocuments = documents.filter(doc => 
+                doc.courseId === courseId && 
+                checkStudentAccess(doc, currentStudentCode)
+            );
+
             if (studentDocuments.length === 0) {
                 documentList.innerHTML = '<p style="text-align: center; font-size: 1.2rem;">لا توجد مستندات متاحة.</p>';
             } else {
                 studentDocuments.forEach(doc => {
                     const div = document.createElement('div');
                     div.className = 'document-item';
-                    div.innerHTML = `<a href="${doc.data}" download="${doc.title}.pdf">${doc.title}</a>`;
+                    div.innerHTML = `<a href="${doc.data}" download="${doc.title}.pdf" aria-label="تحميل مستند ${doc.title}">${doc.title}</a>`;
                     documentList.appendChild(div);
                 });
             }
+
+            // عرض الاختبارات
+            const examList = document.getElementById('examList');
+            examList.innerHTML = '';
+            const studentExams = exams.filter(exam => 
+                exam.courseId === courseId && 
+                exam.grade === 'الصف الأول الإعدادي' && 
+                checkStudentAccess(exam, currentStudentCode)
+            );
+
+            if (studentExams.length === 0) {
+                examList.innerHTML = '<p style="text-align: center; font-size: 1.2rem;">لا توجد اختبارات متاحة.</p>';
+            } else {
+                studentExams.forEach(exam => {
+                    const div = document.createElement('div');
+                    div.className = 'exam-item';
+                    div.innerHTML = `
+                        <h3>${exam.title}</h3>
+                        <p>الصف: ${exam.grade}</p>
+                        <a href="exam.html?examId=${exam.id}" aria-label="بدء اختبار ${exam.title}">بدء الاختبار</a>
+                    `;
+                    examList.appendChild(div);
+                });
+            }
+
+            Swal.fire({
+                title: 'تم',
+                text: 'تم تحميل محتوى المقرر بنجاح!',
+                icon: 'success',
+                confirmButtonColor: '#005eff',
+                timer: 1500
+            });
         }
 
         // إرسال الإجابة

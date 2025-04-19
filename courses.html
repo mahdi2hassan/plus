@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plus 360 - إدارة المقررات</title>
+    <title>Plus In Math - إدارة المقررات</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
@@ -16,37 +17,42 @@
             --color-white: #fff;
             --text-color-second: #333;
             --first-shadow-color: rgba(0, 0, 0, 0.1);
+            --gradient-bg: linear-gradient(135deg, #005eff, #4a90e2);
         }
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
             background: var(--body-color);
             color: var(--text-color-second);
             margin: 0;
             padding: 0;
+            line-height: 1.6;
         }
         .container {
             max-width: 1200px;
             margin: auto;
-            padding: 20px;
             background: var(--color-white);
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
         header {
-            background-image: url('/images/n.png');
-            background-size: cover;
-            background-position: center;
-            height: 200px;
+            background: var(--gradient-bg);
+            height: 150px;
             border-radius: 10px 10px 0 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--color-white);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
-        .nav-logo p {
-            font-size: 2rem;
-            font-weight: bold;
+        .nav-logo .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInPulse 2s ease-in-out;
+        }
+        @keyframes fadeInPulse {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
         }
         nav {
             display: flex;
@@ -56,11 +62,29 @@
             background: var(--color-white);
             box-shadow: 0 2px 4px var(--first-shadow-color);
         }
-        .nav-logo a {
+        .nav-logo a .logo-text {
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 700;
             color: var(--first-color);
-            text-decoration: none;
+            position: relative;
+            transition: transform 0.3s, text-shadow 0.3s;
+        }
+        .nav-logo a .logo-text:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--first-color);
+        }
+        .nav-logo a .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--first-color);
+            transition: width 0.3s;
+        }
+        .nav-logo a .logo-text:hover::after {
+            width: 100%;
         }
         .nav-menu {
             display: flex;
@@ -76,15 +100,20 @@
         .nav-menu a {
             color: var(--text-color-second);
             text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
             transition: color 0.3s;
         }
-        .nav-menu a:hover {
+        .nav-menu a:hover, .nav-menu a.active-link {
             color: var(--first-color);
         }
         .nav-menu-btn {
             display: none;
             font-size: 1.5rem;
             cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-color-second);
         }
         .form-container, .admin-panel {
             max-width: 900px;
@@ -94,63 +123,80 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--first-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
         input, textarea, select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border: 2px solid var(--text-color-second);
+            border: 1px solid #ddd;
             border-radius: 5px;
-            font-family: 'Cairo', sans-serif;
             background: var(--color-white);
             color: var(--text-color-second);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--first-color);
         }
         select[multiple] {
             height: 100px;
         }
-        button {
+        .btn {
             padding: 10px 20px;
             background: var(--first-color);
             color: var(--color-white);
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 5px;
-            transition: background 0.3s;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
         }
-        button:hover {
+        .btn:hover {
             background: var(--first-color-hover);
+            transform: translateY(-2px);
         }
-        .delete-btn {
-            background: #FF4D4F;
+        .btn-danger {
+            background: #e74c3c;
         }
-        .delete-btn:hover {
-            background: #D9363E;
+        .btn-danger:hover {
+            background: #c0392b;
         }
         .error {
-            color: #FF4D4F;
+            color: #e74c3c;
             display: none;
             margin: 10px 0;
             text-align: center;
+            font-size: 0.9rem;
         }
         .back-link {
-            margin-top: 20px;
             display: inline-block;
+            margin: 20px 0;
             color: var(--first-color);
+            font-size: 1.1rem;
+            font-weight: 500;
             text-decoration: none;
+            transition: color 0.3s, text-decoration 0.3s;
         }
         .back-link:hover {
             color: var(--first-color-hover);
             text-decoration: underline;
         }
-        .admin-panel {
-            display: none;
-        }
         .section {
             margin-top: 20px;
         }
         .section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--first-color);
             margin-bottom: 15px;
-            color: var(--text-color-second);
         }
         .item {
             padding: 10px;
@@ -161,6 +207,11 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px var(--first-shadow-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--first-shadow-color);
         }
         .modal {
             display: none;
@@ -182,59 +233,40 @@
             width: 90%;
         }
         .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--first-color);
             margin-bottom: 20px;
-            color: var(--text-color-second);
         }
         .close-btn {
-            background: #FF4D4F;
+            background: #e74c3c;
             color: var(--color-white);
-            padding: 5px 10px;
+            padding: 8px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             float: left;
+            transition: background 0.3s, transform 0.2s;
         }
         .close-btn:hover {
-            background: #D9363E;
-        }
-        .dark-mode-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--first-color);
-            color: var(--color-white);
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            border: none;
-            box-shadow: 0 2px 4px var(--first-shadow-color);
-            transition: background 0.3s;
-        }
-        .dark-mode-btn:hover {
-            background: var(--first-color-hover);
+            background: #c0392b;
+            transform: translateY(-2px);
         }
         footer {
             text-align: center;
             padding: 20px;
             background: var(--first-color);
             color: var(--color-white);
-            margin-top: 20px;
             border-radius: 0 0 10px 10px;
         }
-        .footer-social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .footer-social-icons .icon a {
-            color: var(--color-white);
+        .top-footer .logo-text {
             font-size: 1.5rem;
-            transition: color 0.3s;
+            font-weight: 700;
+            transition: transform 0.3s, text-shadow 0.3s;
         }
-        .footer-social-icons .icon a:hover {
-            color: var(--second-color);
+        .top-footer .logo-text:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--color-white);
         }
         .footer-menu {
             list-style: none;
@@ -247,23 +279,40 @@
         .footer-menu a {
             color: var(--color-white);
             text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
             transition: color 0.3s;
         }
         .footer-menu a:hover {
             color: var(--second-color);
         }
-        .dark-mode {
-            --body-color: #1a1a1a;
-            --color-white: #2c2c2c;
-            --text-color-second: #e0e0e0;
-            --first-shadow-color: rgba(255, 255, 255, 0.1);
+        .footer-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .footer-social-icons .icon {
+            color: var(--color-white);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        .footer-social-icons .icon:hover {
+            color: var(--second-color);
+        }
+        .bottom-footer p {
+            font-size: 0.9rem;
+            font-weight: 400;
         }
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                margin: 10px;
             }
             header {
-                height: 150px;
+                height: 120px;
+            }
+            .nav-logo .logo-text {
+                font-size: 2rem;
             }
             .nav-menu {
                 display: none;
@@ -280,9 +329,16 @@
             }
             .nav-menu ul {
                 flex-direction: column;
+                gap: 10px;
             }
             .nav-menu-btn {
                 display: block;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .section h3 {
+                font-size: 1.2rem;
             }
             .form-container, .admin-panel {
                 padding: 15px;
@@ -293,30 +349,41 @@
             .modal-content {
                 width: 95%;
             }
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+        @media (max-width: 600px) {
+            .item {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <button id="darkModeBtn" class="dark-mode-btn" title="تبديل الوضع الغامق">🌙</button>
     <div class="container">
         <header>
             <div class="nav-logo">
-                <p>Plus 360</p>
+                <span class="logo-text">Plus In Math</span>
             </div>
         </header>
         <nav>
             <div class="nav-logo">
-                <a href="index.html" class="nav-name">Plus 360</a>
+                <a href="index.html"><span class="logo-text">Plus In Math</span></a>
             </div>
             <div class="nav-menu" id="navMenu">
                 <ul class="nav_menu_list">
                     <li class="nav_list"><a href="index.html" class="nav-link">الرئيسية</a></li>
-                    <li class="nav_list"><a href="admin.html" class="nav-link">لوحة الأدمن</a></li>
                     <li class="nav_list"><a href="data.html" class="nav-link">إدارة الحسابات</a></li>
+                    <li class="nav_list"><a href="courses.html" class="nav-link active-link">إدارة المقررات</a></li>
+                    <li class="nav_list"><a href="exams.html" class="nav-link">الاختبارات الإلكترونية</a></li>
                     <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
                 </ul>
             </div>
-            <div class="nav-menu-btn"><i class="fa-solid fa-bars"></i></div>
+            <button class="nav-menu-btn" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i></button>
         </nav>
         <main>
             <div class="form-container" id="loginForm">
@@ -325,7 +392,7 @@
                     <input type="text" id="username" placeholder="اسم المستخدم" required>
                     <input type="password" id="password" placeholder="كلمة المرور" required>
                     <p id="errorMessage" class="error">اسم المستخدم أو كلمة المرور غير صحيحة!</p>
-                    <button type="submit">تسجيل الدخول</button>
+                    <button type="submit" class="btn">تسجيل الدخول</button>
                 </form>
                 <a href="index.html" class="back-link">العودة إلى الرئيسية</a>
             </div>
@@ -357,7 +424,7 @@
                         </select>
                         <input type="number" id="courseStudentCount" placeholder="عدد الطلاب" style="display: none;">
                         <select id="courseExceptStudents" multiple style="display: none;"></select>
-                        <button type="submit" onclick="addCourse()">إضافة مقرر</button>
+                        <button type="submit" class="btn" onclick="addCourse()">إضافة مقرر</button>
                     </form>
                     <div class="section course-list" id="courseList"></div>
                 </div>
@@ -379,7 +446,7 @@
                         </select>
                         <input type="number" id="videoStudentCount" placeholder="عدد الطلاب" style="display: none;">
                         <select id="videoExceptStudents" multiple style="display: none;"></select>
-                        <button type="submit" onclick="addVideo()">إضافة فيديو</button>
+                        <button type="submit" class="btn" onclick="addVideo()">إضافة فيديو</button>
                     </form>
                     <div class="section video-list" id="videoList"></div>
                 </div>
@@ -422,7 +489,7 @@
                             <textarea id="openQuestionText" placeholder="اكتب السؤال هنا" required></textarea>
                             <textarea id="modelAnswer" placeholder="الإجابة النموذجية" required></textarea>
                         </div>
-                        <button type="submit" onclick="addQuestion()">إضافة سؤال</button>
+                        <button type="submit" class="btn" onclick="addQuestion()">إضافة سؤال</button>
                     </form>
                     <div class="section question-list" id="questionList"></div>
                 </div>
@@ -443,27 +510,59 @@
                         </select>
                         <input type="number" id="documentStudentCount" placeholder="عدد الطلاب" style="display: none;">
                         <select id="documentExceptStudents" multiple style="display: none;"></select>
-                        <button type="submit" onclick="addDocument()">إضافة مستند</button>
+                        <button type="submit" class="btn" onclick="addDocument()">إضافة مستند</button>
                     </form>
                     <div class="section document-list" id="documentList"></div>
+                </div>
+
+                <div class="section">
+                    <h3>إضافة اختبار إلكتروني</h3>
+                    <form id="examForm">
+                        <select id="examCourse" onchange="populateExamQuestions()" required>
+                            <option value="">اختر المقرر</option>
+                        </select>
+                        <input type="text" id="examTitle" placeholder="عنوان الاختبار" required>
+                        <select id="examGrade" onchange="updateStudentOptions('exam')" required>
+                            <option value="">اختر الصف الدراسي</option>
+                            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي علمي">الصف الثاني الثانوي علمي</option>
+                            <option value="الصف الثاني الثانوي أدبي">الصف الثاني الثانوي أدبي</option>
+                            <option value="الصف الثالث الثانوي علمي">الصف الثالث الثانوي علمي</option>
+                            <option value="الصف الثالث الثانوي أدبي">الصف الثالث الثانوي أدبي</option>
+                        </select>
+                        <select id="examQuestions" multiple required></select>
+                        <select id="examStudentOption" onchange="toggleStudentSelect('exam')" required>
+                            <option value="">اختر خيار الطلاب</option>
+                            <option value="all">كل الطلاب</option>
+                            <option value="count">عددهم</option>
+                            <option value="except">الطلاب باستثناء</option>
+                        </select>
+                        <input type="number" id="examStudentCount" placeholder="عدد الطلاب" style="display: none;">
+                        <select id="examExceptStudents" multiple style="display: none;"></select>
+                        <button type="submit" class="btn" onclick="addExam()">إضافة اختبار</button>
+                    </form>
+                    <div class="section exam-list" id="examList"></div>
                 </div>
 
                 <a href="admin.html" class="back-link">العودة إلى لوحة الأدمن</a>
             </div>
         </main>
         <footer>
-            <div class="top-footer"><p>Plus 360</p></div>
-            <div class="middle-footer">
-                <ul class="footer-menu">
-                    <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
-                    <li class="footer_menu_list"><a href="admin.html">لوحة الأدمن</a></li>
-                </ul>
-            </div>
+            <div class="top-footer"><span class="logo-text">Plus In Math</span></div>
+            <ul class="footer-menu">
+                <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
+                <li class="footer_menu_list"><a href="data.html">إدارة الحسابات</a></li>
+                <li class="footer_menu_list"><a href="courses.html">إدارة المقررات</a></li>
+                <li class="footer_menu_list"><a href="exams.html">الاختبارات الإلكترونية</a></li>
+            </ul>
             <div class="footer-social-icons">
-                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="fab fa-whatsapp"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="fab fa-telegram"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fab fa-facebook-f"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="fab fa-instagram"></i></a></div>
+                <a target="_blank" href="https://wa.me/+201558870907" class="icon" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                <a target="_blank" href="https://t.me/mahdi2hassan/" class="icon" aria-label="تيليجرام"><i class="fab fa-telegram"></i></a>
+                <a target="_blank" href="https://www.facebook.com/plusinmath" class="icon" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a target="_blank" href="https://www.instagram.com/mahdi2hassan/" class="icon" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
             </div>
             <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
         </footer>
@@ -495,7 +594,7 @@
             </select>
             <input type="number" id="editCourseStudentCount" placeholder="عدد الطلاب" style="display: none;">
             <select id="editCourseExceptStudents" multiple style="display: none;"></select>
-            <button onclick="saveCourseEdit()">حفظ التعديلات</button>
+            <button class="btn" onclick="saveCourseEdit()">حفظ التعديلات</button>
             <button class="close-btn" onclick="closeModal('editCourseModal')">إغلاق</button>
         </div>
     </div>
@@ -518,7 +617,7 @@
             </select>
             <input type="number" id="editVideoStudentCount" placeholder="عدد الطلاب" style="display: none;">
             <select id="editVideoExceptStudents" multiple style="display: none;"></select>
-            <button onclick="saveVideoEdit()">حفظ التعديلات</button>
+            <button class="btn" onclick="saveVideoEdit()">حفظ التعديلات</button>
             <button class="close-btn" onclick="closeModal('editVideoModal')">إغلاق</button>
         </div>
     </div>
@@ -562,8 +661,41 @@
                 <textarea id="editOpenQuestionText" placeholder="نص السؤال" required></textarea>
                 <textarea id="editModelAnswer" placeholder="الإجابة النموذجية" required></textarea>
             </div>
-            <button onclick="saveQuestionEdit()">حفظ التعديلات</button>
+            <button class="btn" onclick="saveQuestionEdit()">حفظ التعديلات</button>
             <button class="close-btn" onclick="closeModal('editQuestionModal')">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل الاختبار -->
+    <div class="modal" id="editExamModal">
+        <div class="modal-content">
+            <h3>تعديل الاختبار</h3>
+            <select id="editExamCourse" onchange="populateEditExamQuestions()" required>
+                <option value="">اختر المقرر</option>
+            </select>
+            <input type="text" id="editExamTitle" placeholder="عنوان الاختبار" required>
+            <select id="editExamGrade" onchange="updateStudentOptions('editExam')" required>
+                <option value="">اختر الصف الدراسي</option>
+                <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                <option value="الصف الثاني الثانوي علمي">الصف الثاني الثانوي علمي</option>
+                <option value="الصف الثاني الثانوي أدبي">الصف الثاني الثانوي أدبي</option>
+                <option value="الصف الثالث الثانوي علمي">الصف الثالث الثانوي علمي</option>
+                <option value="الصف الثالث الثانوي أدبي">الصف الثالث الثانوي أدبي</option>
+            </select>
+            <select id="editExamQuestions" multiple required></select>
+            <select id="editExamStudentOption" onchange="toggleStudentSelect('editExam')" required>
+                <option value="">اختر خيار الطلاب</option>
+                <option value="all">كل الطلاب</option>
+                <option value="count">عددهم</option>
+                <option value="except">الطلاب باستثناء</option>
+            </select>
+            <input type="number" id="editExamStudentCount" placeholder="عدد الطلاب" style="display: none;">
+            <select id="editExamExceptStudents" multiple style="display: none;"></select>
+            <button class="btn" onclick="saveExamEdit()">حفظ التعديلات</button>
+            <button class="close-btn" onclick="closeModal('editExamModal')">إغلاق</button>
         </div>
     </div>
 
@@ -572,14 +704,63 @@
         const ADMIN_USERNAME = "mahdi2hassan";
         const ADMIN_PASSWORD = "01007586279";
 
-        let courses = JSON.parse(localStorage.getItem('courses')) || [];
-        let videos = JSON.parse(localStorage.getItem('videos')) || [];
-        let questions = JSON.parse(localStorage.getItem('questions')) || [];
-        let documents = JSON.parse(localStorage.getItem('documents')) || [];
-        let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+        let courses = [];
+        let videos = [];
+        let questions = [];
+        let documents = [];
+        let accounts = [];
+        let exams = [];
         let editCourseIndex = null;
         let editVideoIndex = null;
         let editQuestionIndex = null;
+        let editExamIndex = null;
+
+        // التحقق من تسجيل دخول الأدمن
+        const isAdminLoggedIn = localStorage.getItem('adminLoggedIn');
+        if (!isAdminLoggedIn) {
+            Swal.fire({
+                title: 'خطأ',
+                text: 'يرجى تسجيل الدخول كأدمن!',
+                icon: 'error',
+                confirmButtonColor: '#005eff'
+            }).then(() => {
+                document.getElementById("loginForm").style.display = "block";
+                document.getElementById("adminPanel").style.display = "none";
+            });
+        } else {
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("adminPanel").style.display = "block";
+        }
+
+        // تحميل البيانات من localStorage
+        try {
+            courses = JSON.parse(localStorage.getItem('courses')) || [];
+            videos = JSON.parse(localStorage.getItem('videos')) || [];
+            questions = JSON.parse(localStorage.getItem('questions')) || [];
+            documents = JSON.parse(localStorage.getItem('documents')) || [];
+            accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+            exams = JSON.parse(localStorage.getItem('exams')) || [];
+        } catch (error) {
+            console.error('خطأ في تحليل البيانات:', error);
+            Swal.fire({
+                title: 'خطأ',
+                text: 'حدث خطأ في تحميل البيانات!',
+                icon: 'error',
+                confirmButtonColor: '#005eff'
+            });
+        }
+
+        // التحقق من تسجيل الدخول عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            if (isAdminLoggedIn) {
+                renderCourses();
+                renderVideos();
+                renderQuestions();
+                renderDocuments();
+                renderExams();
+                populateCourseSelects();
+            }
+        });
 
         function validateAdmin() {
             const username = document.getElementById("username").value;
@@ -595,36 +776,74 @@
                 renderVideos();
                 renderQuestions();
                 renderDocuments();
+                renderExams();
                 populateCourseSelects();
+                Swal.fire({
+                    title: 'تم',
+                    text: 'تم تسجيل الدخول بنجاح.',
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
+                });
                 return false;
             } else {
                 errorMessage.style.display = "block";
-                Swal.fire('خطأ', 'اسم المستخدم أو كلمة المرور غير صحيحة!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'اسم المستخدم أو كلمة المرور غير صحيحة!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return false;
             }
         }
 
         function populateCourseSelects() {
-            const videoSelect = document.getElementById("videoCourse");
-            const questionSelect = document.getElementById("questionCourse");
-            const documentSelect = document.getElementById("documentCourse");
-            const editVideoSelect = document.getElementById("editVideoCourse");
-            const editQuestionSelect = document.getElementById("editQuestionCourse");
-            videoSelect.innerHTML = '<option value="">اختر المقرر</option>';
-            questionSelect.innerHTML = '<option value="">اختر المقرر</option>';
-            documentSelect.innerHTML = '<option value="">اختر المقرر</option>';
-            editVideoSelect.innerHTML = '<option value="">اختر المقرر</option>';
-            editQuestionSelect.innerHTML = '<option value="">اختر المقرر</option>';
-            courses.forEach(course => {
-                const option = document.createElement("option");
-                option.value = course.id;
-                option.textContent = course.name;
-                videoSelect.appendChild(option.cloneNode(true));
-                questionSelect.appendChild(option.cloneNode(true));
-                documentSelect.appendChild(option.cloneNode(true));
-                editVideoSelect.appendChild(option.cloneNode(true));
-                editQuestionSelect.appendChild(option.cloneNode(true));
+            const selects = [
+                'videoCourse', 'questionCourse', 'documentCourse',
+                'editVideoCourse', 'editQuestionCourse', 'examCourse', 'editExamCourse'
+            ];
+            selects.forEach(id => {
+                const select = document.getElementById(id);
+                select.innerHTML = '<option value="">اختر المقرر</option>';
+                courses.forEach(course => {
+                    const option = document.createElement("option");
+                    option.value = course.id;
+                    option.textContent = course.name;
+                    select.appendChild(option);
+                });
             });
+        }
+
+        function populateExamQuestions() {
+            const courseId = document.getElementById("examCourse").value;
+            const questionsSelect = document.getElementById("examQuestions");
+            questionsSelect.innerHTML = '';
+            const courseQuestions = questions.filter(q => q.courseId === courseId);
+            courseQuestions.forEach(question => {
+                const option = document.createElement('option');
+                option.value = question.id;
+                option.textContent = question.text;
+                questionsSelect.appendChild(option);
+            });
+        }
+
+        function populateEditExamQuestions() {
+            const courseId = document.getElementById("editExamCourse").value;
+            const questionsSelect = document.getElementById("editExamQuestions");
+            questionsSelect.innerHTML = '';
+            const courseQuestions = questions.filter(q => q.courseId === courseId);
+            courseQuestions.forEach(question => {
+                const option = document.createElement('option');
+                option.value = question.id;
+                option.textContent = question.text;
+                questionsSelect.appendChild(option);
+            });
+            if (editExamIndex !== null) {
+                const exam = exams[editExamIndex];
+                Array.from(questionsSelect.options).forEach(opt => {
+                    opt.selected = exam.questionIds.includes(opt.value);
+                });
+            }
         }
 
         function updateStudentOptions(prefix) {
@@ -660,15 +879,30 @@
             const exceptStudents = Array.from(document.getElementById("courseExceptStudents").selectedOptions).map(opt => opt.value);
 
             if (!name || !id || !url || !grade || !studentOption) {
-                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى ملء جميع الحقول المطلوبة!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
             if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى إدخال عدد صالح للطلاب!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
             if (studentOption === 'except' && exceptStudents.length === 0) {
-                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى اختيار طلاب للاستثناء!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
 
@@ -684,7 +918,12 @@
             };
 
             if (courses.some(c => c.id === id)) {
-                Swal.fire('خطأ', 'معرف المقرر موجود بالفعل!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'معرف المقرر موجود بالفعل!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
 
@@ -695,7 +934,12 @@
             document.getElementById("courseForm").reset();
             document.getElementById("courseStudentCount").style.display = 'none';
             document.getElementById("courseExceptStudents").style.display = 'none';
-            Swal.fire('تم', 'تم إضافة المقرر بنجاح.', 'success');
+            Swal.fire({
+                title: 'تم',
+                text: 'تم إضافة المقرر بنجاح.',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
+            });
         }
 
         function editCourse(index) {
@@ -726,15 +970,30 @@
             const exceptStudents = Array.from(document.getElementById("editCourseExceptStudents").selectedOptions).map(opt => opt.value);
 
             if (!name || !id || !url || !grade || !studentOption) {
-                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى ملء جميع الحقول المطلوبة!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
             if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى إدخال عدد صالح للطلاب!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
             if (studentOption === 'except' && exceptStudents.length === 0) {
-                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى اختيار طلاب للاستثناء!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
 
@@ -750,7 +1009,12 @@
             };
 
             if (courses.some((c, i) => c.id === id && i !== editCourseIndex)) {
-                Swal.fire('خطأ', 'معرف المقرر موجود بالفعل!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'معرف المقرر موجود بالفعل!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
 
@@ -759,17 +1023,22 @@
             renderCourses();
             populateCourseSelects();
             closeModal('editCourseModal');
-            Swal.fire('تم', 'تم تعديل المقرر بنجاح.', 'success');
+            Swal.fire({
+                title: 'تم',
+                text: 'تم تعديل المقرر بنجاح.',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
+            });
         }
 
         async function deleteCourse(index) {
             const course = courses[index];
             const result = await Swal.fire({
                 title: 'تأكيد الحذف',
-                text: `هل أنت متأكد من حذف مقرر ${course.name}؟ سيتم حذف جميع الفيديوهات والأسئلة والمستندات المرتبطة.`,
+                text: `هل أنت متأكد من حذف مقرر ${course.name}؟ سيتم حذف جميع الفيديوهات والأسئلة والمستندات والاختبارات المرتبطة.`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#FF4D4F',
+                confirmButtonColor: '#e74c3c',
                 cancelButtonColor: '#005eff',
                 confirmButtonText: 'نعم، احذف',
                 cancelButtonText: 'إلغاء'
@@ -779,17 +1048,25 @@
                 videos = videos.filter(v => v.courseId !== course.id);
                 questions = questions.filter(q => q.courseId !== course.id);
                 documents = documents.filter(d => d.courseId !== course.id);
+                exams = exams.filter(e => e.courseId !== course.id);
                 courses.splice(index, 1);
                 localStorage.setItem('courses', JSON.stringify(courses));
                 localStorage.setItem('videos', JSON.stringify(videos));
                 localStorage.setItem('questions', JSON.stringify(questions));
                 localStorage.setItem('documents', JSON.stringify(documents));
+                localStorage.setItem('exams', JSON.stringify(exams));
                 renderCourses();
                 renderVideos();
                 renderQuestions();
                 renderDocuments();
+                renderExams();
                 populateCourseSelects();
-                Swal.fire('تم', `تم حذف مقرر ${course.name} بنجاح.`, 'success');
+                Swal.fire({
+                    title: 'تم',
+                    text: `تم حذف مقرر ${course.name} بنجاح.`,
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
+                });
             }
         }
 
@@ -803,15 +1080,30 @@
             const exceptStudents = Array.from(document.getElementById("videoExceptStudents").selectedOptions).map(opt => opt.value);
 
             if (!courseId || !title || !url || !studentOption) {
-                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى ملء جميع الحقول المطلوبة!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
             if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى إدخال عدد صالح للطلاب!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
             if (studentOption === 'except' && exceptStudents.length === 0) {
-                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى اختيار طلاب للاستثناء!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
                 return;
             }
 
@@ -830,510 +1122,324 @@
             document.getElementById("videoForm").reset();
             document.getElementById("videoStudentCount").style.display = 'none';
             document.getElementById("videoExceptStudents").style.display = 'none';
-            Swal.fire('تم', 'تم إضافة الفيديو بنجاح.', 'success');
-        }
-
-        function editVideo(index) {
-            editVideoIndex = index;
-            const video = videos[index];
-            document.getElementById("editVideoCourse").value = video.courseId;
-            document.getElementById("editVideoTitle").value = video.title;
-            document.getElementById("editVideoUrl").value = video.url;
-            document.getElementById("editVideoThumbnail").value = video.thumbnail || "";
-            document.getElementById("editVideoStudentOption").value = video.studentOption;
-            document.getElementById("editVideoStudentCount").value = video.studentCount || '';
-            updateStudentOptions('editVideo');
-            const exceptStudentsSelect = document.getElementById("editVideoExceptStudents");
-            Array.from(exceptStudentsSelect.options).forEach(opt => {
-                opt.selected = video.exceptStudents.includes(opt.value);
-            });
-            toggleStudentSelect('editVideo');
-            document.getElementById("editVideoModal").style.display = "flex";
-        }
-
-        async function saveVideoEdit() {
-            const courseId = document.getElementById("editVideoCourse").value;
-            const title = document.getElementById("editVideoTitle").value;
-            const url = document.getElementById("editVideoUrl").value;
-            const thumbnail = document.getElementById("editVideoThumbnail").value;
-            const studentOption = document.getElementById("editVideoStudentOption").value;
-            const studentCount = document.getElementById("editVideoStudentCount").value;
-            const exceptStudents = Array.from(document.getElementById("editVideoExceptStudents").selectedOptions).map(opt => opt.value);
-
-            if (!courseId || !title || !url || !studentOption) {
-                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
-                return;
-            }
-            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
-                return;
-            }
-            if (studentOption === 'except' && exceptStudents.length === 0) {
-                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
-                return;
-            }
-
-            videos[editVideoIndex] = {
-                courseId,
-                title,
-                url,
-                thumbnail,
-                studentOption,
-                studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
-                exceptStudents: studentOption === 'except' ? exceptStudents : [],
-                studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
-            };
-            localStorage.setItem('videos', JSON.stringify(videos));
-            renderVideos();
-            closeModal('editVideoModal');
-            Swal.fire('تم', 'تم تعديل الفيديو بنجاح.', 'success');
-        }
-
-        async function deleteVideo(index) {
-            const video = videos[index];
-            const result = await Swal.fire({
-                title: 'تأكيد الحذف',
-                text: `هل أنت متأكد من حذف فيديو ${video.title}؟`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#FF4D4F',
-                cancelButtonColor: '#005eff',
-                confirmButtonText: 'نعم، احذف',
-                cancelButtonText: 'إلغاء'
-            });
-
-            if (result.isConfirmed) {
-                videos.splice(index, 1);
-                localStorage.setItem('videos', JSON.stringify(videos));
-                renderVideos();
-                Swal.fire('تم', 'تم حذف الفيديو بنجاح.', 'success');
-            }
-        }
-
-        function toggleQuestionForm() {
-            const questionType = document.getElementById("questionType").value;
-            document.getElementById("multipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
-            document.getElementById("openEndedForm").style.display = questionType === "open" ? "block" : "none";
-        }
-
-        function toggleEditQuestionForm() {
-            const questionType = document.getElementById("editQuestionType").value;
-            document.getElementById("editMultipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
-            document.getElementById("editOpenEndedForm").style.display = questionType === "open" ? "block" : "none";
-        }
-
-        async function addQuestion() {
-            const courseId = document.getElementById("questionCourse").value;
-            const questionType = document.getElementById("questionType").value;
-            const studentOption = document.getElementById("questionStudentOption").value;
-            const studentCount = document.getElementById("questionStudentCount").value;
-            const exceptStudents = Array.from(document.getElementById("questionExceptStudents").selectedOptions).map(opt => opt.value);
-
-            if (!courseId || !studentOption) {
-                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
-                return;
-            }
-            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
-                return;
-            }
-            if (studentOption === 'except' && exceptStudents.length === 0) {
-                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
-                return;
-            }
-
-            if (questionType === "multiple") {
-                const questionText = document.getElementById("questionText").value;
-                const options = [
-                    document.getElementById("option1").value,
-                    document.getElementById("option2").value,
-                    document.getElementById("option3").value,
-                    document.getElementById("option4").value
-                ].filter(opt => opt);
-                const correctAnswer = document.getElementById("correctAnswer").value;
-
-                if (!questionText || options.length < 2 || correctAnswer === "") {
-                    Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة للسؤال الموضوعي!', 'error');
-                    return;
-                }
-
-                const questionId = `q${Date.now()}`;
-                questions.push({
-                    id: questionId,
-                    courseId,
-                    type: "multiple",
-                    text: questionText,
-                    options,
-                    correctAnswer: parseInt(correctAnswer),
-                    studentOption,
-                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
-                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
-                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
-                });
-            } else {
-                const questionText = document.getElementById("openQuestionText").value;
-                const modelAnswer = document.getElementById("modelAnswer").value;
-
-                if (!questionText || !modelAnswer) {
-                    Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة للسؤال المفتوح!', 'error');
-                    return;
-                }
-
-                const questionId = `q${Date.now()}`;
-                questions.push({
-                    id: questionId,
-                    courseId,
-                    type: "open",
-                    text: questionText,
-                    modelAnswer,
-                    studentOption,
-                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
-                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
-                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+            Swal.fire({
+                title: 'تم',
+                text: 'تم إضافة الفيديو بنجاح.',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
                 });
             }
 
-            localStorage.setItem('questions', JSON.stringify(questions));
-            renderQuestions();
-            document.getElementById("questionForm").reset();
-            document.getElementById("multipleChoiceForm").style.display = "block";
-            document.getElementById("openEndedForm").style.display = "none";
-            document.getElementById("questionStudentCount").style.display = 'none';
-            document.getElementById("questionExceptStudents").style.display = 'none';
-            Swal.fire('تم', 'تم إضافة السؤال بنجاح.', 'success');
-        }
-
-        function editQuestion(index) {
-            editQuestionIndex = index;
-            const question = questions[index];
-            document.getElementById("editQuestionCourse").value = question.courseId;
-            document.getElementById("editQuestionType").value = question.type;
-            document.getElementById("editQuestionStudentOption").value = question.studentOption;
-            document.getElementById("editQuestionStudentCount").value = question.studentCount || '';
-            updateStudentOptions('editQuestion');
-            const exceptStudentsSelect = document.getElementById("editQuestionExceptStudents");
-            Array.from(exceptStudentsSelect.options).forEach(opt => {
-                opt.selected = question.exceptStudents.includes(opt.value);
-            });
-            toggleStudentSelect('editQuestion');
-            if (question.type === "multiple") {
-                document.getElementById("editQuestionText").value = question.text;
-                document.getElementById("editOption1").value = question.options[0] || "";
-                document.getElementById("editOption2").value = question.options[1] || "";
-                document.getElementById("editOption3").value = question.options[2] || "";
-                document.getElementById("editOption4").value = question.options[3] || "";
-                document.getElementById("editCorrectAnswer").value = question.correctAnswer;
-            } else {
-                document.getElementById("editOpenQuestionText").value = question.text;
-                document.getElementById("editModelAnswer").value = question.modelAnswer;
-            }
-            toggleEditQuestionForm();
-            document.getElementById("editQuestionModal").style.display = "flex";
-        }
-
-        async function saveQuestionEdit() {
-            const courseId = document.getElementById("editQuestionCourse").value;
-            const questionType = document.getElementById("editQuestionType").value;
-            const studentOption = document.getElementById("editQuestionStudentOption").value;
-            const studentCount = document.getElementById("editQuestionStudentCount").value;
-            const exceptStudents = Array.from(document.getElementById("editQuestionExceptStudents").selectedOptions).map(opt => opt.value);
-
-            if (!courseId || !studentOption) {
-                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
-                return;
-            }
-            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
-                return;
-            }
-            if (studentOption === 'except' && exceptStudents.length === 0) {
-                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
-                return;
+            function editVideo(index) {
+                editVideoIndex = index;
+                const video = videos[index];
+                document.getElementById("editVideoCourse").value = video.courseId;
+                document.getElementById("editVideoTitle").value = video.title;
+                document.getElementById("editVideoUrl").value = video.url;
+                document.getElementById("editVideoThumbnail").value = video.thumbnail || "";
+                document.getElementById("editVideoStudentOption").value = video.studentOption;
+                document.getElementById("editVideoStudentCount").value = video.studentCount || '';
+                updateStudentOptions('editVideo');
+                const exceptStudentsSelect = document.getElementById("editVideoExceptStudents");
+                Array.from(exceptStudentsSelect.options).forEach(opt => {
+                    opt.selected = video.exceptStudents.includes(opt.value);
+                });
+                toggleStudentSelect('editVideo');
+                document.getElementById("editVideoModal").style.display = "flex";
             }
 
-            if (questionType === "multiple") {
-                const questionText = document.getElementById("editQuestionText").value;
-                const options = [
-                    document.getElementById("editOption1").value,
-                    document.getElementById("editOption2").value,
-                    document.getElementById("editOption3").value,
-                    document.getElementById("editOption4").value
-                ].filter(opt => opt);
-                const correctAnswer = document.getElementById("editCorrectAnswer").value;
+            async function saveVideoEdit() {
+                const courseId = document.getElementById("editVideoCourse").value;
+                const title = document.getElementById("editVideoTitle").value;
+                const url = document.getElementById("editVideoUrl").value;
+                const thumbnail = document.getElementById("editVideoThumbnail").value;
+                const studentOption = document.getElementById("editVideoStudentOption").value;
+                const studentCount = document.getElementById("editVideoStudentCount").value;
+                const exceptStudents = Array.from(document.getElementById("editVideoExceptStudents").selectedOptions).map(opt => opt.value);
 
-                if (!questionText || options.length < 2 || correctAnswer === "") {
-                    Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة للسؤال الموضوعي!', 'error');
+                if (!courseId || !title || !url || !studentOption) {
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'يرجى ملء جميع الحقول المطلوبة!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                    return;
+                }
+                if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'يرجى إدخال عدد صالح للطلاب!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                    return;
+                }
+                if (studentOption === 'except' && exceptStudents.length === 0) {
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'يرجى اختيار طلاب للاستثناء!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
                     return;
                 }
 
-                questions[editQuestionIndex] = {
-                    id: questions[editQuestionIndex].id,
-                    courseId,
-                    type: "multiple",
-                    text: questionText,
-                    options,
-                    correctAnswer: parseInt(correctAnswer),
-                    studentOption,
-                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
-                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
-                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
-                };
-            } else {
-                const questionText = document.getElementById("editOpenQuestionText").value;
-                const modelAnswer = document.getElementById("editModelAnswer").value;
-
-                if (!questionText || !modelAnswer) {
-                    Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة للسؤال المفتوح!', 'error');
-                    return;
-                }
-
-                questions[editQuestionIndex] = {
-                    id: questions[editQuestionIndex].id,
-                    courseId,
-                    type: "open",
-                    text: questionText,
-                    modelAnswer,
-                    studentOption,
-                    studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
-                    exceptStudents: studentOption === 'except' ? exceptStudents : [],
-                    studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
-                };
-            }
-
-            localStorage.setItem('questions', JSON.stringify(questions));
-            renderQuestions();
-            closeModal('editQuestionModal');
-            Swal.fire('تم', 'تم تعديل السؤال بنجاح.', 'success');
-        }
-
-        async function deleteQuestion(index) {
-            const question = questions[index];
-            const result = await Swal.fire({
-                title: 'تأكيد الحذف',
-                text: `هل أنت متأكد من حذف السؤال؟`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#FF4D4F',
-                cancelButtonColor: '#005eff',
-                confirmButtonText: 'نعم، احذف',
-                cancelButtonText: 'إلغاء'
-            });
-
-            if (result.isConfirmed) {
-                questions.splice(index, 1);
-                localStorage.setItem('questions', JSON.stringify(questions));
-                renderQuestions();
-                Swal.fire('تم', 'تم حذف السؤال بنجاح.', 'success');
-            }
-        }
-
-        async function addDocument() {
-            const courseId = document.getElementById("documentCourse").value;
-            const title = document.getElementById("documentTitle").value;
-            const file = document.getElementById("documentFile").files[0];
-            const studentOption = document.getElementById("documentStudentOption").value;
-            const studentCount = document.getElementById("documentStudentCount").value;
-            const exceptStudents = Array.from(document.getElementById("documentExceptStudents").selectedOptions).map(opt => opt.value);
-
-            if (!courseId || !title || !file || !studentOption) {
-                Swal.fire('خطأ', 'يرجى ملء جميع الحقول المطلوبة!', 'error');
-                return;
-            }
-            if (file.type !== "application/pdf") {
-                Swal.fire('خطأ', 'يرجى رفع ملف PDF فقط!', 'error');
-                return;
-            }
-            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
-                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
-                return;
-            }
-            if (studentOption === 'except' && exceptStudents.length === 0) {
-                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                documents.push({
-                    id: `doc${Date.now()}`,
+                videos[editVideoIndex] = {
                     courseId,
                     title,
-                    data: e.target.result,
+                    url,
+                    thumbnail,
                     studentOption,
                     studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
                     exceptStudents: studentOption === 'except' ? exceptStudents : [],
                     studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+                };
+                localStorage.setItem('videos', JSON.stringify(videos));
+                renderVideos();
+                closeModal('editVideoModal');
+                Swal.fire({
+                    title: 'تم',
+                    text: 'تم تعديل الفيديو بنجاح.',
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
                 });
-                localStorage.setItem('documents', JSON.stringify(documents));
-                renderDocuments();
-                document.getElementById("documentForm").reset();
-                document.getElementById("documentStudentCount").style.display = 'none';
-                document.getElementById("documentExceptStudents").style.display = 'none';
-                Swal.fire('تم', 'تم إضافة المستند بنجاح.', 'success');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function deleteDocument(index) {
-            const document = documents[index];
-            const result = await Swal.fire({
-                title: 'تأكيد الحذف',
-                text: `هل أنت متأكد من حذف مستند ${document.title}؟`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#FF4D4F',
-                cancelButtonColor: '#005eff',
-                confirmButtonText: 'نعم، احذف',
-                cancelButtonText: 'إلغاء'
-            });
-
-            if (result.isConfirmed) {
-                documents.splice(index, 1);
-                localStorage.setItem('documents', JSON.stringify(documents));
-                renderDocuments();
-                Swal.fire('تم', 'تم حذف المستند بنجاح.', 'success');
             }
-        }
 
-        function renderCourses() {
-            const courseList = document.getElementById("courseList");
-            courseList.innerHTML = "";
-            courses.forEach((course, index) => {
-                let studentsDisplay = '';
-                if (course.studentOption === 'all') {
-                    studentsDisplay = 'كل الطلاب';
-                } else if (course.studentOption === 'count') {
-                    studentsDisplay = `عددهم: ${course.studentCount}`;
-                } else if (course.studentOption === 'except') {
-                    studentsDisplay = `باستثناء: ${course.exceptStudents.join(', ')}`;
+            async function deleteVideo(index) {
+                const video = videos[index];
+                const result = await Swal.fire({
+                    title: 'تأكيد الحذف',
+                    text: `هل أنت متأكد من حذف فيديو ${video.title}؟`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#005eff',
+                    confirmButtonText: 'نعم، احذف',
+                    cancelButtonText: 'إلغاء'
+                });
+
+                if (result.isConfirmed) {
+                    videos.splice(index, 1);
+                    localStorage.setItem('videos', JSON.stringify(videos));
+                    renderVideos();
+                    Swal.fire({
+                        title: 'تم',
+                        text: 'تم حذف الفيديو بنجاح.',
+                        icon: 'success',
+                        confirmButtonColor: '#005eff'
+                    });
                 }
-                const div = document.createElement("div");
-                div.className = "item";
-                div.innerHTML = `
-                    ${course.name} (${course.grade}) - ${studentsDisplay}
-                    <div>
-                        <button onclick="editCourse(${index})">تعديل</button>
-                        <button class="delete-btn" onclick="deleteCourse(${index})">حذف</button>
-                    </div>
-                `;
-                courseList.appendChild(div);
-            });
-        }
+            }
 
-        function renderVideos() {
-            const videoList = document.getElementById("videoList");
-            videoList.innerHTML = "";
-            videos.forEach((video, index) => {
-                const course = courses.find(c => c.id === video.courseId);
-                let studentsDisplay = '';
-                if (video.studentOption === 'all') {
-                    studentsDisplay = 'كل الطلاب';
-                } else if (video.studentOption === 'count') {
-                    studentsDisplay = `عددهم: ${video.studentCount}`;
-                } else if (video.studentOption === 'except') {
-                    studentsDisplay = `باستثناء: ${video.exceptStudents.join(', ')}`;
+            function toggleQuestionForm() {
+                const questionType = document.getElementById("questionType").value;
+                document.getElementById("multipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
+                document.getElementById("openEndedForm").style.display = questionType === "open" ? "block" : "none";
+            }
+
+            function toggleEditQuestionForm() {
+                const questionType = document.getElementById("editQuestionType").value;
+                document.getElementById("editMultipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
+                document.getElementById("editOpenEndedForm").style.display = questionType === "open" ? "block" : "none";
+            }
+
+            async function addQuestion() {
+                const courseId = document.getElementById("questionCourse").value;
+                const questionType = document.getElementById("questionType").value;
+                const studentOption = document.getElementById("questionStudentOption").value;
+                const studentCount = document.getElementById("questionStudentCount").value;
+                const exceptStudents = Array.from(document.getElementById("questionExceptStudents").selectedOptions).map(opt => opt.value);
+
+                if (!courseId || !studentOption) {
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'يرجى ملء جميع الحقول المطلوبة!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                    return;
                 }
-                const div = document.createElement("div");
-                div.className = "item";
-                div.innerHTML = `
-                    ${video.title} (${course ? course.name : 'غير مرتبط'}) - ${studentsDisplay}
-                    <div>
-                        <button onclick="editVideo(${index})">تعديل</button>
-                        <button class="delete-btn" onclick="deleteVideo(${index})">حذف</button>
-                    </div>
-                `;
-                videoList.appendChild(div);
-            });
-        }
-
-        function renderQuestions() {
-            const questionList = document.getElementById("questionList");
-            questionList.innerHTML = "";
-            questions.forEach((question, index) => {
-                const course = courses.find(c => c.id === question.courseId);
-                let studentsDisplay = '';
-                if (question.studentOption === 'all') {
-                    studentsDisplay = 'كل الطلاب';
-                } else if (question.studentOption === 'count') {
-                    studentsDisplay = `عددهم: ${question.studentCount}`;
-                } else if (question.studentOption === 'except') {
-                    studentsDisplay = `باستثناء: ${question.exceptStudents.join(', ')}`;
+                if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'يرجى إدخال عدد صالح للطلاب!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                    return;
                 }
-                const div = document.createElement("div");
-                div.className = "item";
-                div.innerHTML = `
-                    سؤال ${index + 1}: ${question.text} (${question.type === "multiple" ? "موضوعي" : "مفتوح"}) (${course ? course.name : 'غير مرتبط'}) - ${studentsDisplay}
-                    <div>
-                        <button onclick="editQuestion(${index})">تعديل</button>
-                        <button class="delete-btn" onclick="deleteQuestion(${index})">حذف</button>
-                    </div>
-                `;
-                questionList.appendChild(div);
-            });
-        }
-
-        function renderDocuments() {
-            const documentList = document.getElementById("documentList");
-            documentList.innerHTML = "";
-            documents.forEach((doc, index) => {
-                const course = courses.find(c => c.id === doc.courseId);
-                let studentsDisplay = '';
-                if (doc.studentOption === 'all') {
-                    studentsDisplay = 'كل الطلاب';
-                } else if (doc.studentOption === 'count') {
-                    studentsDisplay = `عددهم: ${doc.studentCount}`;
-                } else if (doc.studentOption === 'except') {
-                    studentsDisplay = `باستثناء: ${doc.exceptStudents.join(', ')}`;
+                if (studentOption === 'except' && exceptStudents.length === 0) {
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'يرجى اختيار طلاب للاستثناء!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                    return;
                 }
-                const div = document.createElement("div");
-                div.className = "item";
-                div.innerHTML = `
-                    ${doc.title} (${course ? course.name : 'غير مرتبط'}) - ${studentsDisplay}
-                    <div>
-                        <button onclick="deleteDocument(${index})" class="delete-btn">حذف</button>
-                    </div>
-                `;
-                documentList.appendChild(div);
-            });
-        }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = "none";
-        }
+                if (questionType === "multiple") {
+                    const questionText = document.getElementById("questionText").value;
+                    const options = [
+                        document.getElementById("option1").value,
+                        document.getElementById("option2").value,
+                        document.getElementById("option3").value,
+                        document.getElementById("option4").value
+                    ].filter(opt => opt);
+                    const correctAnswer = document.getElementById("correctAnswer").value;
 
-        function logout() {
-            localStorage.removeItem('adminLoggedIn');
-            document.getElementById("loginForm").style.display = "block";
-            document.getElementById("adminPanel").style.display = "none";
-            Swal.fire('تم', 'تم تسجيل الخروج بنجاح.', 'success');
-        }
+                    if (!questionText || options.length < 2 || correctAnswer === "") {
+                        Swal.fire({
+                            title: 'خطأ',
+                            text: 'يرجى ملء جميع الحقول المطلوبة للسؤال الموضوعي!',
+                            icon: 'error',
+                            confirmButtonColor: '#005eff'
+                        });
+                        return;
+                    }
 
-        // قائمة التنقل المحمولة
-        document.querySelector('.nav-menu-btn').addEventListener('click', () => {
-            document.getElementById('navMenu').classList.toggle('responsive');
-        });
+                    const questionId = `q${Date.now()}`;
+                    questions.push({
+                        id: questionId,
+                        courseId,
+                        type: "multiple",
+                        text: questionText,
+                        options,
+                        correctAnswer: parseInt(correctAnswer),
+                        studentOption,
+                        studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                        exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                        studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+                    });
+                } else {
+                    const questionText = document.getElementById("openQuestionText").value;
+                    const modelAnswer = document.getElementById("modelAnswer").value;
 
-        // تبديل الوضع الغامق
-        document.getElementById('darkModeBtn').addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : '');
-            document.getElementById('darkModeBtn').innerHTML = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-        });
+                    if (!questionText || !modelAnswer) {
+                        Swal.fire({
+                            title: 'خطأ',
+                            text: 'يرجى ملء جميع الحقول المطلوبة للسؤال المفتوح!',
+                            icon: 'error',
+                            confirmButtonColor: '#005eff'
+                        });
+                        return;
+                    }
 
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.getElementById('darkModeBtn').innerHTML = '☀️';
-        }
+                    const questionId = `q${Date.now()}`;
+                    questions.push({
+                        id: questionId,
+                        courseId,
+                        type: "open",
+                        text: questionText,
+                        modelAnswer,
+                        studentOption,
+                        studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                        exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                        studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+                    });
+                }
 
-        if (localStorage.getItem('adminLoggedIn') === 'true') {
-            document.getElementById("loginForm").style.display = "none";
-            document.getElementById("adminPanel").style.display = "block";
-            renderCourses();
-            renderVideos();
-            renderQuestions();
-            renderDocuments();
-            populateCourseSelects();
-        }
-    </script>
-</body>
-</html>
+                localStorage.setItem('questions', JSON.stringify(questions));
+                renderQuestions();
+                document.getElementById("questionForm").reset();
+                document.getElementById("multipleChoiceForm").style.display = "block";
+                document.getElementById("openEndedForm").style.display = "none";
+                document.getElementById("questionStudentCount").style.display = 'none';
+                document.getElementById("questionExceptStudents").style.display = 'none';
+                Swal.fire({
+                    title: 'تم',
+                    text: 'تم إضافة السؤال بنجاح.',
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
+                });
+            }
+
+            function editQuestion(index) {
+                editQuestionIndex = index;
+                const question = questions[index];
+                document.getElementById("editQuestionCourse").value = question.courseId;
+                document.getElementById("editQuestionType").value = question.type;
+                document.getElementById("editQuestionStudentOption").value = question.studentOption;
+                document.getElementById("editQuestionStudentCount").value = question.studentCount || '';
+                updateStudentOptions('editQuestion');
+                const exceptStudentsSelect = document.getElementById("editQuestionExceptStudents");
+                Array.from(exceptStudentsSelect.options).forEach(opt => {
+                    opt.selected = question.exceptStudents.includes(opt.value);
+                });
+                toggleStudentSelect('editQuestion');
+                if (question.type === "multiple") {
+                    document.getElementById("editQuestionText").value = question.text;
+                    document.getElementById("editOption1").value = question.options[0] || "";
+                    document.getElementById("editOption2").value = question.options[1] || "";
+                    document.getElementById("editOption3").value = question.options[2] || "";
+                    document.getElementById("editOption4").value = question.options[3] || "";
+                    document.getElementById("editCorrectAnswer").value = question.correctAnswer;
+                } else {
+                    document.getElementById("editOpenQuestionText").value = question.text;
+                    document.getElementById("editModelAnswer").value = question.modelAnswer;
+                }
+                toggleEditQuestionForm();
+                document.getElementById("editQuestionModal").style.display = "flex";
+            }
+
+            async function saveQuestionEdit() {
+                const courseId = document.getElementById("editQuestionCourse").value;
+                const questionType = document.getElementById("editQuestionType").value;
+                const studentOption = document.getElementById("editQuestionStudentOption").value;
+                const studentCount = document.getElementById("editQuestionStudentCount").value;
+                const exceptStudents = Array.from(document.getElementById("editQuestionExceptStudents").selectedOptions).map(opt => opt.value);
+
+                if (!courseId || !studentOption) {
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'يرجى ملء جميع الحقول المطلوبة!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                    return;
+                }
+                if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'يرجى إدخال عدد صالح للطلاب!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                    return;
+                }
+                if (studentOption === 'except' && exceptStudents.length === 0) {
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'يرجى اختيار طلاب للاستثناء!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                    return;
+                }
+
+                if (questionType === "multiple") {
+                    const questionText = document.getElementById("editQuestionText").value;
+                    const options = [
+                        document.getElementById("editOption1").value,
+                        document.getElementById("editOption2").value,
+                        document.getElementById("editOption3").value,
+                        document.getElementById("editOption4").value
+                    ].filter(opt => opt);
+                    const correctAnswer = document.getElementById("editCorrectAnswer").value;
+
+                    if (!questionText || options.length < 2 || correctAnswer === "") {
+                        Swal.fire({
+                            title: 'خطأ',
+                            text: 'يرجى ملء جميع الحقول المطلوبة للسؤال الموضوعي!',
+                            icon: 'error',
+                            confirmButtonColor: '#005eff'
+                        });
+                        return;
+                    }
+
+                    questions[editQuestionIndex] = {
+                        id: questions[editQuestionIndex].id,
+                        courseId,
+                        type: "multiple",
+                        text: questionText,
