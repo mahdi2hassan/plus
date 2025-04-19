@@ -38,6 +38,11 @@
             background: var(--first-color);
             color: var(--color-white);
         }
+        td img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 5px;
+        }
         button {
             padding: 10px 20px;
             background: var(--first-color);
@@ -75,6 +80,8 @@
                     <th>رقم الهاتف</th>
                     <th>المحافظة</th>
                     <th>المنطقة</th>
+                    <th>إيصال الدفع</th>
+                    <th>الحالة</th>
                     <th>تاريخ التسجيل</th>
                 </tr>
             </thead>
@@ -116,6 +123,8 @@
                     <td>${account.phone}</td>
                     <td>${account.governorate}</td>
                     <td>${account.area}</td>
+                    <td><img src="${account.receiptImage}" alt="إيصال"></td>
+                    <td>${account.pending ? 'قيد المراجعة' : (account.active ? 'مفعل' : 'غير مفعل')}</td>
                     <td>${new Date(account.timestamp).toLocaleString('ar-EG')}</td>
                 `;
                 accountsBody.appendChild(tr);
@@ -152,6 +161,7 @@
                 "رقم الهاتف": account.phone,
                 "المحافظة": account.governorate,
                 "المنطقة": account.area,
+                "الحالة": account.pending ? 'قيد المراجعة' : (account.active ? 'مفعل' : 'غير مفعل'),
                 "تاريخ التسجيل": new Date(account.timestamp).toLocaleString('ar-EG')
             }));
             const accountsSheet = XLSX.utils.json_to_sheet(accountsData);
@@ -173,7 +183,6 @@
             const answersSheet = XLSX.utils.json_to_sheet(answersData);
             XLSX.utils.book_append_sheet(wb, answersSheet, "الإجابات");
 
-            // حفظ الملف
             XLSX.writeFile(wb, "student_data.xlsx");
         }
 

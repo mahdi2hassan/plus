@@ -106,6 +106,8 @@
             <select id="area" required>
                 <option value="">اختر المنطقة</option>
             </select>
+            <label for="receipt">صورة إيصال الدفع (إلى 01153652279):</label>
+            <input type="file" id="receipt" accept="image/*" required>
             <p id="errorMessage" class="error"></p>
             <button type="submit">تسجيل</button>
         </form>
@@ -163,12 +165,13 @@
             const phone = document.getElementById("phone").value;
             const governorate = document.getElementById("governorate").value;
             const area = document.getElementById("area").value;
+            const receipt = document.getElementById("receipt").files[0];
             const errorMessage = document.getElementById("errorMessage");
 
             // التحقق من صحة البيانات
             const phoneRegex = /^[0-9]{11}$/;
-            if (!name || !grade || !phone || !governorate || !area) {
-                errorMessage.textContent = "يرجى ملء جميع الحقول!";
+            if (!name || !grade || !phone || !governorate || !area || !receipt) {
+                errorMessage.textContent = "يرجى ملء جميع الحقول ورفع صورة الإيصال!";
                 errorMessage.style.display = "block";
                 return false;
             }
@@ -177,30 +180,45 @@
                 errorMessage.style.display = "block";
                 return false;
             }
+            if (!receipt.type.startsWith("image/")) {
+                errorMessage.textContent = "يرجى رفع صورة فقط (مثل PNG أو JPG)!";
+                errorMessage.style.display = "block";
+                return false;
+            }
 
             // إنشاء كود طالب جديد
             let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
             let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
             const lastCode = studentCodes.length > 0 ? Math.max(...studentCodes.map(c => c.code)) : 100;
-            const newCode = lastCode + 2; // زيادة بمقدار 2 للحفاظ على النمط
+            const newCode = lastCode + 2;
 
-            // تخزين بيانات الحساب
-            accounts.push({
-                code: newCode,
-                name,
-                grade,
-                phone,
-                governorate,
-                area,
-                timestamp: new Date().toISOString()
-            });
-            studentCodes.push({ code: newCode, active: true });
+            // تحويل الصورة إلى base64
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const receiptImage = e.target.result;
 
-            localStorage.setItem('accounts', JSON.stringify(accounts));
-            localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+                // تخزين بيانات الحساب
+                accounts.push({
+                    code: newCode,
+                    name,
+                    grade,
+                    phone,
+                    governorate,
+                    area,
+                    receiptImage, // صورة الإيصال كـ base64
+                    pending: true, // الحساب قيد المراجعة
+                    active: false,
+                    timestamp: new Date().toISOString()
+                });
+                studentCodes.push({ code: newCode, active: false, pending: true });
 
-            alert(`تم التسجيل بنجاح! كود الطالب الخاص بك: ${newCode}`);
-            window.location.href = "index.html";
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+                localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+
+                alert(`تم إرسال طلب التسجيل! كود الطالب: ${newCode}. سيتم تفعيل حسابك بعد مراجعة الإيصال.`);
+                window.location.href = "index.html";
+            };
+            reader.readAsDataURL(receipt);
             return false;
         }
 

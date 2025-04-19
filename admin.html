@@ -36,7 +36,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 10px;
+            margin: 5px;
         }
         button:hover {
             background: var(--first-color-hover);
@@ -58,10 +58,10 @@
         .admin-panel {
             display: none;
         }
-        .course-list, .video-list, .question-list {
+        .account-list, .course-list, .video-list, .question-list, .document-list {
             margin-top: 20px;
         }
-        .course-item, .video-item, .question-item {
+        .account-item, .course-item, .video-item, .question-item, .document-item {
             padding: 10px;
             background: var(--second-color);
             color: var(--color-white);
@@ -71,7 +71,19 @@
             justify-content: space-between;
             align-items: center;
         }
-        .course-item button, .video-item button, .question-item button {
+        .account-item img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-left: 10px;
+            border-radius: 5px;
+        }
+        .account-item button.approve {
+            background: #28a745;
+        }
+        .account-item button.reject {
+            background: #ff204e;
+        }
+        .course-item button, .video-item button, .question-item button, .document-item button {
             background: #ff204e;
             padding: 5px 10px;
         }
@@ -130,6 +142,9 @@
         <h2>لوحة تحكم الأدمن</h2>
         <a href="data.html" class="back-link">عرض بيانات الحسابات والإجابات</a>
 
+        <h3>الموافقة على الحسابات</h3>
+        <div class="account-list" id="accountList"></div>
+
         <h3>إدارة المقررات</h3>
         <input type="text" id="courseName" placeholder="اسم المقرر">
         <input type="text" id="courseId" placeholder="معرف المقرر (مثل course9)">
@@ -177,6 +192,15 @@
         </div>
         <button onclick="addQuestion()">إضافة سؤال</button>
         <div class="question-list" id="questionList"></div>
+
+        <h3>إضافة مستندات</h3>
+        <select id="documentCourse">
+            <option value="">اختر المقرر</option>
+        </select>
+        <input type="text" id="documentTitle" placeholder="عنوان المستند">
+        <input type="file" id="documentFile" accept="application/pdf" required>
+        <button onclick="addDocument()">إضافة مستند</button>
+        <div class="document-list" id="documentList"></div>
 
         <button onclick="logout()">تسجيل الخروج</button>
     </div>
@@ -257,6 +281,8 @@
         ];
         let videos = JSON.parse(localStorage.getItem('videos')) || [];
         let questions = JSON.parse(localStorage.getItem('questions')) || [];
+        let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+        let documents = JSON.parse(localStorage.getItem('documents')) || [];
         let editCourseIndex = null;
         let editVideoIndex = null;
         let editQuestionIndex = null;
@@ -270,9 +296,11 @@
                 document.getElementById("loginForm").style.display = "none";
                 document.getElementById("adminPanel").style.display = "block";
                 errorMessage.style.display = "none";
+                renderAccounts();
                 renderCourses();
                 renderVideos();
                 renderQuestions();
+                renderDocuments();
                 populateCourseSelects();
                 return false;
             } else {
@@ -284,9 +312,11 @@
         function populateCourseSelects() {
             const videoSelect = document.getElementById("videoCourse");
             const questionSelect = document.getElementById("questionCourse");
+            const documentSelect = document.getElementById("documentCourse");
             const editVideoSelect = document.getElementById("editVideoCourse");
             videoSelect.innerHTML = '<option value="">اختر المقرر</option>';
             questionSelect.innerHTML = '<option value="">اختر المقرر</option>';
+            documentSelect.innerHTML = '<option value="">اختر المقرر</option>';
             editVideoSelect.innerHTML = '<option value="">اختر المقرر</option>';
             courses.forEach(course => {
                 const option1 = document.createElement("option");
@@ -300,8 +330,56 @@
                 const option3 = document.createElement("option");
                 option3.value = course.id;
                 option3.textContent = course.name;
-                editVideoSelect.appendChild(option3);
+                documentSelect.appendChild(option3);
+                const option4 = document.createElement("option");
+                option4.value = course.id;
+                option4.textContent = course.name;
+                editVideoSelect.appendChild(option4);
             });
+        }
+
+        function renderAccounts() {
+            const accountList = document.getElementById("accountList");
+            accountList.innerHTML = "";
+            accounts.filter(account => account.pending).forEach((account, index) => {
+                const div = document.createElement("div");
+                div.className = "account-item";
+                div.innerHTML = `
+                    <div>
+                        ${account.name} - ${account.grade} - ${account.phone} - ${account.governorate} - ${account.area}
+                        <img src="${account.receiptImage}" alt="إيصال الدفع">
+                    </div>
+                    <div>
+                        <button class="approve" onclick="approveAccount(${index})">موافقة</button>
+                        <button class="reject" onclick="rejectAccount(${index})">رفض</button>
+                    </div>
+                `;
+                accountList.appendChild(div);
+            });
+        }
+
+        function approveAccount(index) {
+            accounts[index].pending = false;
+            accounts[index].active = true;
+            let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
+            const codeIndex = studentCodes.findIndex(sc => sc.code === accounts[index].code);
+            if (codeIndex !== -1) {
+                studentCodes[codeIndex].active = true;
+                studentCodes[codeIndex].pending = false;
+            }
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+            renderAccounts();
+        }
+
+        function rejectAccount(index) {
+            const code = accounts[index].code;
+            accounts.splice(index, 1);
+            let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
+            studentCodes = studentCodes.filter(sc => sc.code !== code);
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+            renderAccounts();
         }
 
         function addCourse() {
@@ -422,7 +500,7 @@
                 const correctAnswer = document.getElementById("correctAnswer").value;
 
                 if (questionText && options.length >= 2 && correctAnswer !== "") {
-                    const questionId = `q${Date.now()}`; // معرف فريد
+                    const questionId = `q${Date.now()}`;
                     questions.push({
                         id: questionId,
                         courseId,
@@ -446,7 +524,7 @@
                 const modelAnswer = document.getElementById("modelAnswer").value;
 
                 if (questionText && modelAnswer) {
-                    const questionId = `q${Date.now()}`; // معرف فريد
+                    const questionId = `q${Date.now()}`;
                     questions.push({
                         id: questionId,
                         courseId,
@@ -531,6 +609,56 @@
             questions.splice(index, 1);
             localStorage.setItem('questions', JSON.stringify(questions));
             renderQuestions();
+        }
+
+        function addDocument() {
+            const documentTitle = document.getElementById("documentTitle").value;
+            const documentFile = document.getElementById("documentFile").files[0];
+            const courseId = document.getElementById("documentCourse").value;
+
+            if (!documentTitle || !documentFile || !courseId) return;
+            if (documentFile.type !== "application/pdf") {
+                alert("يرجى رفع ملف PDF فقط!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const documentData = e.target.result;
+                documents.push({
+                    id: `doc${Date.now()}`,
+                    courseId,
+                    title: documentTitle,
+                    data: documentData
+                });
+                localStorage.setItem('documents', JSON.stringify(documents));
+                renderDocuments();
+                document.getElementById("documentTitle").value = "";
+                document.getElementById("documentFile").value = "";
+                document.getElementById("documentCourse").value = "";
+            };
+            reader.readAsDataURL(documentFile);
+        }
+
+        function renderDocuments() {
+            const documentList = document.getElementById("documentList");
+            documentList.innerHTML = "";
+            documents.forEach((doc, index) => {
+                const course = courses.find(c => c.id === doc.courseId);
+                const div = document.createElement("div");
+                div.className = "document-item";
+                div.innerHTML = `
+                    ${doc.title} (${course ? course.name : 'غير مرتبط'})
+                    <button onclick="deleteDocument(${index})">حذف</button>
+                `;
+                documentList.appendChild(div);
+            });
+        }
+
+        function deleteDocument(index) {
+            documents.splice(index, 1);
+            localStorage.setItem('documents', JSON.stringify(documents));
+            renderDocuments();
         }
 
         function renderCourses() {
