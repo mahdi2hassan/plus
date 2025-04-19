@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plus 360 - تسجيل دخول الأدمن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --first-color: #005eff;
+            --first-color-hover: #0047cc;
+            --body-color: #f5f6fa;
+            --color-white: #fff;
+            --text-color-second: #333;
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--body-color);
+            color: var(--text-color-second);
+            margin: 0;
+            padding: 50px;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid var(--text-color-second);
+            border-radius: 5px;
+            background: var(--color-white);
+            color: var(--text-color-second);
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: var(--first-color-hover);
+        }
+        .error {
+            color: #FF4D4F;
+            text-align: center;
+            margin: 10px 0;
+            display: none;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: var(--first-color-hover);
+            text-decoration: underline;
+        }
+        .dark-mode {
+            --body-color: #1a1a1a;
+            --color-white: #2c2c2c;
+            --text-color-second: #e0e0e0;
+            --first-shadow-color: rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            .form-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>تسجيل دخول الأدمن</h2>
+        <form onsubmit="return loginAdmin()">
+            <input type="text" id="adminUsername" placeholder="اسم المستخدم" required>
+            <input type="password" id="adminPassword" placeholder="كلمة المرور" required>
+            <p id="errorMessage" class="error">اسم المستخدم أو كلمة المرور غير صحيحة!</p>
+            <button type="submit">تسجيل الدخول</button>
+        </form>
+        <a href="index.html" class="back-link">العودة إلى الرئيسية</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function loginAdmin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // للاختبار: اسم المستخدم "admin" وكلمة المرور "password123"
+            if (username === 'admin' && password === 'password123') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                Swal.fire('تم تسجيل الدخول', 'مرحبًا بك في لوحة الأدمن!', 'success').then(() => {
+                    window.location.href = 'admin.html';
+                });
+            } else {
+                errorMessage.style.display = 'block';
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>

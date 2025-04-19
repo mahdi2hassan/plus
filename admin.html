@@ -3,701 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل دخول الأدمن</title>
+    <title>Plus 360 - لوحة الأدمن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
+        :root {
+            --first-color: #005eff;
+            --first-color-hover: #0047cc;
+            --second-color: #4a90e2;
+            --body-color: #f5f6fa;
+            --color-white: #fff;
+            --text-color-second: #333;
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+        }
         body {
             font-family: 'Cairo', sans-serif;
-            text-align: center;
-            padding: 50px;
             background: var(--body-color);
             color: var(--text-color-second);
+            margin: 0;
+            padding: 0;
         }
-        .form-container, .admin-panel {
-            max-width: 900px;
+        .container {
+            max-width: 1200px;
             margin: auto;
-            background: var(--color-white);
             padding: 20px;
+            background: var(--color-white);
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
-        input, textarea, select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 2px solid var(--text-color-second);
-            border-radius: 5px;
-            font-family: 'Cairo', sans-serif;
+        header {
+            background-image: url('/images/n.png');
+            background-size: cover;
+            background-position: center;
+            height: 200px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .nav-logo p {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
             background: var(--color-white);
+            box-shadow: 0 2px 4px var(--first-shadow-color);
+        }
+        .nav-logo a {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-menu ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-menu a {
+            color: var(--text-color-second);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .nav-menu a:hover {
+            color: var(--first-color);
+        }
+        .nav-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .admin-section {
+            padding: 20px;
+            text-align: center;
+        }
+        .admin-section h1 {
+            margin-bottom: 20px;
             color: var(--text-color-second);
         }
-        button {
+        .admin-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .admin-card {
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px var(--first-shadow-color);
+            padding: 20px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .admin-card:hover {
+            transform: translateY(-5px);
+        }
+        .admin-card i {
+            font-size: 2rem;
+            color: var(--first-color);
+            margin-bottom: 10px;
+        }
+        .admin-card h3 {
+            color: var(--text-color-second);
+            margin-bottom: 10px;
+        }
+        .admin-card button {
             padding: 10px 20px;
             background: var(--first-color);
             color: var(--color-white);
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 5px;
             transition: background 0.3s;
         }
-        button:hover {
+        .admin-card button:hover {
             background: var(--first-color-hover);
         }
-        .error {
-            color: #FF4D4F;
-            display: none;
+        .stats {
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px var(--first-shadow-color);
+        }
+        .stats p {
+            font-size: 1.2rem;
             margin: 10px 0;
         }
-        .back-link {
-            margin-top: 20px;
-            display: inline-block;
-            color: var(--first-color);
-            text-decoration: none;
-        }
-        .back-link:hover {
-            color: var(--first-color-hover);
-            text-decoration: underline;
-        }
-        .admin-panel {
-            display: none;
-        }
-        .course-list, .video-list, .question-list, .document-list {
-            margin-top: 20px;
-        }
-        .course-item, .video-item, .question-item, .document-item {
-            padding: 10px;
-            background: var(--color-white);
-            color: var(--text-color-second);
-            border-radius: 5px;
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px var(--first-shadow-color);
-        }
-        .course-item button, .video-item button, .question-item button, .document-item button {
-            background: #FF4D4F;
-            padding: 5px 10px;
-        }
-        .course-item button:hover, .video-item button:hover, .question-item button:hover, .document-item button:hover {
-            background: #D9363E;
-        }
-        .option-container {
-            margin-top: 10px;
-        }
-        .option-container input {
-            width: 80%;
-            display: inline-block;
-        }
-        .modal {
-            display: none;
+        .dark-mode-btn {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: var(--color-white);
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 600px;
-            width: 90%;
-        }
-        .modal-content h3 {
-            margin-bottom: 20px;
-            color: var(--text-color-second);
-        }
-        .close-btn {
-            background: #FF4D4F;
+            top: 20px;
+            right: 20px;
+            background: var(--first-color);
             color: var(--color-white);
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
+            padding: 10px;
+            border-radius: 50%;
             cursor: pointer;
-            float: left;
+            font-size: 1.2rem;
+            border: none;
+            box-shadow: 0 2px 4px var(--first-shadow-color);
+            transition: background 0.3s;
         }
-        .close-btn:hover {
-            background: #D9363E;
+        .dark-mode-btn:hover {
+            background: var(--first-color-hover);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            margin-top: 20px;
+            border-radius: 0 0 10px 10px;
+        }
+        .footer-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .footer-social-icons .icon a {
+            color: var(--color-white);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        .footer-social-icons .icon a:hover {
+            color: var(--second-color);
+        }
+        .footer-menu {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 0;
+            margin: 20px 0;
+        }
+        .footer-menu a {
+            color: var(--color-white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-menu a:hover {
+            color: var(--second-color);
+        }
+        .dark-mode {
+            --body-color: #1a1a1a;
+            --color-white: #2c2c2c;
+            --text-color-second: #e0e0e0;
+            --first-shadow-color: rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            header {
+                height: 150px;
+            }
+            .nav-menu {
+                display: none;
+            }
+            .nav-menu.responsive {
+                display: block;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background: var(--color-white);
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px var(--first-shadow-color);
+            }
+            .nav-menu ul {
+                flex-direction: column;
+            }
+            .nav-menu-btn {
+                display: block;
+            }
+            .admin-card {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="form-container" id="loginForm">
-        <h2>تسجيل دخول الأدمن</h2>
-        <form onsubmit="return validateAdmin()">
-            <input type="text" id="username" placeholder="اسم المستخدم" required>
-            <input type="password" id="password" placeholder="كلمة المرور" required>
-            <p id="errorMessage" class="error">اسم المستخدم أو كلمة المرور غير صحيحة!</p>
-            <button type="submit">تسجيل الدخول</button>
-        </form>
-        <a href="index.html" class="back-link">العودة إلى المقررات</a>
-    </div>
-
-    <div class="admin-panel" id="adminPanel">
-        <h2>لوحة تحكم الأدمن</h2>
-        <a href="data.html" class="back-link">عرض بيانات الحسابات والإجابات</a>
-
-        <h3>إدارة المقررات</h3>
-        <input type="text" id="courseName" placeholder="اسم المقرر">
-        <input type="text" id="courseId" placeholder="معرف المقرر (مثل course9)">
-        <input type="text" id="courseUrl" placeholder="رابط صفحة المقرر (مثل course9.html)">
-        <input type="text" id="courseStudentCode" placeholder="كود الطالب">
-        <button onclick="addCourse()">إضافة مقرر جديد</button>
-        <div class="course-list" id="courseList"></div>
-
-        <h3>إضافة فيديوهات</h3>
-        <select id="videoCourse">
-            <option value="">اختر المقرر</option>
-        </select>
-        <input type="text" id="videoTitle" placeholder="عنوان الفيديو">
-        <input type="text" id="videoUrl" placeholder="رابط الفيديو (يوتيوب، Google Drive، إلخ)">
-        <input type="text" id="videoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
-        <input type="text" id="videoStudentCode" placeholder="كود الطالب">
-        <button onclick="addVideo()">إضافة فيديو</button>
-        <div class="video-list" id="videoList"></div>
-
-        <h3>إضافة أسئلة</h3>
-        <select id="questionCourse">
-            <option value="">اختر المقرر</option>
-        </select>
-        <input type="text" id="questionStudentCode" placeholder="كود الطالب">
-        <select id="questionType" onchange="toggleQuestionForm()">
-            <option value="multiple">سؤال موضوعي (متعدد الخيارات)</option>
-            <option value="open">سؤال غير موضوعي (مفتوح)</option>
-        </select>
-        <div id="multipleChoiceForm">
-            <textarea id="questionText" placeholder="اكتب السؤال هنا"></textarea>
-            <div class="option-container">
-                <input type="text" id="option1" placeholder="الخيار الأول">
-                <input type="text" id="option2" placeholder="الخيار الثاني">
-                <input type="text" id="option3" placeholder="الخيار الثالث">
-                <input type="text" id="option4" placeholder="الخيار الرابع">
+    <button id="darkModeBtn" class="dark-mode-btn" title="تبديل الوضع الغامق">🌙</button>
+    <div class="container">
+        <header>
+            <div class="nav-logo">
+                <p>Plus 360</p>
             </div>
-            <select id="correctAnswer">
-                <option value="">اختر الإجابة الصحيحة</option>
-                <option value="0">الخيار الأول</option>
-                <option value="1">الخيار الثاني</option>
-                <option value="2">الخيار الثالث</option>
-                <option value="3">الخيار الرابع</option>
-            </select>
-        </div>
-        <div id="openEndedForm" style="display: none;">
-            <textarea id="openQuestionText" placeholder="اكتب السؤال هنا"></textarea>
-            <textarea id="modelAnswer" placeholder="الإجابة النموذجية"></textarea>
-        </div>
-        <button onclick="addQuestion()">إضافة سؤال</button>
-        <div class="question-list" id="questionList"></div>
-
-        <h3>إضافة مستندات</h3>
-        <select id="documentCourse">
-            <option value="">اختر المقرر</option>
-        </select>
-        <input type="text" id="documentTitle" placeholder="عنوان المستند">
-        <input type="file" id="documentFile" accept="application/pdf" required>
-        <input type="text" id="documentStudentCode" placeholder="كود الطالب">
-        <button onclick="addDocument()">إضافة مستند</button>
-        <div class="document-list" id="documentList"></div>
-
-        <button onclick="logout()">تسجيل الخروج</button>
-    </div>
-
-    <!-- نافذة تعديل المقرر -->
-    <div class="modal" id="editCourseModal">
-        <div class="modal-content">
-            <h3>تعديل المقرر</h3>
-            <input type="text" id="editCourseName" placeholder="اسم المقرر">
-            <input type="text" id="editCourseId" placeholder="معرف المقرر">
-            <input type="text" id="editCourseUrl" placeholder="رابط الصفحة">
-            <input type="text" id="editCourseStudentCode" placeholder="كود الطالب">
-            <button onclick="saveCourseEdit()">حفظ التعديلات</button>
-            <button class="close-btn" onclick="closeModal()">إغلاق</button>
-        </div>
-    </div>
-
-    <!-- نافذة تعديل الفيديو -->
-    <div class="modal" id="editVideoModal">
-        <div class="modal-content">
-            <h3>تعديل الفيديو</h3>
-            <select id="editVideoCourse">
-                <option value="">اختر المقرر</option>
-            </select>
-            <input type="text" id="editVideoTitle" placeholder="عنوان الفيديو">
-            <input type="text" id="editVideoUrl" placeholder="رابط الفيديو">
-            <input type="text" id="editVideoThumbnail" placeholder="رابط الصورة المصغرة (اختياري)">
-            <input type="text" id="editVideoStudentCode" placeholder="كود الطالب">
-            <button onclick="saveVideoEdit()">حفظ التعديلات</button>
-            <button class="close-btn" onclick="closeModal()">إغلاق</button>
-        </div>
-    </div>
-
-    <!-- نافذة تعديل السؤال -->
-    <div class="modal" id="editQuestionModal">
-        <div class="modal-content">
-            <h3>تعديل السؤال</h3>
-            <select id="editQuestionType" onchange="toggleEditQuestionForm()">
-                <option value="multiple">سؤال موضوعي</option>
-                <option value="open">سؤال غير موضوعي</option>
-            </select>
-            <input type="text" id="editQuestionStudentCode" placeholder="كود الطالب">
-            <div id="editMultipleChoiceForm">
-                <textarea id="editQuestionText" placeholder="نص السؤال"></textarea>
-                <div class="option-container">
-                    <input type="text" id="editOption1" placeholder="الخيار الأول">
-                    <input type="text" id="editOption2" placeholder="الخيار الثاني">
-                    <input type="text" id="editOption3" placeholder="الخيار الثالث">
-                    <input type="text" id="editOption4" placeholder="الخيار الرابع">
+        </header>
+        <nav>
+            <div class="nav-logo">
+                <a href="index.html" class="nav-name">Plus 360</a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav_menu_list">
+                    <li class="nav_list"><a href="index.html" class="nav-link">الرئيسية</a></li>
+                    <li class="nav_list"><a href="data.html" class="nav-link">إدارة الحسابات</a></li>
+                    <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
+                </ul>
+            </div>
+            <div class="nav-menu-btn"><i class="fa-solid fa-bars"></i></div>
+        </nav>
+        <main class="admin-section">
+            <h1>لوحة تحكم الأدمن</h1>
+            <div class="stats">
+                <p>عدد الحسابات المعلقة: <span id="pendingCount">0</span></p>
+                <p>إجمالي الحسابات: <span id="totalCount">0</span></p>
+            </div>
+            <div class="admin-cards">
+                <div class="admin-card">
+                    <i class="fas fa-users"></i>
+                    <h3>إدارة الحسابات</h3>
+                    <button onclick="window.location.href='data.html'">عرض الحسابات</button>
                 </div>
-                <select id="editCorrectAnswer">
-                    <option value="">اختر الإجابة الصحيحة</option>
-                    <option value="0">الخيار الأول</option>
-                    <option value="1">الخيار الثاني</option>
-                    <option value="2">الخيار الثالث</option>
-                    <option value="3">الخيار الرابع</option>
-                </select>
+                <div class="admin-card">
+                    <i class="fas fa-book"></i>
+                    <h3>إدارة المقررات</h3>
+                    <button onclick="window.location.href='courses.html'">عرض المقررات</button>
+                </div>
+                <div class="admin-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>إحصائيات المنصة</h3>
+                    <button onclick="alert('قيد التطوير')">عرض الإحصائيات</button>
+                </div>
             </div>
-            <div id="editOpenEndedForm" style="display: none;">
-                <textarea id="editOpenQuestionText" placeholder="نص السؤال"></textarea>
-                <textarea id="editModelAnswer" placeholder="الإجابة النموذجية"></textarea>
+        </main>
+        <footer>
+            <div class="top-footer"><p>Plus 360</p></div>
+            <div class="middle-footer">
+                <ul class="footer-menu">
+                    <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
+                    <li class="footer_menu_list"><a href="data.html">إدارة الحسابات</a></li>
+                </ul>
             </div>
-            <button onclick="saveQuestionEdit()">حفظ التعديلات</button>
-            <button class="close-btn" onclick="closeModal()">إغلاق</button>
-        </div>
+            <div class="footer-social-icons">
+                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="fab fa-whatsapp"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="fab fa-telegram"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fab fa-facebook-f"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="fab fa-instagram"></i></a></div>
+            </div>
+            <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
+        </footer>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const ADMIN_USERNAME = "mahdi2hassan";
-        const ADMIN_PASSWORD = "01007586279";
-
-        let courses = JSON.parse(localStorage.getItem('courses')) || [];
-        let videos = JSON.parse(localStorage.getItem('videos')) || [];
-        let questions = JSON.parse(localStorage.getItem('questions')) || [];
-        let documents = JSON.parse(localStorage.getItem('documents')) || [];
-        let editCourseIndex = null;
-        let editVideoIndex = null;
-        let editQuestionIndex = null;
-
-        function validateAdmin() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const errorMessage = document.getElementById("errorMessage");
-
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                document.getElementById("loginForm").style.display = "none";
-                document.getElementById("adminPanel").style.display = "block";
-                errorMessage.style.display = "none";
-                renderCourses();
-                renderVideos();
-                renderQuestions();
-                renderDocuments();
-                populateCourseSelects();
-                return false;
-            } else {
-                errorMessage.style.display = "block";
-                return false;
-            }
+        // التحقق من تسجيل دخول الأدمن
+        const isAdminLoggedIn = localStorage.getItem('adminLoggedIn');
+        if (!isAdminLoggedIn) {
+            window.location.href = 'admin-login.html';
         }
 
-        function populateCourseSelects() {
-            const videoSelect = document.getElementById("videoCourse");
-            const questionSelect = document.getElementById("questionCourse");
-            const documentSelect = document.getElementById("documentCourse");
-            const editVideoSelect = document.getElementById("editVideoCourse");
-            videoSelect.innerHTML = '<option value="">اختر المقرر</option>';
-            questionSelect.innerHTML = '<option value="">اختر المقرر</option>';
-            documentSelect.innerHTML = '<option value="">اختر المقرر</option>';
-            editVideoSelect.innerHTML = '<option value="">اختر المقرر</option>';
-            courses.forEach(course => {
-                const option1 = document.createElement("option");
-                option1.value = course.id;
-                option1.textContent = course.name;
-                videoSelect.appendChild(option1);
-                const option2 = document.createElement("option");
-                option2.value = course.id;
-                option2.textContent = course.name;
-                questionSelect.appendChild(option2);
-                const option3 = document.createElement("option");
-                option3.value = course.id;
-                option3.textContent = course.name;
-                documentSelect.appendChild(option3);
-                const option4 = document.createElement("option");
-                option4.value = course.id;
-                option4.textContent = course.name;
-                editVideoSelect.appendChild(option4);
-            });
-        }
-
-        function addCourse() {
-            const courseName = document.getElementById("courseName").value;
-            const courseId = document.getElementById("courseId").value;
-            const courseUrl = document.getElementById("courseUrl").value;
-            const studentCode = document.getElementById("courseStudentCode").value;
-            if (courseName && courseId && courseUrl && studentCode) {
-                courses.push({ id: courseId, name: courseName, url: courseUrl, studentCode });
-                localStorage.setItem('courses', JSON.stringify(courses));
-                renderCourses();
-                populateCourseSelects();
-                document.getElementById("courseName").value = "";
-                document.getElementById("courseId").value = "";
-                document.getElementById("courseUrl").value = "";
-                document.getElementById("courseStudentCode").value = "";
-            }
-        }
-
-        function editCourse(index) {
-            editCourseIndex = index;
-            const course = courses[index];
-            document.getElementById("editCourseName").value = course.name;
-            document.getElementById("editCourseId").value = course.id;
-            document.getElementById("editCourseUrl").value = course.url;
-            document.getElementById("editCourseStudentCode").value = course.studentCode || "";
-            document.getElementById("editCourseModal").style.display = "flex";
-        }
-
-        function saveCourseEdit() {
-            const courseName = document.getElementById("editCourseName").value;
-            const courseId = document.getElementById("editCourseId").value;
-            const courseUrl = document.getElementById("editCourseUrl").value;
-            const studentCode = document.getElementById("editCourseStudentCode").value;
-            if (courseName && courseId && courseUrl && studentCode) {
-                courses[editCourseIndex] = { id: courseId, name: courseName, url: courseUrl, studentCode };
-                localStorage.setItem('courses', JSON.stringify(courses));
-                renderCourses();
-                populateCourseSelects();
-                closeModal();
-            }
-        }
-
-        function deleteCourse(index) {
-            courses.splice(index, 1);
-            localStorage.setItem('courses', JSON.stringify(courses));
-            renderCourses();
-            populateCourseSelects();
-        }
-
-        function addVideo() {
-            const videoTitle = document.getElementById("videoTitle").value;
-            const videoUrl = document.getElementById("videoUrl").value;
-            const videoThumbnail = document.getElementById("videoThumbnail").value;
-            const courseId = document.getElementById("videoCourse").value;
-            const studentCode = document.getElementById("videoStudentCode").value;
-            if (videoTitle && videoUrl && courseId && studentCode) {
-                videos.push({ courseId, title: videoTitle, url: videoUrl, thumbnail: videoThumbnail, studentCode });
-                localStorage.setItem('videos', JSON.stringify(videos));
-                renderVideos();
-                document.getElementById("videoTitle").value = "";
-                document.getElementById("videoUrl").value = "";
-                document.getElementById("videoThumbnail").value = "";
-                document.getElementById("videoCourse").value = "";
-                document.getElementById("videoStudentCode").value = "";
-            }
-        }
-
-        function editVideo(index) {
-            editVideoIndex = index;
-            const video = videos[index];
-            document.getElementById("editVideoCourse").value = video.courseId;
-            document.getElementById("editVideoTitle").value = video.title;
-            document.getElementById("editVideoUrl").value = video.url;
-            document.getElementById("editVideoThumbnail").value = video.thumbnail || "";
-            document.getElementById("editVideoStudentCode").value = video.studentCode || "";
-            document.getElementById("editVideoModal").style.display = "flex";
-        }
-
-        function saveVideoEdit() {
-            const courseId = document.getElementById("editVideoCourse").value;
-            const videoTitle = document.getElementById("editVideoTitle").value;
-            const videoUrl = document.getElementById("editVideoUrl").value;
-            const videoThumbnail = document.getElementById("editVideoThumbnail").value;
-            const studentCode = document.getElementById("editVideoStudentCode").value;
-            if (videoTitle && videoUrl && courseId && studentCode) {
-                videos[editVideoIndex] = { courseId, title: videoTitle, url: videoUrl, thumbnail: videoThumbnail, studentCode };
-                localStorage.setItem('videos', JSON.stringify(videos));
-                renderVideos();
-                closeModal();
-            }
-        }
-
-        function deleteVideo(index) {
-            videos.splice(index, 1);
-            localStorage.setItem('videos', JSON.stringify(videos));
-            renderVideos();
-        }
-
-        function toggleQuestionForm() {
-            const questionType = document.getElementById("questionType").value;
-            document.getElementById("multipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
-            document.getElementById("openEndedForm").style.display = questionType === "open" ? "block" : "none";
-        }
-
-        function toggleEditQuestionForm() {
-            const questionType = document.getElementById("editQuestionType").value;
-            document.getElementById("editMultipleChoiceForm").style.display = questionType === "multiple" ? "block" : "none";
-            document.getElementById("editOpenEndedForm").style.display = questionType === "open" ? "block" : "none";
-        }
-
-        function addQuestion() {
-            const courseId = document.getElementById("questionCourse").value;
-            const questionType = document.getElementById("questionType").value;
-            const studentCode = document.getElementById("questionStudentCode").value;
-
-            if (!courseId || !studentCode) return;
-
-            if (questionType === "multiple") {
-                const questionText = document.getElementById("questionText").value;
-                const options = [
-                    document.getElementById("option1").value,
-                    document.getElementById("option2").value,
-                    document.getElementById("option3").value,
-                    document.getElementById("option4").value
-                ].filter(opt => opt);
-                const correctAnswer = document.getElementById("correctAnswer").value;
-
-                if (questionText && options.length >= 2 && correctAnswer !== "") {
-                    const questionId = `q${Date.now()}`;
-                    questions.push({
-                        id: questionId,
-                        courseId,
-                        type: "multiple",
-                        text: questionText,
-                        options,
-                        correctAnswer: parseInt(correctAnswer),
-                        studentCode
-                    });
-                    localStorage.setItem('questions', JSON.stringify(questions));
-                    renderQuestions();
-                    document.getElementById("questionText").value = "";
-                    document.getElementById("option1").value = "";
-                    document.getElementById("option2").value = "";
-                    document.getElementById("option3").value = "";
-                    document.getElementById("option4").value = "";
-                    document.getElementById("correctAnswer").value = "";
-                    document.getElementById("questionCourse").value = "";
-                    document.getElementById("questionStudentCode").value = "";
-                }
-            } else {
-                const questionText = document.getElementById("openQuestionText").value;
-                const modelAnswer = document.getElementById("modelAnswer").value;
-
-                if (questionText && modelAnswer) {
-                    const questionId = `q${Date.now()}`;
-                    questions.push({
-                        id: questionId,
-                        courseId,
-                        type: "open",
-                        text: questionText,
-                        modelAnswer,
-                        studentCode
-                    });
-                    localStorage.setItem('questions', JSON.stringify(questions));
-                    renderQuestions();
-                    document.getElementById("openQuestionText").value = "";
-                    document.getElementById("modelAnswer").value = "";
-                    document.getElementById("questionCourse").value = "";
-                    document.getElementById("questionStudentCode").value = "";
-                }
-            }
-        }
-
-        function editQuestion(index) {
-            editQuestionIndex = index;
-            const question = questions[index];
-            document.getElementById("editQuestionType").value = question.type;
-            document.getElementById("editQuestionStudentCode").value = question.studentCode || "";
-            if (question.type === "multiple") {
-                document.getElementById("editQuestionText").value = question.text;
-                document.getElementById("editOption1").value = question.options[0] || "";
-                document.getElementById("editOption2").value = question.options[1] || "";
-                document.getElementById("editOption3").value = question.options[2] || "";
-                document.getElementById("editOption4").value = question.options[3] || "";
-                document.getElementById("editCorrectAnswer").value = question.correctAnswer;
-            } else {
-                document.getElementById("editOpenQuestionText").value = question.text;
-                document.getElementById("editModelAnswer").value = question.modelAnswer;
-            }
-            toggleEditQuestionForm();
-            document.getElementById("editQuestionModal").style.display = "flex";
-        }
-
-        function saveQuestionEdit() {
-            const questionType = document.getElementById("editQuestionType").value;
-            const studentCode = document.getElementById("editQuestionStudentCode").value;
-
-            if (!studentCode) return;
-
-            if (questionType === "multiple") {
-                const questionText = document.getElementById("editQuestionText").value;
-                const options = [
-                    document.getElementById("editOption1").value,
-                    document.getElementById("editOption2").value,
-                    document.getElementById("editOption3").value,
-                    document.getElementById("editOption4").value
-                ].filter(opt => opt);
-                const correctAnswer = document.getElementById("editCorrectAnswer").value;
-
-                if (questionText && options.length >= 2 && correctAnswer !== "") {
-                    questions[editQuestionIndex] = {
-                        id: questions[editQuestionIndex].id,
-                        courseId: questions[editQuestionIndex].courseId,
-                        type: "multiple",
-                        text: questionText,
-                        options,
-                        correctAnswer: parseInt(correctAnswer),
-                        studentCode
-                    };
-                    localStorage.setItem('questions', JSON.stringify(questions));
-                    renderQuestions();
-                    closeModal();
-                }
-            } else {
-                const questionText = document.getElementById("editOpenQuestionText").value;
-                const modelAnswer = document.getElementById("editModelAnswer").value;
-
-                if (questionText && modelAnswer) {
-                    questions[editQuestionIndex] = {
-                        id: questions[editQuestionIndex].id,
-                        courseId: questions[editQuestionIndex].courseId,
-                        type: "open",
-                        text: questionText,
-                        modelAnswer,
-                        studentCode
-                    };
-                    localStorage.setItem('questions', JSON.stringify(questions));
-                    renderQuestions();
-                    closeModal();
-                }
-            }
-        }
-
-        function deleteQuestion(index) {
-            questions.splice(index, 1);
-            localStorage.setItem('questions', JSON.stringify(questions));
-            renderQuestions();
-        }
-
-        function addDocument() {
-            const documentTitle = document.getElementById("documentTitle").value;
-            const documentFile = document.getElementById("documentFile").files[0];
-            const courseId = document.getElementById("documentCourse").value;
-            const studentCode = document.getElementById("documentStudentCode").value;
-
-            if (!documentTitle || !documentFile || !courseId || !studentCode) return;
-            if (documentFile.type !== "application/pdf") {
-                alert("يرجى رفع ملف PDF فقط!");
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const documentData = e.target.result;
-                documents.push({
-                    id: `doc${Date.now()}`,
-                    courseId,
-                    title: documentTitle,
-                    data: documentData,
-                    studentCode
-                });
-                localStorage.setItem('documents', JSON.stringify(documents));
-                renderDocuments();
-                document.getElementById("documentTitle").value = "";
-                document.getElementById("documentFile").value = "";
-                document.getElementById("documentCourse").value = "";
-                document.getElementById("documentStudentCode").value = "";
-            };
-            reader.readAsDataURL(documentFile);
-        }
-
-        function renderDocuments() {
-            const documentList = document.getElementById("documentList");
-            documentList.innerHTML = "";
-            documents.forEach((doc, index) => {
-                const course = courses.find(c => c.id === doc.courseId);
-                const div = document.createElement("div");
-                div.className = "document-item";
-                div.innerHTML = `
-                    ${doc.title} (${course ? course.name : 'غير مرتبط'}) - للطالب: ${doc.studentCode}
-                    <button onclick="deleteDocument(${index})">حذف</button>
-                `;
-                documentList.appendChild(div);
-            });
-        }
-
-        function deleteDocument(index) {
-            documents.splice(index, 1);
-            localStorage.setItem('documents', JSON.stringify(documents));
-            renderDocuments();
-        }
-
-        function renderCourses() {
-            const courseList = document.getElementById("courseList");
-            courseList.innerHTML = "";
-            courses.forEach((course, index) => {
-                const div = document.createElement("div");
-                div.className = "course-item";
-                div.innerHTML = `
-                    ${course.name} - للطالب: ${course.studentCode}
-                    <div>
-                        <button onclick="editCourse(${index})">تعديل</button>
-                        <button onclick="deleteCourse(${index})">حذف</button>
-                    </div>
-                `;
-                courseList.appendChild(div);
-            });
-        }
-
-        function renderVideos() {
-            const videoList = document.getElementById("videoList");
-            videoList.innerHTML = "";
-            videos.forEach((video, index) => {
-                const course = courses.find(c => c.id === video.courseId);
-                const div = document.createElement("div");
-                div.className = "video-item";
-                div.innerHTML = `
-                    ${video.title} (${course ? course.name : 'غير مرتبط'}) - للطالب: ${video.studentCode}
-                    <div>
-                        <button onclick="editVideo(${index})">تعديل</button>
-                        <button onclick="deleteVideo(${index})">حذف</button>
-                    </div>
-                `;
-                videoList.appendChild(div);
-            });
-        }
-
-        function renderQuestions() {
-            const questionList = document.getElementById("questionList");
-            questionList.innerHTML = "";
-            questions.forEach((question, index) => {
-                const course = courses.find(c => c.id === question.courseId);
-                const div = document.createElement("div");
-                div.className = "question-item";
-                div.innerHTML = `
-                    سؤال ${index + 1}: ${question.text} (${question.type === "multiple" ? "موضوعي" : "مفتوح"}) (${course ? course.name : 'غير مرتبط'}) - للطالب: ${question.studentCode}
-                    <div>
-                        <button onclick="editQuestion(${index})">تعديل</button>
-                        <button onclick="deleteQuestion(${index})">حذف</button>
-                    </div>
-                `;
-                questionList.appendChild(div);
-            });
-        }
-
-        function closeModal() {
-            document.getElementById("editCourseModal").style.display = "none";
-            document.getElementById("editVideoModal").style.display = "none";
-            document.getElementById("editQuestionModal").style.display = "none";
+        // تحميل الإحصائيات
+        let accounts = [];
+        try {
+            accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+            document.getElementById('pendingCount').textContent = accounts.filter(acc => acc.pending).length;
+            document.getElementById('totalCount').textContent = accounts.length;
+        } catch (error) {
+            console.error('خطأ في تحليل البيانات:', error);
+            Swal.fire('خطأ', 'حدث خطأ في تحميل الإحصائيات!', 'error');
         }
 
         function logout() {
-            document.getElementById("loginForm").style.display = "block";
-            document.getElementById("adminPanel").style.display = "none";
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'admin-login.html';
         }
+
+        // قائمة التنقل المحمولة
+        document.querySelector('.nav-menu-btn').addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('responsive');
+        });
+
+        // تبديل الوضع الغامق
+        document.getElementById('darkModeBtn').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : '');
+            document.getElementById('darkModeBtn').innerHTML = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
 
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
+            document.getElementById('darkModeBtn').innerHTML = '☀️';
         }
     </script>
 </body>
