@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plus 360 - المقررات</title>
+    <title>Plus 360 - الرئيسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -31,6 +31,22 @@
             background: var(--color-white);
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        header {
+            background-image: url('/images/n.png');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .nav-logo p {
+            font-size: 2rem;
+            font-weight: bold;
         }
         nav {
             display: flex;
@@ -107,6 +123,33 @@
             font-size: 1.2rem;
             text-align: center;
             margin: 20px 0;
+        }
+        .action-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .action-buttons button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        .new-account-btn {
+            background: var(--first-color);
+            color: var(--color-white);
+        }
+        .new-account-btn:hover {
+            background: var(--first-color-hover);
+        }
+        .subscribe-btn {
+            background: #ff204e;
+            color: var(--color-white);
+        }
+        .subscribe-btn:hover {
+            background: #e01b3d;
         }
         .dark-mode-btn {
             position: fixed;
@@ -192,12 +235,20 @@
             .container {
                 padding: 10px;
             }
+            header {
+                height: 200px;
+            }
         }
     </style>
 </head>
 <body>
     <button id="darkModeBtn" class="dark-mode-btn" title="تبديل الوضع الغامق">🌙</button>
     <div class="container">
+        <header>
+            <div class="nav-logo">
+                <p>Plus 360</p>
+            </div>
+        </header>
         <nav>
             <div class="nav-logo">
                 <a href="#" class="nav-name">Plus 360</a>
@@ -216,6 +267,10 @@
                 <div class="top-header">
                     <h1>مقرراتك الدراسية</h1>
                     <span>اختر المقرر المناسب لك</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="new-account-btn" onclick="window.location.href='register.html'">حساب جديد</button>
+                    <button class="subscribe-btn" onclick="sendWhatsApp()">اشترك الآن</button>
                 </div>
                 <div class="course-container" id="courseContainer"></div>
             </section>
@@ -237,41 +292,65 @@
             <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
         </footer>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // التحقق من تسجيل الدخول
-        const currentStudentCode = localStorage.getItem('currentStudentCode');
-        if (!currentStudentCode) {
-            window.location.href = 'login.html';
-        }
-
-        // جلب المقررات
+        // تحميل المقررات من localStorage
         let courses = [];
         try {
-            courses = JSON.parse(localStorage.getItem('courses')) || [];
+            courses = JSON.parse(localStorage.getItem('courses')) || [
+                { id: "course1", name: "مقرر الصف الأول الإعدادي", url: "grade1-prep.html", studentCode: null },
+                { id: "course2", name: "مقرر الصف الثاني الإعدادي", url: "grade2-prep.html", studentCode: null },
+                { id: "course3", name: "مقرر الصف الثالث الإعدادي", url: "grade3-prep.html", studentCode: null },
+                { id: "course4", name: "مقرر الصف الأول الثانوي", url: "grade1-sec.html", studentCode: null },
+                { id: "course5", name: "مقرر الصف الثاني الثانوي علمي", url: "grade2-sec-sci.html", studentCode: null },
+                { id: "course6", name: "مقرر الصف الثاني الثانوي أدبي", url: "grade2-sec-lit.html", studentCode: null },
+                { id: "course7", name: "مقرر الصف الثالث الثانوي علمي", url: "grade3-sec-sci.html", studentCode: null },
+                { id: "course8", name: "مقرر الصف الثالث الثانوي أدبي إحصاء", url: "grade3-sec-lit.html", studentCode: null }
+            ];
         } catch (error) {
             console.error('خطأ في تحليل courses:', error);
+            Swal.fire('خطأ', 'حدث خطأ في تحميل المقررات!', 'error');
         }
 
-        const courseContainer = document.getElementById('courseContainer');
-
-        // تصفية المقررات بناءً على كود الطالب
-        const studentCourses = courses.filter(course => course.studentCode === currentStudentCode);
-
-        if (studentCourses.length === 0) {
-            courseContainer.innerHTML = '<p class="no-courses">لا توجد مقررات متاحة لحسابك.</p>';
-        } else {
-            studentCourses.forEach(course => {
-                const div = document.createElement('div');
-                div.className = 'course-box';
-                div.innerHTML = `
-                    <h3>${course.name}</h3>
-                    <a href="${course.url}">عرض المقرر</a>
-                `;
-                courseContainer.appendChild(div);
-            });
+        // تحديث localStorage بالمقررات الافتراضية إذا لزم الأمر
+        if (!localStorage.getItem('courses')) {
+            localStorage.setItem('courses', JSON.stringify(courses));
         }
 
-        // تسجيل الخروج
+        function renderCourses() {
+            const courseContainer = document.getElementById('courseContainer');
+            courseContainer.innerHTML = '';
+            const currentStudentCode = localStorage.getItem('currentStudentCode');
+
+            let displayCourses = courses;
+            if (currentStudentCode) {
+                displayCourses = courses.filter(course => course.studentCode === currentStudentCode || course.studentCode === null);
+            }
+
+            if (displayCourses.length === 0) {
+                courseContainer.innerHTML = '<p class="no-courses">لا توجد مقررات متاحة لحسابك. <a href="login.html">سجل الدخول</a> أو <a href="register.html">أنشئ حسابًا جديدًا</a>.</p>';
+            } else {
+                displayCourses.forEach(course => {
+                    const div = document.createElement('div');
+                    div.className = 'course-box';
+                    div.innerHTML = `
+                        <h3>${course.name}</h3>
+                        <a href="${currentStudentCode ? course.url : 'login.html'}">عرض المقرر</a>
+                    `;
+                    courseContainer.appendChild(div);
+                });
+            }
+        }
+
+        renderCourses();
+
+        function sendWhatsApp() {
+            const phoneNumber = "+201558870907";
+            const message = "أسعار الاشتراك";
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, "_blank");
+        }
+
         function logout() {
             localStorage.removeItem('currentStudentCode');
             window.location.href = 'login.html';

@@ -3,18 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بيانات الحسابات والإجابات</title>
+    <title>Plus 360 - إدارة الحسابات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
+        :root {
+            --first-color: #005eff;
+            --first-color-hover: #0047cc;
+            --second-color: #4a90e2;
+            --body-color: #f5f6fa;
+            --color-white: #fff;
+            --text-color-second: #333;
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--body-color);
+            color: var(--text-color-second);
+            margin: 0;
+            padding: 0;
+        }
         .container {
             max-width: 1000px;
             margin: auto;
-            background: var(--color-white);
             padding: 20px;
+            background: var(--color-white);
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
-        h1, h3 {
+        h1 {
             text-align: center;
             margin-bottom: 20px;
             color: var(--text-color-second);
@@ -45,43 +62,16 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 5px;
             transition: background 0.3s;
         }
         button:hover {
             background: var(--first-color-hover);
         }
-        .approve {
-            background: var(--text-color-third);
-        }
-        .approve:hover {
-            background: #27AE60;
-        }
-        .reject {
+        .delete {
             background: #FF4D4F;
         }
-        .reject:hover {
+        .delete:hover {
             background: #D9363E;
-        }
-        .account-item {
-            padding: 10px;
-            background: var(--color-white);
-            color: var(--text-color-second);
-            border-radius: 5px;
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px var(--first-shadow-color);
-        }
-        .account-item img {
-            max-width: 100px;
-            max-height: 100px;
-            margin-left: 10px;
-            border-radius: 5px;
-        }
-        .account-list {
-            margin-top: 20px;
         }
         .back-link {
             display: inline-block;
@@ -93,15 +83,25 @@
             color: var(--first-color-hover);
             text-decoration: underline;
         }
+        .dark-mode {
+            --body-color: #1a1a1a;
+            --color-white: #2c2c2c;
+            --text-color-second: #e0e0e0;
+            --first-shadow-color: rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            table {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>بيانات الحسابات والإجابات</h1>
-        <button onclick="exportToExcel()">تصدير إلى Excel</button>
-        <h3>الموافقة على الحسابات</h3>
-        <div class="account-list" id="accountList"></div>
-        <h3>بيانات الحسابات</h3>
+        <h1>إدارة الحسابات</h1>
         <table id="accountsTable">
             <thead>
                 <tr>
@@ -113,59 +113,40 @@
                     <th>المنطقة</th>
                     <th>إيصال الدفع</th>
                     <th>الحالة</th>
-                    <th>تاريخ التسجيل</th>
+                    <th>إجراءات</th>
                 </tr>
             </thead>
             <tbody id="accountsBody"></tbody>
         </table>
-        <h3>إجابات الأسئلة</h3>
-        <table id="answersTable">
-            <thead>
-                <tr>
-                    <th>كود الطالب</th>
-                    <th>المقرر</th>
-                    <th>السؤال</th>
-                    <th>الإجابة</th>
-                    <th>النتيجة</th>
-                    <th>تاريخ الإجابة</th>
-                </tr>
-            </thead>
-            <tbody id="answersBody"></tbody>
-        </table>
         <a href="admin.html" class="back-link">العودة إلى لوحة الأدمن</a>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
-        let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
-        const answers = JSON.parse(localStorage.getItem('studentAnswers')) || [];
-        const questions = JSON.parse(localStorage.getItem('questions')) || [];
-        const courses = JSON.parse(localStorage.getItem('courses')) || [];
+        let accounts = [];
+        let studentCodes = [];
+        let courses = [];
+        let videos = [];
+        let questions = [];
+        let documents = [];
+
+        // تحميل البيانات من localStorage
+        try {
+            accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+            studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
+            courses = JSON.parse(localStorage.getItem('courses')) || [];
+            videos = JSON.parse(localStorage.getItem('videos')) || [];
+            questions = JSON.parse(localStorage.getItem('questions')) || [];
+            documents = JSON.parse(localStorage.getItem('documents')) || [];
+        } catch (error) {
+            console.error('خطأ في تحليل البيانات:', error);
+            Swal.fire('خطأ', 'حدث خطأ في تحميل البيانات!', 'error');
+        }
 
         function renderAccounts() {
-            const accountList = document.getElementById("accountList");
-            accountList.innerHTML = "";
-            accounts.filter(account => account.pending).forEach((account, index) => {
-                const div = document.createElement("div");
-                div.className = "account-item";
-                div.innerHTML = `
-                    <div>
-                        ${account.name} - ${account.grade} - ${account.phone} - ${account.governorate} - ${account.area}
-                        <img src="${account.receiptImage}" alt="إيصال الدفع">
-                    </div>
-                    <div>
-                        <button class="approve" onclick="approveAccount(${index})">موافقة</button>
-                        <button class="reject" onclick="rejectAccount(${index})">رفض</button>
-                    </div>
-                `;
-                accountList.appendChild(div);
-            });
-
-            const accountsBody = document.getElementById("accountsBody");
-            accountsBody.innerHTML = "";
-            accounts.forEach(account => {
-                const tr = document.createElement("tr");
+            const accountsBody = document.getElementById('accountsBody');
+            accountsBody.innerHTML = '';
+            accounts.forEach((account, index) => {
+                const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${account.code}</td>
                     <td>${account.name}</td>
@@ -173,132 +154,56 @@
                     <td>${account.phone}</td>
                     <td>${account.governorate}</td>
                     <td>${account.area}</td>
-                    <td><img src="${account.receiptImage}" alt="إيصال"></td>
-                    <td>${account.pending ? 'قيد المراجعة' : (account.active ? 'مفعل' : 'غير مفعل')}</td>
-                    <td>${new Date(account.timestamp).toLocaleString('ar-EG')}</td>
+                    <td><img src="${account.receiptImage || ''}" alt="إيصال" onerror="this.style.display='none'"></td>
+                    <td>${account.active ? 'مفعل' : 'غير مفعل'}</td>
+                    <td><button class="delete" onclick="deleteAccount(${index})">حذف الحساب</button></td>
                 `;
                 accountsBody.appendChild(tr);
             });
         }
 
-        function approveAccount(index) {
-            try {
-                if (index < 0 || index >= accounts.length) {
-                    console.error("فهرس الحساب غير صالح:", index);
-                    alert("خطأ: الحساب غير موجود!");
-                    return;
-                }
-
-                accounts[index].pending = false;
-                accounts[index].active = true;
-                const code = accounts[index].code;
-
-                const codeIndex = studentCodes.findIndex(sc => sc.code === code);
-                if (codeIndex === -1) {
-                    console.error("الكود غير موجود في studentCodes:", code);
-                    alert("خطأ: كود الطالب غير موجود!");
-                    return;
-                }
-
-                studentCodes[codeIndex].active = true;
-                studentCodes[codeIndex].pending = false;
-
-                localStorage.setItem('accounts', JSON.stringify(accounts));
-                localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
-                renderAccounts();
-                alert(`تمت الموافقة على حساب ${accounts[index].name} (كود: ${code})`);
-            } catch (error) {
-                console.error("خطأ أثناء الموافقة:", error);
-                alert("حدث خطأ أثناء الموافقة! تحقق من وحدة التحكم.");
-            }
-        }
-
-        function rejectAccount(index) {
-            try {
-                if (index < 0 || index >= accounts.length) {
-                    console.error("فهرس الحساب غير صالح:", index);
-                    alert("خطأ: الحساب غير موجود!");
-                    return;
-                }
-
-                const code = accounts[index].code;
-                accounts.splice(index, 1);
-                studentCodes = studentCodes.filter(sc => sc.code !== code);
-
-                localStorage.setItem('accounts', JSON.stringify(accounts));
-                localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
-                renderAccounts();
-                alert("تم رفض الحساب وحذفه.");
-            } catch (error) {
-                console.error("خطأ أثناء الرفض:", error);
-                alert("حدث خطأ أثناء الرفض! تحقق من وحدة التحكم.");
-            }
-        }
-
-        function renderAnswers() {
-            const answersBody = document.getElementById("answersBody");
-            answersBody.innerHTML = "";
-            answers.forEach(answer => {
-                const question = questions.find(q => q.id === answer.questionId);
-                const course = courses.find(c => c.id === answer.courseId);
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${answer.studentCode}</td>
-                    <td>${course ? course.name : 'غير معروف'}</td>
-                    <td>${question ? question.text : 'غير معروف'}</td>
-                    <td>${answer.studentAnswer}</td>
-                    <td>${answer.isCorrect ? 'صحيحة' : 'خاطئة'}</td>
-                    <td>${new Date(answer.timestamp).toLocaleString('ar-EG')}</td>
-                `;
-                accountsBody.appendChild(tr);
+        async function deleteAccount(index) {
+            const account = accounts[index];
+            const result = await Swal.fire({
+                title: 'تأكيد الحذف',
+                text: `هل أنت متأكد من حذف حساب ${account.name} (كود: ${account.code})؟ سيتم حذف جميع المحتوى المرتبط.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FF4D4F',
+                cancelButtonColor: '#005eff',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
             });
-        }
 
-        function exportToExcel() {
-            const wb = XLSX.utils.book_new();
-
-            const accountsData = accounts.map(account => ({
-                "كود الطالب": account.code,
-                "الاسم": account.name,
-                "الصف": account.grade,
-                "رقم الهاتف": account.phone,
-                "المحافظة": account.governorate,
-                "المنطقة": account.area,
-                "الحالة": account.pending ? 'قيد المراجعة' : (account.active ? 'مفعل' : 'غير مفعل'),
-                "تاريخ التسجيل": new Date(account.timestamp).toLocaleString('ar-EG')
-            }));
-            const accountsSheet = XLSX.utils.json_to_sheet(accountsData);
-            XLSX.utils.book_append_sheet(wb, accountsSheet, "الحسابات");
-
-            const answersData = answers.map(answer => {
-                const question = questions.find(q => q.id === answer.questionId);
-                const course = courses.find(c => c.id === answer.courseId);
-                return {
-                    "كود الطالب": answer.studentCode,
-                    "المقرر": course ? course.name : 'غير معروف',
-                    "السؤال": question ? question.text : 'غير معروف',
-                    "الإجابة": answer.studentAnswer,
-                    "النتيجة": answer.isCorrect ? 'صحيحة' : 'خاطئة',
-                    "تاريخ الإجابة": new Date(answer.timestamp).toLocaleString('ar-EG')
-                };
-            });
-            const answersSheet = XLSX.utils.json_to_sheet(answersData);
-            XLSX.utils.book_append_sheet(wb, answersSheet, "الإجابات");
-
-            XLSX.writeFile(wb, "student_data.xlsx");
+            if (result.isConfirmed) {
+                try {
+                    const code = account.code;
+                    // حذف الحساب
+                    accounts.splice(index, 1);
+                    studentCodes = studentCodes.filter(sc => sc.code !== code);
+                    // حذف المحتوى المرتبط
+                    courses = courses.filter(course => course.studentCode !== code);
+                    videos = videos.filter(video => video.studentCode !== code);
+                    questions = questions.filter(question => question.studentCode !== code);
+                    documents = documents.filter(doc => doc.studentCode !== code);
+                    // تحديث localStorage
+                    localStorage.setItem('accounts', JSON.stringify(accounts));
+                    localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+                    localStorage.setItem('courses', JSON.stringify(courses));
+                    localStorage.setItem('videos', JSON.stringify(videos));
+                    localStorage.setItem('questions', JSON.stringify(questions));
+                    localStorage.setItem('documents', JSON.stringify(documents));
+                    // تحديث الواجهة
+                    renderAccounts();
+                    Swal.fire('تم الحذف', `تم حذف حساب ${account.name} بنجاح.`, 'success');
+                } catch (error) {
+                    console.error('خطأ أثناء الحذف:', error);
+                    Swal.fire('خطأ', 'حدث خطأ أثناء حذف الحساب!', 'error');
+                }
+            }
         }
 
         renderAccounts();
-        renderAnswers();
-
-        document.getElementById('dar')?.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.removeItem('theme');
-            }
-        });
 
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
