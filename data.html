@@ -6,12 +6,6 @@
     <title>بيانات الحسابات والإجابات</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            padding: 50px;
-            background: var(--body-color);
-            color: var(--text-color-second);
-        }
         .container {
             max-width: 1000px;
             margin: auto;
@@ -23,6 +17,7 @@
         h1, h3 {
             text-align: center;
             margin-bottom: 20px;
+            color: var(--text-color-second);
         }
         table {
             width: 100%;
@@ -50,10 +45,43 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 10px 0;
+            margin: 5px;
+            transition: background 0.3s;
         }
         button:hover {
             background: var(--first-color-hover);
+        }
+        .approve {
+            background: var(--text-color-third);
+        }
+        .approve:hover {
+            background: #27AE60;
+        }
+        .reject {
+            background: #FF4D4F;
+        }
+        .reject:hover {
+            background: #D9363E;
+        }
+        .account-item {
+            padding: 10px;
+            background: var(--color-white);
+            color: var(--text-color-second);
+            border-radius: 5px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px var(--first-shadow-color);
+        }
+        .account-item img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-left: 10px;
+            border-radius: 5px;
+        }
+        .account-list {
+            margin-top: 20px;
         }
         .back-link {
             display: inline-block;
@@ -62,6 +90,7 @@
             text-decoration: none;
         }
         .back-link:hover {
+            color: var(--first-color-hover);
             text-decoration: underline;
         }
     </style>
@@ -70,6 +99,8 @@
     <div class="container">
         <h1>بيانات الحسابات والإجابات</h1>
         <button onclick="exportToExcel()">تصدير إلى Excel</button>
+        <h3>الموافقة على الحسابات</h3>
+        <div class="account-list" id="accountList"></div>
         <h3>بيانات الحسابات</h3>
         <table id="accountsTable">
             <thead>
@@ -106,12 +137,31 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
-        const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+        let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+        let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
         const answers = JSON.parse(localStorage.getItem('studentAnswers')) || [];
         const questions = JSON.parse(localStorage.getItem('questions')) || [];
         const courses = JSON.parse(localStorage.getItem('courses')) || [];
 
         function renderAccounts() {
+            const accountList = document.getElementById("accountList");
+            accountList.innerHTML = "";
+            accounts.filter(account => account.pending).forEach((account, index) => {
+                const div = document.createElement("div");
+                div.className = "account-item";
+                div.innerHTML = `
+                    <div>
+                        ${account.name} - ${account.grade} - ${account.phone} - ${account.governorate} - ${account.area}
+                        <img src="${account.receiptImage}" alt="إيصال الدفع">
+                    </div>
+                    <div>
+                        <button class="approve" onclick="approveAccount(${index})">موافقة</button>
+                        <button class="reject" onclick="rejectAccount(${index})">رفض</button>
+                    </div>
+                `;
+                accountList.appendChild(div);
+            });
+
             const accountsBody = document.getElementById("accountsBody");
             accountsBody.innerHTML = "";
             accounts.forEach(account => {
@@ -131,6 +181,60 @@
             });
         }
 
+        function approveAccount(index) {
+            try {
+                if (index < 0 || index >= accounts.length) {
+                    console.error("فهرس الحساب غير صالح:", index);
+                    alert("خطأ: الحساب غير موجود!");
+                    return;
+                }
+
+                accounts[index].pending = false;
+                accounts[index].active = true;
+                const code = accounts[index].code;
+
+                const codeIndex = studentCodes.findIndex(sc => sc.code === code);
+                if (codeIndex === -1) {
+                    console.error("الكود غير موجود في studentCodes:", code);
+                    alert("خطأ: كود الطالب غير موجود!");
+                    return;
+                }
+
+                studentCodes[codeIndex].active = true;
+                studentCodes[codeIndex].pending = false;
+
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+                localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+                renderAccounts();
+                alert(`تمت الموافقة على حساب ${accounts[index].name} (كود: ${code})`);
+            } catch (error) {
+                console.error("خطأ أثناء الموافقة:", error);
+                alert("حدث خطأ أثناء الموافقة! تحقق من وحدة التحكم.");
+            }
+        }
+
+        function rejectAccount(index) {
+            try {
+                if (index < 0 || index >= accounts.length) {
+                    console.error("فهرس الحساب غير صالح:", index);
+                    alert("خطأ: الحساب غير موجود!");
+                    return;
+                }
+
+                const code = accounts[index].code;
+                accounts.splice(index, 1);
+                studentCodes = studentCodes.filter(sc => sc.code !== code);
+
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+                localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+                renderAccounts();
+                alert("تم رفض الحساب وحذفه.");
+            } catch (error) {
+                console.error("خطأ أثناء الرفض:", error);
+                alert("حدث خطأ أثناء الرفض! تحقق من وحدة التحكم.");
+            }
+        }
+
         function renderAnswers() {
             const answersBody = document.getElementById("answersBody");
             answersBody.innerHTML = "";
@@ -146,14 +250,13 @@
                     <td>${answer.isCorrect ? 'صحيحة' : 'خاطئة'}</td>
                     <td>${new Date(answer.timestamp).toLocaleString('ar-EG')}</td>
                 `;
-                answersBody.appendChild(tr);
+                accountsBody.appendChild(tr);
             });
         }
 
         function exportToExcel() {
             const wb = XLSX.utils.book_new();
 
-            // تصدير بيانات الحسابات
             const accountsData = accounts.map(account => ({
                 "كود الطالب": account.code,
                 "الاسم": account.name,
@@ -167,7 +270,6 @@
             const accountsSheet = XLSX.utils.json_to_sheet(accountsData);
             XLSX.utils.book_append_sheet(wb, accountsSheet, "الحسابات");
 
-            // تصدير إجابات الأسئلة
             const answersData = answers.map(answer => {
                 const question = questions.find(q => q.id === answer.questionId);
                 const course = courses.find(c => c.id === answer.courseId);
@@ -189,7 +291,6 @@
         renderAccounts();
         renderAnswers();
 
-        // تبديل الوضع الغامق
         document.getElementById('dar')?.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
             if (document.body.classList.contains('dark-mode')) {

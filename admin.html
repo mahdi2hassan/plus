@@ -28,6 +28,8 @@
             border: 2px solid var(--text-color-second);
             border-radius: 5px;
             font-family: 'Cairo', sans-serif;
+            background: var(--color-white);
+            color: var(--text-color-second);
         }
         button {
             padding: 10px 20px;
@@ -37,12 +39,13 @@
             border-radius: 5px;
             cursor: pointer;
             margin: 5px;
+            transition: background 0.3s;
         }
         button:hover {
             background: var(--first-color-hover);
         }
         .error {
-            color: red;
+            color: #FF4D4F;
             display: none;
             margin: 10px 0;
         }
@@ -53,39 +56,32 @@
             text-decoration: none;
         }
         .back-link:hover {
+            color: var(--first-color-hover);
             text-decoration: underline;
         }
         .admin-panel {
             display: none;
         }
-        .account-list, .course-list, .video-list, .question-list, .document-list {
+        .course-list, .video-list, .question-list, .document-list {
             margin-top: 20px;
         }
-        .account-item, .course-item, .video-item, .question-item, .document-item {
+        .course-item, .video-item, .question-item, .document-item {
             padding: 10px;
-            background: var(--second-color);
-            color: var(--color-white);
+            background: var(--color-white);
+            color: var(--text-color-second);
             border-radius: 5px;
             margin: 5px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        .account-item img {
-            max-width: 100px;
-            max-height: 100px;
-            margin-left: 10px;
-            border-radius: 5px;
-        }
-        .account-item button.approve {
-            background: #28a745;
-        }
-        .account-item button.reject {
-            background: #ff204e;
+            box-shadow: 0 2px 5px var(--first-shadow-color);
         }
         .course-item button, .video-item button, .question-item button, .document-item button {
-            background: #ff204e;
+            background: #FF4D4F;
             padding: 5px 10px;
+        }
+        .course-item button:hover, .video-item button:hover, .question-item button:hover, .document-item button:hover {
+            background: #D9363E;
         }
         .option-container {
             margin-top: 10px;
@@ -114,15 +110,19 @@
         }
         .modal-content h3 {
             margin-bottom: 20px;
+            color: var(--text-color-second);
         }
         .close-btn {
-            background: #ff204e;
+            background: #FF4D4F;
             color: var(--color-white);
             padding: 5px 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             float: left;
+        }
+        .close-btn:hover {
+            background: #D9363E;
         }
     </style>
 </head>
@@ -141,9 +141,6 @@
     <div class="admin-panel" id="adminPanel">
         <h2>لوحة تحكم الأدمن</h2>
         <a href="data.html" class="back-link">عرض بيانات الحسابات والإجابات</a>
-
-        <h3>الموافقة على الحسابات</h3>
-        <div class="account-list" id="accountList"></div>
 
         <h3>إدارة المقررات</h3>
         <input type="text" id="courseName" placeholder="اسم المقرر">
@@ -184,7 +181,7 @@
                 <option value="1">الخيار الثاني</option>
                 <option value="2">الخيار الثالث</option>
                 <option value="3">الخيار الرابع</option>
-            </select>
+        </select>
         </div>
         <div id="openEndedForm" style="display: none;">
             <textarea id="openQuestionText" placeholder="اكتب السؤال هنا"></textarea>
@@ -281,7 +278,6 @@
         ];
         let videos = JSON.parse(localStorage.getItem('videos')) || [];
         let questions = JSON.parse(localStorage.getItem('questions')) || [];
-        let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
         let documents = JSON.parse(localStorage.getItem('documents')) || [];
         let editCourseIndex = null;
         let editVideoIndex = null;
@@ -296,7 +292,6 @@
                 document.getElementById("loginForm").style.display = "none";
                 document.getElementById("adminPanel").style.display = "block";
                 errorMessage.style.display = "none";
-                renderAccounts();
                 renderCourses();
                 renderVideos();
                 renderQuestions();
@@ -336,50 +331,6 @@
                 option4.textContent = course.name;
                 editVideoSelect.appendChild(option4);
             });
-        }
-
-        function renderAccounts() {
-            const accountList = document.getElementById("accountList");
-            accountList.innerHTML = "";
-            accounts.filter(account => account.pending).forEach((account, index) => {
-                const div = document.createElement("div");
-                div.className = "account-item";
-                div.innerHTML = `
-                    <div>
-                        ${account.name} - ${account.grade} - ${account.phone} - ${account.governorate} - ${account.area}
-                        <img src="${account.receiptImage}" alt="إيصال الدفع">
-                    </div>
-                    <div>
-                        <button class="approve" onclick="approveAccount(${index})">موافقة</button>
-                        <button class="reject" onclick="rejectAccount(${index})">رفض</button>
-                    </div>
-                `;
-                accountList.appendChild(div);
-            });
-        }
-
-        function approveAccount(index) {
-            accounts[index].pending = false;
-            accounts[index].active = true;
-            let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
-            const codeIndex = studentCodes.findIndex(sc => sc.code === accounts[index].code);
-            if (codeIndex !== -1) {
-                studentCodes[codeIndex].active = true;
-                studentCodes[codeIndex].pending = false;
-            }
-            localStorage.setItem('accounts', JSON.stringify(accounts));
-            localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
-            renderAccounts();
-        }
-
-        function rejectAccount(index) {
-            const code = accounts[index].code;
-            accounts.splice(index, 1);
-            let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
-            studentCodes = studentCodes.filter(sc => sc.code !== code);
-            localStorage.setItem('accounts', JSON.stringify(accounts));
-            localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
-            renderAccounts();
         }
 
         function addCourse() {
@@ -725,19 +676,7 @@
             document.getElementById("adminPanel").style.display = "none";
         }
 
-        // تبديل الوضع الغامق
         document.getElementById('dar')?.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
             if (document.body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.removeItem('theme');
-            }
-        });
-
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-    </script>
-</body>
-</html>
+                localStorage.setItem('theme', 'dark

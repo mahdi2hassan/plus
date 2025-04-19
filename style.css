@@ -1,17 +1,30 @@
-/* ----- IMPORT ARABIC FONT (Cairo) ----- */
+/* ----- IMPORT ARABIC FONT (Cairo & Noto Sans Arabic) ----- */
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap');
 
 /* ----- VARIABLES ----- */
 :root {
-    --body-color: rgb(250, 250, 250);
-    --color-white: rgb(255, 255, 255);
-    --text-color-second: rgb(68, 68, 68);
-    --text-color-third: rgb(30, 159, 171);
-    --first-color: rgb(110, 87, 224);
-    --first-color-hover: rgb(40, 91, 212);
-    --second-color: rgb(0, 201, 255);
-    --third-color: rgb(192, 166, 49);
+    --body-color: #F5F6FA;
+    --color-white: #FFFFFF;
+    --text-color-second: #333333;
+    --text-color-third: #2ECC71;
+    --first-color: #005EFF;
+    --first-color-hover: #0047CC;
+    --second-color: #4A90E2;
+    --third-color: #F1C40F;
     --first-shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ----- DARK MODE VARIABLES ----- */
+.dark-mode {
+    --body-color: #1A1A1A;
+    --color-white: #2C2C2C;
+    --text-color-second: #E0E0E0;
+    --text-color-third: #2ECC71;
+    --first-color: #4A90E2;
+    --first-color-hover: #357ABD;
+    --second-color: #005EFF;
+    --third-color: #F1C40F;
+    --first-shadow-color: rgba(255, 255, 255, 0.1);
 }
 
 /* ----- BASE ----- */
@@ -20,7 +33,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Cairo', 'Noto Sans Arabic', sans-serif;
-    direction: rtl; /* دعم RTL للغة العربية */
+    direction: rtl;
 }
 
 /* ----- SMOOTH SCROLL ----- */
@@ -33,37 +46,36 @@ html {
     width: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--body-color);
 }
 ::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: var(--second-color);
     border-radius: 20px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #bbb;
+    background: var(--first-color-hover);
 }
 
 /* ----- REUSABLE CSS ----- */
 .btn, .btn2, .btn4 {
     font-weight: 500;
     padding: 0.75rem 1.25rem;
-    background: #efefef;
+    background: var(--color-white);
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s, color 0.3s;
     font-size: 1rem;
 }
+.btn:hover, .btn2:hover, .btn4:hover {
+    background: var(--first-color);
+    color: var(--color-white);
+}
 .btn4 {
-    background-color: #00fcaa;
+    background: var(--text-color-third);
 }
 .btn4:hover {
-    background-color: #64659d;
-    color: var(--color-white);
-}
-.btn:hover, .btn2:hover {
     background: var(--second-color);
-    color: var(--color-white);
 }
 .btn i, .btn2 i, .btn4 i {
     margin-left: 0.5rem;
@@ -78,6 +90,7 @@ i {
 body {
     background: var(--body-color);
     min-height: 100vh;
+    color: var(--text-color-second);
 }
 .container {
     width: 100%;
@@ -92,9 +105,9 @@ nav {
     align-items: center;
     width: 100%;
     height: 4rem;
-    background: var(--body-color);
+    background: var(--color-white);
     padding-inline: 5%;
-    transition: background 0.3s;
+    box-shadow: 0 2px 5px var(--first-shadow-color);
     z-index: 100;
 }
 .nav-logo {
@@ -110,7 +123,7 @@ nav {
     top: -0.5rem;
     right: -1rem;
     font-size: 2.5rem;
-    color: var(--text-color-second);
+    color: var(--first-color);
 }
 .nav-menu, .nav_menu_list {
     display: flex;
@@ -134,6 +147,7 @@ nav {
 .nav-menu-btn i {
     font-size: 1.5rem;
     cursor: pointer;
+    color: var(--first-color);
 }
 .active-link {
     color: var(--first-color);
@@ -142,11 +156,11 @@ nav {
 .active-link::after {
     content: '';
     position: absolute;
-    left: 100%;
+    left: 50%;
     bottom: -0.5rem;
     transform: translateX(-50%);
-    width: 0.3rem;
-    height: 0.3rem;
+    width: 0.4rem;
+    height: 0.4rem;
     background: var(--first-color);
     border-radius: 50%;
 }
@@ -177,7 +191,7 @@ nav {
 .featured-text-card span {
     background: var(--third-color);
     color: var(--color-white);
-    padding: 0.2rem 0.5rem;
+    padding: 0.3rem 0.6rem;
     font-size: 0.875rem;
     border-radius: 5px;
 }
@@ -218,11 +232,14 @@ nav {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    background: var(--color-white);
+    box-shadow: 0 2px 5px var(--first-shadow-color);
     cursor: pointer;
+    color: var(--text-color-second);
 }
 .icon:hover {
-    color: var(--first-color);
+    background: var(--first-color);
+    color: var(--color-white);
 }
 
 /* ----- FEATURED IMAGE BOX ----- */
@@ -238,6 +255,8 @@ nav {
     height: 20rem;
     border-radius: 50%;
     overflow: hidden;
+    border: 4px solid var(--color-white);
+    box-shadow: 0 4px 10px var(--first-shadow-color);
 }
 .image img {
     width: 100%;
@@ -258,7 +277,7 @@ nav {
     color: var(--text-color-second);
     background: var(--color-white);
     border-radius: 1.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 2px 5px var(--first-shadow-color);
 }
 .scroll-btn i {
     font-size: 1.25rem;
@@ -287,7 +306,8 @@ nav {
     font-size: 2rem;
 }
 .top-header span {
-    color: #999;
+    color: var(--text-color-second);
+    opacity: 0.6;
 }
 h3 {
     font-size: 1.5rem;
@@ -304,13 +324,14 @@ h3 {
     padding: 2rem;
     width: 100%;
     background: var(--color-white);
-    box-shadow: 1px 4px 8px var(--first-shadow-color);
+    box-shadow: 0 2px 8px var(--first-shadow-color);
     border-radius: 1rem;
 }
 .about-info p {
     text-align: right;
     font-size: 1rem;
-    color: #777;
+    color: var(--text-color-second);
+    opacity: 0.8;
 }
 .about-btn button {
     position: absolute;
@@ -343,23 +364,24 @@ h3 {
     height: 20rem;
     background: var(--color-white);
     border-radius: 1rem;
-    box-shadow: 1px 4px 8px var(--first-shadow-color);
+    box-shadow: 0 2px 8px var(--first-shadow-color);
     overflow: hidden;
 }
 .project-box > i {
     font-size: 3rem;
-    color: #00B5E7;
+    color: var(--second-color);
     margin-bottom: 1rem;
 }
 .project-box label {
     font-size: 0.875rem;
-    color: #777;
+    color: var(--text-color-second);
+    opacity: 0.7;
 }
 .project-box::after {
     content: "";
     position: absolute;
     bottom: -100%;
-    background: var(--second-color);
+    background: var(--first-color);
     width: 100%;
     height: 100%;
     transition: bottom 0.3s;
@@ -387,7 +409,7 @@ h3 {
     height: 18rem;
     background: var(--second-color);
     border-radius: 0.5rem;
-    box-shadow: 1px 4px 8px var(--first-shadow-color);
+    box-shadow: 0 2px 8px var(--first-shadow-color);
     overflow: hidden;
 }
 .contact-info > h2 {
@@ -416,7 +438,7 @@ h3 {
 .contact-info:hover h2,
 .contact-info:hover p,
 .contact-info:hover i {
-    color: #777;
+    color: var(--text-color-second);
     z-index: 2;
 }
 .contact-info:hover::after {
@@ -438,34 +460,36 @@ h3 {
 .input-field {
     width: 50%;
     height: 3rem;
-    background: transparent;
-    border: 2px solid #AAA;
+    background: var(--color-white);
+    border: 2px solid var(--text-color-second);
     border-radius: 0.5rem;
     padding-inline: 1rem;
     outline: none;
-    font-weight: 700;
+    font-weight: 500;
+    color: var(--text-color-second);
 }
 textarea {
     width: 100%;
     height: 15rem;
-    background: transparent;
-    border: 2px solid #AAA;
+    background: var(--color-white);
+    border: 2px solid var(--text-color-second);
     border-radius: 0.5rem;
     padding: 1rem;
     outline: none;
     resize: none;
-    font-weight: 700;
+    font-weight: 500;
+    color: var(--text-color-second);
 }
 .form-button > .btn, .btn2 {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--second-color);
+    background: var(--first-color);
     color: var(--color-white);
     font-weight: 600;
 }
 .form-button > .btn:hover, .btn2:hover {
-    background: #00B5E7;
+    background: var(--first-color-hover);
 }
 .form-button i {
     font-size: 1.125rem;
@@ -479,12 +503,14 @@ footer {
     align-items: center;
     flex-direction: column;
     gap: 1.5rem;
-    background: #F8F8F8;
+    background: var(--color-white);
     padding-block: 2rem;
+    box-shadow: 0 -2px 5px var(--first-shadow-color);
 }
 .top-footer p {
     font-size: 1.5rem;
     font-weight: 700;
+    color: var(--text-color-second);
 }
 .middle-footer .footer-menu {
     display: flex;
@@ -499,6 +525,9 @@ footer {
     font-weight: 500;
     font-size: 1rem;
 }
+.footer_menu_list a:hover {
+    color: var(--first-color);
+}
 .footer-social-icons {
     display: flex;
     gap: 1.5rem;
@@ -506,6 +535,8 @@ footer {
 .bottom-footer {
     font-size: 0.875rem;
     margin-top: 0.5rem;
+    color: var(--text-color-second);
+    opacity: 0.6;
 }
 
 /* ----- MEDIA QUERIES ----- */
@@ -539,11 +570,12 @@ footer {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background: rgba(255, 255, 255, 0.9);
+        background: var(--color-white);
         backdrop-filter: blur(10px);
         width: 100%;
         height: 80vh;
         transition: left 0.3s;
+        box-shadow: 0 4px 10px var(--first-shadow-color);
     }
     .nav-menu.responsive {
         left: 0;
@@ -613,5 +645,24 @@ footer {
     .image, .image img {
         width: 8rem;
         height: 8rem;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .nav-name {
+        font-size: 1rem;
+    }
+    .featured-text-card span {
+        font-size: 0.75rem;
+    }
+    .featured-name {
+        font-size: 1.5rem;
+    }
+    .image, .image img {
+        width: 7rem;
+        height: 7rem;
+    }
+    .project-box {
+        height: 18rem;
     }
 }
