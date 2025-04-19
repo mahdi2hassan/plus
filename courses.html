@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plus 360 - إدارة المقررات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --first-color: #005eff;
+            --first-color-hover: #0047cc;
+            --second-color: #4a90e2;
+            --body-color: #f5f6fa;
+            --color-white: #fff;
+            --text-color-second: #333;
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--body-color);
+            color: var(--text-color-second);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        header {
+            background-image: url('/images/n.png');
+            background-size: cover;
+            background-position: center;
+            height: 200px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .nav-logo p {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--color-white);
+            box-shadow: 0 2px 4px var(--first-shadow-color);
+        }
+        .nav-logo a {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-menu ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-menu a {
+            color: var(--text-color-second);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .nav-menu a:hover {
+            color: var(--first-color);
+        }
+        .nav-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .courses-section {
+            padding: 20px;
+        }
+        .courses-section h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-color-second);
+        }
+        .add-course-form {
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px var(--first-shadow-color);
+            margin-bottom: 20px;
+        }
+        .add-course-form input, .add-course-form select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid var(--text-color-second);
+            border-radius: 5px;
+            background: var(--color-white);
+            color: var(--text-color-second);
+        }
+        .add-course-form select[multiple] {
+            height: 100px;
+        }
+        .add-course-form button {
+            padding: 10px 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .add-course-form button:hover {
+            background: var(--first-color-hover);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid var(--text-color-second);
+            text-align: right;
+        }
+        th {
+            background: var(--first-color);
+            color: var(--color-white);
+        }
+        button {
+            padding: 8px 15px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: var(--first-color-hover);
+        }
+        .delete {
+            background: #FF4D4F;
+        }
+        .delete:hover {
+            background: #D9363E;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: var(--first-color-hover);
+            text-decoration: underline;
+        }
+        .dark-mode-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            border: none;
+            box-shadow: 0 2px 4px var(--first-shadow-color);
+            transition: background 0.3s;
+        }
+        .dark-mode-btn:hover {
+            background: var(--first-color-hover);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            margin-top: 20px;
+            border-radius: 0 0 10px 10px;
+        }
+        .footer-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .footer-social-icons .icon a {
+            color: var(--color-white);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        .footer-social-icons .icon a:hover {
+            color: var(--second-color);
+        }
+        .footer-menu {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 0;
+            margin: 20px 0;
+        }
+        .footer-menu a {
+            color: var(--color-white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-menu a:hover {
+            color: var(--second-color);
+        }
+        .dark-mode {
+            --body-color: #1a1a1a;
+            --color-white: #2c2c2c;
+            --text-color-second: #e0e0e0;
+            --first-shadow-color: rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            header {
+                height: 150px;
+            }
+            .nav-menu {
+                display: none;
+            }
+            .nav-menu.responsive {
+                display: block;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background: var(--color-white);
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px var(--first-shadow-color);
+            }
+            .nav-menu ul {
+                flex-direction: column;
+            }
+            .nav-menu-btn {
+                display: block;
+            }
+            .add-course-form input, .add-course-form select {
+                font-size: 0.9rem;
+            }
+            table {
+                font-size: 0.9rem;
+            }
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="darkModeBtn" class="dark-mode-btn" title="تبديل الوضع الغامق">🌙</button>
+    <div class="container">
+        <header>
+            <div class="nav-logo">
+                <p>Plus 360</p>
+            </div>
+        </header>
+        <nav>
+            <div class="nav-logo">
+                <a href="index.html" class="nav-name">Plus 360</a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav_menu_list">
+                    <li class="nav_list"><a href="index.html" class="nav-link">الرئيسية</a></li>
+                    <li class="nav_list"><a href="admin.html" class="nav-link">لوحة الأدمن</a></li>
+                    <li class="nav_list"><a href="data.html" class="nav-link">إدارة الحسابات</a></li>
+                    <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
+                </ul>
+            </div>
+            <div class="nav-menu-btn"><i class="fa-solid fa-bars"></i></div>
+        </nav>
+        <main class="courses-section">
+            <h1>إدارة المقررات</h1>
+            <div class="add-course-form">
+                <h2 id="formTitle">إضافة مقرر جديد</h2>
+                <form id="courseForm" onsubmit="return saveCourse()">
+                    <input type="hidden" id="courseId">
+                    <input type="text" id="courseName" placeholder="اسم المقرر" required>
+                    <input type="url" id="courseUrl" placeholder="رابط المقرر" required>
+                    <select id="grade" onchange="updateStudentOptions()" required>
+                        <option value="">اختر الصف الدراسي</option>
+                        <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                        <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                        <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                        <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                        <option value="الصف الثاني الثانوي علمي">الصف الثاني الثانوي علمي</option>
+                        <option value="الصف الثاني الثانوي أدبي">الصف الثاني الثانوي أدبي</option>
+                        <option value="الصف الثالث الثانوي علمي">الصف الثالث الثانوي علمي</option>
+                        <option value="الصف الثالث الثانوي أدبي">الصف الثالث الثانوي أدبي</option>
+                    </select>
+                    <select id="studentOption" onchange="toggleStudentSelect()" required>
+                        <option value="">اختر خيار الطلاب</option>
+                        <option value="all">كل الطلاب</option>
+                        <option value="count">عددهم</option>
+                        <option value="except">الطلاب باستثناء</option>
+                    </select>
+                    <input type="number" id="studentCount" placeholder="عدد الطلاب" style="display: none;">
+                    <select id="exceptStudents" multiple style="display: none;">
+                        <!-- يتم ملؤها ديناميكيًا -->
+                    </select>
+                    <button type="submit">حفظ المقرر</button>
+                </form>
+            </div>
+            <table id="coursesTable">
+                <thead>
+                    <tr>
+                        <th>اسم المقرر</th>
+                        <th>الصف الدراسي</th>
+                        <th>رابط المقرر</th>
+                        <th>الطلاب</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="coursesBody"></tbody>
+            </table>
+            <a href="admin.html" class="back-link">العودة إلى لوحة الأدمن</a>
+        </main>
+        <footer>
+            <div class="top-footer"><p>Plus 360</p></div>
+            <div class="middle-footer">
+                <ul class="footer-menu">
+                    <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
+                    <li class="footer_menu_list"><a href="admin.html">لوحة الأدمن</a></li>
+                </ul>
+            </div>
+            <div class="footer-social-icons">
+                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="fab fa-whatsapp"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="fab fa-telegram"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fab fa-facebook-f"></i></a></div>
+                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="fab fa-instagram"></i></a></div>
+            </div>
+            <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // التحقق من تسجيل دخول الأدمن
+        const isAdminLoggedIn = localStorage.getItem('adminLoggedIn');
+        if (!isAdminLoggedIn) {
+            window.location.href = 'admin-login.html';
+        }
+
+        let courses = [];
+        let accounts = [];
+        let editIndex = -1;
+
+        // تحميل البيانات من localStorage
+        try {
+            courses = JSON.parse(localStorage.getItem('courses')) || [];
+            accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+        } catch (error) {
+            console.error('خطأ في تحليل البيانات:', error);
+            Swal.fire('خطأ', 'حدث خطأ في تحميل البيانات!', 'error');
+        }
+
+        function renderCourses() {
+            const coursesBody = document.getElementById('coursesBody');
+            coursesBody.innerHTML = '';
+            courses.forEach((course, index) => {
+                let studentsDisplay = '';
+                if (course.studentOption === 'all') {
+                    studentsDisplay = 'كل الطلاب';
+                } else if (course.studentOption === 'count') {
+                    studentsDisplay = `عددهم: ${course.studentCount}`;
+                } else if (course.studentOption === 'except') {
+                    studentsDisplay = `باستثناء: ${course.exceptStudents.join(', ')}`;
+                }
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${course.name}</td>
+                    <td>${course.grade}</td>
+                    <td><a href="${course.url}" target="_blank">عرض</a></td>
+                    <td>${studentsDisplay}</td>
+                    <td>
+                        <button onclick="editCourse(${index})">تعديل</button>
+                        <button class="delete" onclick="deleteCourse(${index})">حذف</button>
+                    </td>
+                `;
+                coursesBody.appendChild(tr);
+            });
+        }
+
+        function updateStudentOptions() {
+            const grade = document.getElementById('grade').value;
+            const exceptStudentsSelect = document.getElementById('exceptStudents');
+            exceptStudentsSelect.innerHTML = '';
+            if (grade) {
+                const studentsInGrade = accounts.filter(acc => acc.grade === grade && acc.active);
+                studentsInGrade.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.code;
+                    option.textContent = `${student.name} (${student.code})`;
+                    exceptStudentsSelect.appendChild(option);
+                });
+            }
+        }
+
+        function toggleStudentSelect() {
+            const studentOption = document.getElementById('studentOption').value;
+            const studentCountInput = document.getElementById('studentCount');
+            const exceptStudentsSelect = document.getElementById('exceptStudents');
+            studentCountInput.style.display = studentOption === 'count' ? 'block' : 'none';
+            exceptStudentsSelect.style.display = studentOption === 'except' ? 'block' : 'none';
+        }
+
+        function saveCourse() {
+            const courseId = document.getElementById('courseId').value || `course${Date.now()}`;
+            const name = document.getElementById('courseName').value;
+            const url = document.getElementById('courseUrl').value;
+            const grade = document.getElementById('grade').value;
+            const studentOption = document.getElementById('studentOption').value;
+            const studentCount = document.getElementById('studentCount').value;
+            const exceptStudentsSelect = document.getElementById('exceptStudents');
+            const exceptStudents = Array.from(exceptStudentsSelect.selectedOptions).map(opt => opt.value);
+
+            if (studentOption === 'count' && (!studentCount || studentCount <= 0)) {
+                Swal.fire('خطأ', 'يرجى إدخال عدد صالح للطلاب!', 'error');
+                return false;
+            }
+            if (studentOption === 'except' && exceptStudents.length === 0) {
+                Swal.fire('خطأ', 'يرجى اختيار طلاب للاستثناء!', 'error');
+                return false;
+            }
+
+            const course = {
+                id: courseId,
+                name,
+                url,
+                grade,
+                studentOption,
+                studentCount: studentOption === 'count' ? parseInt(studentCount) : null,
+                exceptStudents: studentOption === 'except' ? exceptStudents : [],
+                studentCode: studentOption === 'all' ? null : (studentOption === 'count' ? 'count' : 'except')
+            };
+
+            if (editIndex >= 0) {
+                courses[editIndex] = course;
+                editIndex = -1;
+                document.getElementById('formTitle').textContent = 'إضافة مقرر جديد';
+            } else {
+                courses.push(course);
+            }
+
+            localStorage.setItem('courses', JSON.stringify(courses));
+            renderCourses();
+            resetForm();
+            Swal.fire('تم الحفظ', `تم ${editIndex >= 0 ? 'تعديل' : 'إضافة'} المقرر بنجاح.`, 'success');
+            return false;
+        }
+
+        function editCourse(index) {
+            const course = courses[index];
+            document.getElementById('courseId').value = course.id;
+            document.getElementById('courseName').value = course.name;
+            document.getElementById('courseUrl').value = course.url;
+            document.getElementById('grade').value = course.grade;
+            document.getElementById('studentOption').value = course.studentOption;
+            document.getElementById('studentCount').value = course.studentCount || '';
+            updateStudentOptions();
+            const exceptStudentsSelect = document.getElementById('exceptStudents');
+            Array.from(exceptStudentsSelect.options).forEach(opt => {
+                opt.selected = course.exceptStudents.includes(opt.value);
+            });
+            toggleStudentSelect();
+            document.getElementById('formTitle').textContent = 'تعديل المقرر';
+            editIndex = index;
+        }
+
+        async function deleteCourse(index) {
+            const course = courses[index];
+            const result = await Swal.fire({
+                title: 'تأكيد الحذف',
+                text: `هل أنت متأكد من حذف مقرر ${course.name}؟`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FF4D4F',
+                cancelButtonColor: '#005eff',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    courses.splice(index, 1);
+                    localStorage.setItem('courses', JSON.stringify(courses));
+                    renderCourses();
+                    Swal.fire('تم الحذف', `تم حذف مقرر ${course.name} بنجاح.`, 'success');
+                } catch (error) {
+                    console.error('خطأ أثناء الحذف:', error);
+                    Swal.fire('خطأ', 'حدث خطأ أثناء حذف المقرر!', 'error');
+                }
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('courseForm').reset();
+            document.getElementById('courseId').value = '';
+            document.getElementById('studentCount').style.display = 'none';
+            document.getElementById('exceptStudents').style.display = 'none';
+            document.getElementById('formTitle').textContent = 'إضافة مقرر جديد';
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'admin-login.html';
+        }
+
+        // قائمة التنقل المحمولة
+        document.querySelector('.nav-menu-btn').addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('responsive');
+        });
+
+        // تبديل الوضع الغامق
+        document.getElementById('darkModeBtn').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : '');
+            document.getElementById('darkModeBtn').innerHTML = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkModeBtn').innerHTML = '☀️';
+        }
+
+        renderCourses();
+    </script>
+</body>
+</html>
