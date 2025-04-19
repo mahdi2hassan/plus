@@ -24,7 +24,7 @@
             padding: 0;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: auto;
             padding: 20px;
             background: var(--color-white);
@@ -56,7 +56,7 @@
             border-radius: 5px;
         }
         button {
-            padding: 10px 20px;
+            padding: 8px 15px;
             background: var(--first-color);
             color: var(--color-white);
             border: none;
@@ -72,6 +72,18 @@
         }
         .delete:hover {
             background: #D9363E;
+        }
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 2px solid var(--text-color-second);
+            background: var(--color-white);
+            color: var(--text-color-second);
+            cursor: pointer;
+        }
+        select:focus {
+            outline: none;
+            border-color: var(--first-color);
         }
         .back-link {
             display: inline-block;
@@ -96,6 +108,13 @@
             table {
                 font-size: 0.9rem;
             }
+            th, td {
+                padding: 8px;
+            }
+            select, button {
+                width: 100%;
+                margin: 5px 0;
+            }
         }
     </style>
 </head>
@@ -113,6 +132,7 @@
                     <th>المنطقة</th>
                     <th>إيصال الدفع</th>
                     <th>الحالة</th>
+                    <th>حالة الحساب</th>
                     <th>إجراءات</th>
                 </tr>
             </thead>
@@ -146,6 +166,8 @@
             const accountsBody = document.getElementById('accountsBody');
             accountsBody.innerHTML = '';
             accounts.forEach((account, index) => {
+                const status = account.pending ? 'معلق' : (account.active ? 'مفعل' : 'غير مفعل');
+                const accountStatus = account.pending ? 'معلق' : (account.active ? 'قبول' : 'رفض');
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${account.code}</td>
@@ -155,11 +177,70 @@
                     <td>${account.governorate}</td>
                     <td>${account.area}</td>
                     <td><img src="${account.receiptImage || ''}" alt="إيصال" onerror="this.style.display='none'"></td>
-                    <td>${account.active ? 'مفعل' : 'غير مفعل'}</td>
+                    <td>${status}</td>
+                    <td>
+                        <select onchange="updateAccountStatus(${index}, this.value)">
+                            <option value="pending" ${account.pending ? 'selected' : ''}>معلق</option>
+                            <option value="accept" ${!account.pending && account.active ? 'selected' : ''}>قبول</option>
+                            <option value="reject" ${!account.pending && !account.active ? 'selected' : ''}>رفض</option>
+                        </select>
+                    </td>
                     <td><button class="delete" onclick="deleteAccount(${index})">حذف الحساب</button></td>
                 `;
                 accountsBody.appendChild(tr);
             });
+        }
+
+        async function updateAccountStatus(index, status) {
+            const account = accounts[index];
+            const code = account.code;
+            let confirmMessage = '';
+            let successMessage = '';
+
+            if (status === 'accept') {
+                confirmMessage = `هل أنت متأكد من قبول حساب ${account.name} (كود: ${account.code})؟`;
+                successMessage = `تم قبول حساب ${account.name} بنجاح.`;
+                account.active = true;
+                account.pending = false;
+                studentCodes = studentCodes.map(sc => sc.code === code ? { ...sc, active: true, pending: false } : sc);
+            } else if (status === 'reject') {
+                confirmMessage = `هل أنت متأكد من رفض حساب ${account.name} (كود: ${account.code})؟`;
+                successMessage = `تم رفض حساب ${account.name} بنجاح.`;
+                account.active = false;
+                account.pending = false;
+                studentCodes = studentCodes.map(sc => sc.code === code ? { ...sc, active: false, pending: false } : sc);
+            } else {
+                confirmMessage = `هل أنت متأكد من تعليق حساب ${account.name} (كود: ${account.code})؟`;
+                successMessage = `تم تعليق حساب ${account.name} بنجاح.`;
+                account.active = false;
+                account.pending = true;
+                studentCodes = studentCodes.map(sc => sc.code === code ? { ...sc, active: false, pending: true } : sc);
+            }
+
+            const result = await Swal.fire({
+                title: 'تأكيد الإجراء',
+                text: confirmMessage,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#005eff',
+                cancelButtonColor: '#FF4D4F',
+                confirmButtonText: 'نعم',
+                cancelButtonText: 'إلغاء'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    localStorage.setItem('accounts', JSON.stringify(accounts));
+                    localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+                    renderAccounts();
+                    Swal.fire('تم التحديث', successMessage, 'success');
+                } catch (error) {
+                    console.error('خطأ أثناء تحديث الحالة:', error);
+                    Swal.fire('خطأ', 'حدث خطأ أثناء تحديث حالة الحساب!', 'error');
+                }
+            } else {
+                renderAccounts(); // إعادة التحميل لإلغاء التغيير
+            }
         }
 
         async function deleteAccount(index) {
@@ -178,22 +259,18 @@
             if (result.isConfirmed) {
                 try {
                     const code = account.code;
-                    // حذف الحساب
                     accounts.splice(index, 1);
                     studentCodes = studentCodes.filter(sc => sc.code !== code);
-                    // حذف المحتوى المرتبط
                     courses = courses.filter(course => course.studentCode !== code);
                     videos = videos.filter(video => video.studentCode !== code);
                     questions = questions.filter(question => question.studentCode !== code);
                     documents = documents.filter(doc => doc.studentCode !== code);
-                    // تحديث localStorage
                     localStorage.setItem('accounts', JSON.stringify(accounts));
                     localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
                     localStorage.setItem('courses', JSON.stringify(courses));
                     localStorage.setItem('videos', JSON.stringify(videos));
                     localStorage.setItem('questions', JSON.stringify(questions));
                     localStorage.setItem('documents', JSON.stringify(documents));
-                    // تحديث الواجهة
                     renderAccounts();
                     Swal.fire('تم الحذف', `تم حذف حساب ${account.name} بنجاح.`, 'success');
                 } catch (error) {
