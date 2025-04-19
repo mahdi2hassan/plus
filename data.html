@@ -371,6 +371,7 @@
             <div>
                 <button class="export-btn" onclick="exportToExcel()">تصدير الدرجات إلى Excel</button>
                 <button class="export-btn" onclick="exportExamsToExcel()">تصدير الاختبارات إلى Excel</button>
+                <button class="export-btn" onclick="toggleAccountView()"></button>
             </div>
             <table id="accountsTable">
                 <thead>
@@ -439,7 +440,7 @@
             });
         }
 
-        // تحميل البيانات من localStorage
+        // تحميل البيانات من localStorage (للاختبارات فقط، لأن الحسابات تأتي من الخادم)
         let accounts = [];
         let studentCodes = [];
         let courses = [];
@@ -449,7 +450,6 @@
         let exams = [];
 
         try {
-            accounts = JSON.parse(localStorage.getItem('accounts')) || [];
             studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
             courses = JSON.parse(localStorage.getItem('courses')) || [];
             videos = JSON.parse(localStorage.getItem('videos')) || [];
@@ -466,11 +466,62 @@
             });
         }
 
+        // متغير لتحديد ما إذا كان سيتم عرض الطلبات المعلقة فقط
+        let showPendingOnly = true;
+
+        // تحديث نص زر التبديل بناءً على حالة العرض
+        function updateToggleButtonText() {
+            const toggleButton = document.querySelector('button[onclick="toggleAccountView()"]');
+            toggleButton.textContent = showPendingOnly ? 'عرض جميع الحسابات' : 'عرض الطلبات المعلقة فقط';
+        }
+
+        // تبديل بين عرض الطلبات المعلقة وجميع الحسابات
+        function toggleAccountView() {
+            showPendingOnly = !showPendingOnly;
+            updateToggleButtonText();
+            renderAccounts();
+        }
+
+        // جلب الحسابات من الخادم
+        async function fetchAccounts() {
+            try {
+                const response = await fetch('http://localhost:3000/api/accounts');
+                if (response.ok) {
+                    accounts = await response.json();
+                    console.log('الحسابات المجلوبة:', accounts); // للتصحيح
+                    renderAccounts();
+                } else {
+                    throw new Error('فشل في جلب الحسابات');
+                }
+            } catch (error) {
+                console.error('خطأ في جلب الحسابات:', error);
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'حدث خطأ في تحميل الحسابات! تأكد من أن الخادم يعمل.',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
+                // عرض رسالة في الجدول إذا فشل الجلب
+                const accountsBody = document.getElementById('accountsBody');
+                accountsBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">فشل تحميل الحسابات. تأكد من تشغيل الخادم.</td></tr>';
+            }
+        }
+
         // عرض الحسابات
         function renderAccounts() {
             const accountsBody = document.getElementById('accountsBody');
             accountsBody.innerHTML = '';
-            accounts.forEach((account, index) => {
+            // تصفية الحسابات إذا كان العرض للطلبات المعلقة فقط
+            const filteredAccounts = showPendingOnly ? accounts.filter(account => account.pending) : accounts;
+
+            if (filteredAccounts.length === 0) {
+                accountsBody.innerHTML = `<tr><td colspan="10" style="text-align: center;">${
+                    showPendingOnly ? 'لا توجد طلبات معلقة.' : 'لا توجد حسابات.'
+                }</td></tr>`;
+                return;
+            }
+
+            filteredAccounts.forEach((account, index) => {
                 const status = account.pending ? 'معلق' : (account.active ? 'مفعل' : 'غير مفعل');
                 const accountStatus = account.pending ? 'معلق' : (account.active ? 'قبول' : 'رفض');
                 const tr = document.createElement('tr');
@@ -484,64 +535,37 @@
                     <td><img src="${account.receiptImage || ''}" alt="إيصال الدفع" onerror="this.style.display='none'"></td>
                     <td>${status}</td>
                     <td>
-                        <select onchange="updateAccountStatus(${index}, this.value)">
+                        <select onchange="updateAccountStatus('${account._id}', this.value)">
                             <option value="pending" ${account.pending ? 'selected' : ''}>معلق</option>
                             <option value="accept" ${!account.pending && account.active ? 'selected' : ''}>قبول</option>
                             <option value="reject" ${!account.pending && !account.active ? 'selected' : ''}>رفض</option>
                         </select>
                     </td>
-                    <td><button class="btn btn-danger" onclick="deleteAccount(${index})">حذف الحساب</button></td>
+                    <td><button class="btn btn-danger" onclick="deleteAccount('${account._id}')">حذف الحساب</button></td>
                 `;
                 accountsBody.appendChild(tr);
             });
         }
 
-        // عرض الاختبارات
-        function renderExams() {
-            const examsBody = document.getElementById('examsBody');
-            examsBody.innerHTML = '';
-            exams.forEach((exam, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${exam.id}</td>
-                    <td>${exam.title}</td>
-                    <td>${exam.grade}</td>
-                    <td>${exam.questionIds ? exam.questionIds.length : 0}</td>
-                    <td>
-                        <button class="btn" onclick="shareExam('${exam.id}', '${exam.title}')" aria-label="مشاركة اختبار ${exam.title}">
-                            <i class="fas fa-share-alt"></i> مشاركة
-                        </button>
-                    </td>
-                `;
-                examsBody.appendChild(tr);
-            });
-        }
-
         // تحديث حالة الحساب
-        async function updateAccountStatus(index, status) {
-            const account = accounts[index];
-            const code = account.code;
+        async function updateAccountStatus(id, status) {
+            const account = accounts.find(acc => acc._id === id);
             let confirmMessage = '';
             let successMessage = '';
+            let updateData = {};
 
             if (status === 'accept') {
                 confirmMessage = `هل أنت متأكد من قبول حساب ${account.name} (كود: ${account.code})؟`;
                 successMessage = `تم قبول حساب ${account.name} بنجاح.`;
-                account.active = true;
-                account.pending = false;
-                studentCodes = studentCodes.map(sc => sc.code === code ? { ...sc, active: true, pending: false } : sc);
+                updateData = { pending: false, active: true };
             } else if (status === 'reject') {
                 confirmMessage = `هل أنت متأكد من رفض حساب ${account.name} (كود: ${account.code})؟`;
                 successMessage = `تم رفض حساب ${account.name} بنجاح.`;
-                account.active = false;
-                account.pending = false;
-                studentCodes = studentCodes.map(sc => sc.code === code ? { ...sc, active: false, pending: false } : sc);
+                updateData = { pending: false, active: false };
             } else {
                 confirmMessage = `هل أنت متأكد من تعليق حساب ${account.name} (كود: ${account.code})؟`;
                 successMessage = `تم تعليق حساب ${account.name} بنجاح.`;
-                account.active = false;
-                account.pending = true;
-                studentCodes = studentCodes.map(sc => sc.code === code ? { ...sc, active: false, pending: true } : sc);
+                updateData = { pending: true, active: false };
             }
 
             const result = await Swal.fire({
@@ -557,15 +581,22 @@
 
             if (result.isConfirmed) {
                 try {
-                    localStorage.setItem('accounts', JSON.stringify(accounts));
-                    localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
-                    renderAccounts();
-                    Swal.fire({
-                        title: 'تم',
-                        text: successMessage,
-                        icon: 'success',
-                        confirmButtonColor: '#005eff'
+                    const response = await fetch(`http://localhost:3000/api/accounts/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updateData)
                     });
+                    if (response.ok) {
+                        await fetchAccounts();
+                        Swal.fire({
+                            title: 'تم',
+                            text: successMessage,
+                            icon: 'success',
+                            confirmButtonColor: '#005eff'
+                        });
+                    } else {
+                        throw new Error('فشل في تحديث الحساب');
+                    }
                 } catch (error) {
                     console.error('خطأ أثناء تحديث الحالة:', error);
                     Swal.fire({
@@ -576,13 +607,13 @@
                     });
                 }
             } else {
-                renderAccounts(); // إعادة التحميل لإلغاء التغيير
+                renderAccounts();
             }
         }
 
         // حذف الحساب
-        async function deleteAccount(index) {
-            const account = accounts[index];
+        async function deleteAccount(id) {
+            const account = accounts.find(acc => acc._id === id);
             const result = await Swal.fire({
                 title: 'تأكيد الحذف',
                 text: `هل أنت متأكد من حذف حساب ${account.name} (كود: ${account.code})؟ سيتم حذف جميع المحتوى المرتبط.`,
@@ -596,29 +627,20 @@
 
             if (result.isConfirmed) {
                 try {
-                    const code = account.code;
-                    accounts.splice(index, 1);
-                    studentCodes = studentCodes.filter(sc => sc.code !== code);
-                    courses = courses.filter(course => course.studentCode !== code);
-                    videos = videos.filter(video => video.studentCode !== code);
-                    questions = questions.filter(question => question.studentCode !== code);
-                    documents = documents.filter(doc => doc.studentCode !== code);
-                    exams = exams.filter(exam => exam.studentCode !== code);
-                    localStorage.setItem('accounts', JSON.stringify(accounts));
-                    localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
-                    localStorage.setItem('courses', JSON.stringify(courses));
-                    localStorage.setItem('videos', JSON.stringify(videos));
-                    localStorage.setItem('questions', JSON.stringify(questions));
-                    localStorage.setItem('documents', JSON.stringify(documents));
-                    localStorage.setItem('exams', JSON.stringify(exams));
-                    renderAccounts();
-                    renderExams();
-                    Swal.fire({
-                        title: 'تم',
-                        text: `تم حذف حساب ${account.name} بنجاح.`,
-                        icon: 'success',
-                        confirmButtonColor: '#005eff'
+                    const response = await fetch(`http://localhost:3000/api/accounts/${id}`, {
+                        method: 'DELETE'
                     });
+                    if (response.ok) {
+                        await fetchAccounts();
+                        Swal.fire({
+                            title: 'تم',
+                            text: `تم حذف حساب ${account.name} بنجاح.`,
+                            icon: 'success',
+                            confirmButtonColor: '#005eff'
+                        });
+                    } else {
+                        throw new Error('فشل في حذف الحساب');
+                    }
                 } catch (error) {
                     console.error('خطأ أثناء الحذف:', error);
                     Swal.fire({
@@ -815,8 +837,9 @@
 
         // تحميل الحسابات والاختبارات عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
-            renderAccounts();
+            fetchAccounts();
             renderExams();
+            updateToggleButtonText();
         });
     </script>
 </body>
