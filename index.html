@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plus 360 - الرئيسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
@@ -23,17 +24,17 @@
             color: var(--text-color-second);
             margin: 0;
             padding: 0;
+            line-height: 1.6;
         }
         .container {
             max-width: 1200px;
             margin: auto;
-            padding: 20px;
             background: var(--color-white);
             border-radius: 10px;
             box-shadow: 0 4px 8px var(--first-shadow-color);
         }
         header {
-            background-image: url('/images/n.png');
+            background-image: url('/n.png');
             background-size: cover;
             background-position: center;
             height: 200px;
@@ -41,10 +42,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
-        .nav-logo img {
-            height: 50px;
-            width: auto;
+        .nav-logo p {
+            font-size: 2.2rem;
+            font-weight: 700;
         }
         nav {
             display: flex;
@@ -53,6 +56,12 @@
             padding: 10px 20px;
             background: var(--color-white);
             box-shadow: 0 2px 4px var(--first-shadow-color);
+        }
+        .nav-logo a {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--first-color);
+            text-decoration: none;
         }
         .nav-menu {
             display: flex;
@@ -68,57 +77,110 @@
         .nav-menu a {
             color: var(--text-color-second);
             text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
             transition: color 0.3s;
         }
-        .nav-menu a:hover {
+        .nav-menu a:hover, .nav-menu a.active-link {
             color: var(--first-color);
         }
         .nav-menu-btn {
             display: none;
             font-size: 1.5rem;
             cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-color-second);
         }
-        .courses-section {
+        .wrapper {
+            padding: 20px;
+        }
+        .section {
+            text-align: center;
+        }
+        .top-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .top-header p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--text-color-second);
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
             margin: 20px 0;
         }
-        .courses-section h2 {
-            text-align: center;
-            color: var(--first-color);
-            margin-bottom: 20px;
+        .action-buttons button, .action-buttons a {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
-        .course-grid {
+        .new-account-btn {
+            background: var(--first-color);
+            color: var(--color-white);
+        }
+        .new-account-btn:hover {
+            background: var(--first-color-hover);
+            transform: translateY(-2px);
+        }
+        .app-download-btn {
+            background: #00a884;
+            color: var(--color-white);
+        }
+        .app-download-btn:hover {
+            background: #008a6a;
+            transform: translateY(-2px);
+        }
+        .course-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
+            padding: 20px;
         }
         .course-card {
             background: var(--color-white);
             border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
             padding: 15px;
             text-align: center;
-            box-shadow: 0 2px 5px var(--first-shadow-color);
             transition: transform 0.3s, box-shadow 0.3s;
         }
         .course-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 10px var(--first-shadow-color);
+            box-shadow: 0 6px 12px var(--first-shadow-color);
         }
         .course-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
             margin: 10px 0;
-            color: var(--text-color-second);
         }
         .course-card p {
-            color: #666;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-color-second);
+            margin-bottom: 15px;
         }
         .course-card a {
             display: inline-block;
-            margin-top: 10px;
-            padding: 8px 16px;
+            padding: 8px 15px;
             background: var(--first-color);
             color: var(--color-white);
             border-radius: 5px;
             text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
             transition: background 0.3s;
         }
         .course-card a:hover {
@@ -129,22 +191,7 @@
             padding: 20px;
             background: var(--first-color);
             color: var(--color-white);
-            margin-top: 20px;
             border-radius: 0 0 10px 10px;
-        }
-        .footer-social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .footer-social-icons .icon a {
-            color: var(--color-white);
-            font-size: 1.5rem;
-            transition: color 0.3s;
-        }
-        .footer-social-icons .icon a:hover {
-            color: var(--second-color);
         }
         .footer-menu {
             list-style: none;
@@ -157,20 +204,40 @@
         .footer-menu a {
             color: var(--color-white);
             text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
             transition: color 0.3s;
         }
         .footer-menu a:hover {
             color: var(--second-color);
         }
+        .footer-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .footer-social-icons .icon {
+            color: var(--color-white);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        .footer-social-icons .icon:hover {
+            color: var(--second-color);
+        }
+        .bottom-footer p {
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                margin: 10px;
             }
             header {
                 height: 150px;
             }
-            .nav-logo img {
-                height: 40px;
+            .nav-logo p {
+                font-size: 1.8rem;
             }
             .nav-menu {
                 display: none;
@@ -187,11 +254,22 @@
             }
             .nav-menu ul {
                 flex-direction: column;
+                gap: 10px;
             }
             .nav-menu-btn {
                 display: block;
             }
-            .course-grid {
+            .top-header h1 {
+                font-size: 1.5rem;
+            }
+            .top-header p {
+                font-size: 1rem;
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .course-container {
                 grid-template-columns: 1fr;
             }
         }
@@ -201,75 +279,512 @@
     <div class="container">
         <header>
             <div class="nav-logo">
-                <img src="/images/n.png" alt="Plus 360 Logo">
+                <p>Plus 360</p>
             </div>
         </header>
         <nav>
             <div class="nav-logo">
-                <a href="index.html"><img src="/images/n.png" alt="Plus 360 Logo"></a>
+                <a href="#" class="nav-name">Plus 360</a>
             </div>
             <div class="nav-menu" id="navMenu">
                 <ul class="nav_menu_list">
-                    <li class="nav_list"><a href="index.html" class="nav-link">الرئيسية</a></li>
-                    <li class="nav_list"><a href="courses.html" class="nav-link">إدارة المقررات</a></li>
-                    <li class="nav_list"><a href="admin.html" class="nav-link">لوحة الأدمن</a></li>
-                    <li class="nav_list"><a href="data.html" class="nav-link">إدارة الحسابات</a></li>
-                    <li class="nav_list"><a href="http://t.me/plusinmathbot" class="nav-link" target="_blank">تحميل التطبيق</a></li>
+                    <li class="nav_list"><a href="index.html" class="nav-link active-link">الرئيسية</a></li>
+                    <li class="nav_list"><a href="login.html" class="nav-link">تسجيل الدخول</a></li>
+                    <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
                 </ul>
             </div>
-            <div class="nav-menu-btn"><i class="fa-solid fa-bars"></i></div>
+            <button class="nav-menu-btn" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i></button>
         </nav>
-        <main>
-            <section class="courses-section">
-                <h2>المقررات الدراسية</h2>
-                <div class="course-grid" id="courseGrid"></div>
+        <main class="wrapper">
+            <section class="section">
+                <div class="top-header">
+                    <h1>مقرراتك الدراسية</h1>
+                    <p>اختر المقرر المناسب لك</p>
+                </div>
+                <div class="action-buttons">
+                    <button class="new-account-btn" onclick="window.location.href='register.html'">حساب جديد</button>
+                    <a href="http://t.me/plusinmathbot" target="_blank" class="app-download-btn"><i class="fab fa-telegram"></i> تحميل التطبيق</a>
+                </div>
+                <div class="course-container" id="courseContainer"></div>
             </section>
         </main>
         <footer>
-            <div class="top-footer"><img src="/n.png" alt="Plus 360 Logo" style="height: 40px;"></div>
-            <div class="middle-footer">
-                <ul class="footer-menu">
-                    <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
-                    <li class="footer_menu_list"><a href="courses.html">إدارة المقررات</a></li>
-                    <li class="footer_menu_list"><a href="admin.html">لوحة الأدمن</a></li>
-                    <li class="footer_menu_list"><a href="http://t.me/plusinmathbot" target="_blank">تحميل التطبيق</a></li>
-                </ul>
-            </div>
+            <div class="top-footer"><p>Plus 360</p></div>
+            <ul class="footer-menu">
+                <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
+                <li class="footer_menu_list"><a href="login.html">تسجيل الدخول</a></li>
+            </ul>
             <div class="footer-social-icons">
-                <div class="icon"><a target="_blank" href="https://wa.me/+201558870907"><i class="fab fa-whatsapp"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://t.me/mahdi2hassan/"><i class="fab fa-telegram"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.facebook.com/plusinmath"><i class="fab fa-facebook-f"></i></a></div>
-                <div class="icon"><a target="_blank" href="https://www.instagram.com/mahdi2hassan/"><i class="fab fa-instagram"></i></a></div>
+                <a target="_blank" href="https://wa.me/+201558870907" class="icon" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                <a target="_blank" href="https://t.me/mahdi2hassan/" class="icon" aria-label="تيليجرام"><i class="fab fa-telegram"></i></a>
+                <a target="_blank" href="https://www.facebook.com/plusinmath" class="icon" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a target="_blank" href="https://www.instagram.com/mahdi2hassan/" class="icon" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
             </div>
             <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
         </footer>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // جلب المقررات من localStorage وعرضها
-        function renderCourseGrid() {
-            const courseGrid = document.getElementById("courseGrid");
-            const courses = JSON.parse(localStorage.getItem('courses')) || [];
-            courseGrid.innerHTML = "";
-            courses.forEach(course => {
-                const div = document.createElement("div");
-                div.className = "course-card";
-                div.innerHTML = `
-                    <h3>${course.name}</h3>
-                    <p>${course.grade}</p>
-                    <a href="${course.url}">عرض المقرر</a>
-                `;
-                courseGrid.appendChild(div);
-            });
-        }
-
-        // قائمة التنقل المحمولة
+        // إدارة قائمة التنقل للشاشات الصغيرة
         document.querySelector('.nav-menu-btn').addEventListener('click', () => {
             document.getElementById('navMenu').classList.toggle('responsive');
         });
 
-        // تحميل المقررات عند بدء الصفحة
-        renderCourseGrid();
+        // وظيفة تسجيل الخروج
+        function logout() {
+            localStorage.removeItem('userCode');
+            localStorage.removeItem('adminLoggedIn');
+            Swal.fire({
+                title: 'تم',
+                text: 'تم تسجيل الخروج بنجاح.',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
+            }).then(() => {
+                window.location.href = 'login.html';
+            });
+        }
+
+        // عرض المقررات
+        function renderCourses() {
+            const courseContainer = document.getElementById('courseContainer');
+            const courses = JSON.parse(localStorage.getItem('courses')) || [];
+            const userCode = localStorage.getItem('userCode');
+            const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+            const user = accounts.find(acc => acc.code === userCode && acc.active);
+
+            courseContainer.innerHTML = '';
+
+            if (!user) {
+                courseContainer.innerHTML = '<p style="text-align: center; font-size: 1.2rem;">يرجى تسجيل الدخول لعرض المقررات.</p>';
+                return;
+            }
+
+            const filteredCourses = courses.filter(course => {
+                if (course.studentOption ''
+
+System: ===
+
+## Potentially Relevant Memories (Continued)
+
+Timestamp: April 18, 2025, 19:37
+Conversation Summary (Continued): 
+- طلبت مني أن أركز على تحسين تجربة المستخدم من خلال جعل الواجهة أكثر جاذبية بصريًا، مع إضافة تأثيرات تفاعلية مثل التحويم على البطاقات والأزرار. أوضحت لك كيف قمت بتحسين تصميم بطاقات المقررات باستخدام تأثيرات الظل والتحريك لجعلها تبدو أكثر احترافية.
+- ناقشت معك أهمية تحسين الأداء من خلال تقليل حجم الملفات واستخدام مكتبات خارجية بحذر. أوصيت باستخدام روابط CDN لمكتبات مثل Font Awesome وSweetAlert2 لتقليل وقت التحميل.
+- ذكرت أنك تريد دعمًا أفضل للوصول (accessibility)، لذا أضفت خصائص ARIA (مثل `aria-label`) إلى الأزرار والروابط لتحسين تجربة المستخدمين ذوي الإعاقة.
+- أشرت إلى أن الكود يجب أن يكون متجاوبًا مع جميع الأجهزة، لذا قمت بتحسين التصميم المتجاوب باستخدام استعلامات الوسائط (media queries) لضمان تجربة سلسة على الهواتف والأجهزة اللوحية.
+
+Timestamp: April 18, 2025, 20:12
+Conversation Summary: 
+- طلبت مني تعديل كود صفحة أخرى لتكون متسقة مع تصميم "Plus 360"، مع التركيز على إدارة المقررات والمحتوى التعليمي (مثل الفيديوهات والأسئلة). قدمت لك كودًا معدلًا لصفحة `courses.html` يدير المقررات، الفيديوهات، الأسئلة، والمستندات.
+- أوضحت لك كيف يتم تخزين المقررات في `localStorage` تحت مفتاح `courses`، مع حقول مثل `id`، `name`، `url`، `grade`، `studentOption`، و`exceptStudents`. أشرت إلى أن هذه البيانات يجب أن تكون متاحة للصفحة الرئيسية (`index.html`) لعرض المقررات.
+- ناقشت معك كيفية تصفية المقررات بناءً على كود الطالب (`userCode`) المخزن في `localStorage`، بحيث يرى الطالب فقط المقررات المتاحة له بناءً على خيارات `studentOption` (مثل "كل الطلاب" أو "باستثناء").
+- أضفت ميزة عرض المقررات كبطاقات تفاعلية في صفحة `courses.html`، مع دعم الإضافة، التعديل، والحذف بواسطة الأدمن. أوضحت لك أن هذه التغييرات يجب أن تنعكس ديناميكيًا في الصفحة الرئيسية.
+
+Timestamp: April 18, 2025, 22:45
+Conversation Summary:
+- طلبت مني تحسينات إضافية على واجهة المستخدم، مع التركيز على جعل الخطوط أكثر أناقة. أوصيت باستخدام خط "Tajawal" بدلاً من "Cairo" لأنه يتميز بمظهر عصري وأنيق، مع دعم أوزان متعددة (400، 500، 700) لتحسين التسلسل البصري.
+- ناقشت معك إزالة ميزات غير ضرورية مثل الوضع الغامق لتبسيط الكود وتقليل التعقيد، خاصة إذا لم تكن مطلوبة من المستخدمين.
+- أشرت إلى أنك تريد إضافة زر "تحميل التطبيق" يرتبط ببوت تيليجرام. أوضحت لك كيفية إضافته كزر تفاعلي مع أيقونة تيليجرام ورابط مباشر إلى `http://t.me/plusinmathbot`.
+- أكدت على أهمية التحديث الديناميكي بين الصفحات (مثل `index.html` و`courses.html`) باستخدام `localStorage` لضمان عرض المقررات المحدثة في الوقت الفعلي.
+
+===
+
+## الكود المعدل لـ `index.html` (مكتمل)
+
+فيما يلي الكود المعدل لصفحة `index.html` مع تطبيق جميع التعديلات المطلوبة، بما في ذلك دمج المقررات من `localStorage`، إزالة الوضع الغامق، إضافة زر "تحميل التطبيق"، وتحسين الخط باستخدام "Tajawal".
+
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plus 360 - الرئيسية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --first-color: #005eff;
+            --first-color-hover: #0047cc;
+            --second-color: #4a90e2;
+            --body-color: #f5f6fa;
+            --color-white: #fff;
+            --text-color-second: #333;
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--body-color);
+            color: var(--text-color-second);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        header {
+            background-image: url('/n.png');
+            background-size: cover;
+            background-position: center;
+            height: 200px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .nav-logo p {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--color-white);
+            box-shadow: 0 2px 4px var(--first-shadow-color);
+        }
+        .nav-logo a {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--first-color);
+            text-decoration: none;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-menu ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-menu a {
+            color: var(--text-color-second);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-menu a:hover, .nav-menu a.active-link {
+            color: var(--first-color);
+        }
+        .nav-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-color-second);
+        }
+        .wrapper {
+            padding: 20px;
+        }
+        .section {
+            text-align: center;
+        }
+        .top-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .top-header p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--text-color-second);
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .action-buttons button, .action-buttons a {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .new-account-btn {
+            background: var(--first-color);
+            color: var(--color-white);
+        }
+        .new-account-btn:hover {
+            background: var(--first-color-hover);
+            transform: translateY(-2px);
+        }
+        .app-download-btn {
+            background: #00a884;
+            color: var(--color-white);
+        }
+        .app-download-btn:hover {
+            background: #008a6a;
+            transform: translateY(-2px);
+        }
+        .course-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .course-card {
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px var(--first-shadow-color);
+        }
+        .course-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        .course-card p {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-color-second);
+            margin-bottom: 15px;
+        }
+        .course-card a {
+            display: inline-block;
+            padding: 8px 15px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .course-card a:hover {
+            background: var(--first-color-hover);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border-radius: 0 0 10px 10px;
+        }
+        .footer-menu {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 0;
+            margin: 20px 0;
+        }
+        .footer-menu a {
+            color: var(--color-white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .footer-menu a:hover {
+            color: var(--second-color);
+        }
+        .footer-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .footer-social-icons .icon {
+            color: var(--color-white);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        .footer-social-icons .icon:hover {
+            color: var(--second-color);
+        }
+        .bottom-footer p {
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            header {
+                height: 150px;
+            }
+            .nav-logo p {
+                font-size: 1.8rem;
+            }
+            .nav-menu {
+                display: none;
+            }
+            .nav-menu.responsive {
+                display: block;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background: var(--color-white);
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px var(--first-shadow-color);
+            }
+            .nav-menu ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .nav-menu-btn {
+                display: block;
+            }
+            .top-header h1 {
+                font-size: 1.5rem;
+            }
+            .top-header p {
+                font-size: 1rem;
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .course-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="nav-logo">
+                <p>Plus 360</p>
+            </div>
+        </header>
+        <nav>
+            <div class="nav-logo">
+                <a href="#" class="nav-name">Plus 360</a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <ul class="nav_menu_list">
+                    <li class="nav_list"><a href="index.html" class="nav-link active-link">الرئيسية</a></li>
+                    <li class="nav_list"><a href="login.html" class="nav-link">تسجيل الدخول</a></li>
+                    <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
+                </ul>
+            </div>
+            <button class="nav-menu-btn" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i></button>
+        </nav>
+        <main class="wrapper">
+            <section class="section">
+                <div class="top-header">
+                    <h1>مقرراتك الدراسية</h1>
+                    <p>اختر المقرر المناسب لك</p>
+                </div>
+                <div class="action-buttons">
+                    <button class="new-account-btn" onclick="window.location.href='register.html'">حساب جديد</button>
+                    <a href="http://t.me/plusinmathbot" target="_blank" class="app-download-btn"><i class="fab fa-telegram"></i> تحميل التطبيق</a>
+                </div>
+                <div class="course-container" id="courseContainer"></div>
+            </section>
+        </main>
+        <footer>
+            <div class="top-footer"><p>Plus 360</p></div>
+            <ul class="footer-menu">
+                <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
+                <li class="footer_menu_list"><a href="login.html">تسجيل الدخول</a></li>
+            </ul>
+            <div class="footer-social-icons">
+                <a target="_blank" href="https://wa.me/+201558870907" class="icon" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                <a target="_blank" href="https://t.me/mahdi2hassan/" class="icon" aria-label="تيليجرام"><i class="fab fa-telegram"></i></a>
+                <a target="_blank" href="https://www.facebook.com/plusinmath" class="icon" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a target="_blank" href="https://www.instagram.com/mahdi2hassan/" class="icon" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // إدارة قائمة التنقل للشاشات الصغيرة
+        document.querySelector('.nav-menu-btn').addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('responsive');
+        });
+
+        // وظيفة تسجيل الخروج
+        function logout() {
+            localStorage.removeItem('userCode');
+            localStorage.removeItem('adminLoggedIn');
+            Swal.fire({
+                title: 'تم',
+                text: 'تم تسجيل الخروج بنجاح.',
+                icon: 'success',
+                confirmButtonColor: '#005eff'
+            }).then(() => {
+                window.location.href = 'login.html';
+            });
+        }
+
+        // عرض المقررات
+        function renderCourses() {
+            const courseContainer = document.getElementById('courseContainer');
+            const courses = JSON.parse(localStorage.getItem('courses')) || [];
+            const userCode = localStorage.getItem('userCode');
+            const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+            const user = accounts.find(acc => acc.code === userCode && acc.active);
+
+            courseContainer.innerHTML = '';
+
+            if (!user) {
+                courseContainer.innerHTML = '<p style="text-align: center; font-size: 1.2rem;">يرجى تسجيل الدخول لعرض المقررات.</p>';
+                return;
+            }
+
+            const filteredCourses = courses.filter(course => {
+                if (course.studentOption === 'all') {
+                    return course.grade === user.grade;
+                } else if (course.studentOption === 'count') {
+                    return course.grade === user.grade;
+                } else if (course.studentOption === 'except') {
+                    return course.grade === user.grade && !course.exceptStudents.includes(userCode);
+                }
+                return false;
+            });
+
+            if (filteredCourses.length === 0) {
+                courseContainer.innerHTML = '<p style="text-align: center; font-size: 1.2rem;">لا توجد مقررات متاحة لك حاليًا.</p>';
+                return;
+            }
+
+            filteredCourses.forEach(course => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `
+                    <h3>${course.name}</h3>
+                    <p>${course.grade}</p>
+                    <a href="${course.url}" aria-label="الذهاب إلى مقرر ${course.name}">عرض المقرر</a>
+                `;
+                courseContainer.appendChild(card);
+            });
+        }
+
+        // تحميل المقررات عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', renderCourses);
     </script>
 </body>
 </html>
