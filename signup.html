@@ -16,7 +16,7 @@
         .signup-section h1 {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--first-color);
+            color: #005eff;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -43,8 +43,8 @@
             display: block;
             width: 100%;
             padding: 10px;
-            background: var(--first-color);
-            color: var(--color-white);
+            background: #005eff;
+            color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -52,7 +52,7 @@
             transition: background 0.3s, transform 0.2s;
         }
         .submit-btn:hover {
-            background: var(--first-color-hover);
+            background: #0047cc;
             transform: translateY(-2px);
         }
     </style>
@@ -171,30 +171,32 @@
                 pending: true,
                 active: false
             };
+            const newStudentCode = {
+                code,
+                active: false,
+                pending: true
+            };
 
             try {
-                const response = await fetch('http://localhost:3000/api/accounts', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newAccount)
+                let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+                let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
+                accounts.push(newAccount);
+                studentCodes.push(newStudentCode);
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+                localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
+                Swal.fire({
+                    title: 'تم',
+                    text: `تم إنشاء الحساب بنجاح! كود الطالب: ${code}`,
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
+                }).then(() => {
+                    document.getElementById('signupForm').reset();
                 });
-                if (response.ok) {
-                    Swal.fire({
-                        title: 'تم',
-                        text: `تم إنشاء الحساب بنجاح! كود الطالب: ${code}`,
-                        icon: 'success',
-                        confirmButtonColor: '#005eff'
-                    }).then(() => {
-                        document.getElementById('signupForm').reset();
-                    });
-                } else {
-                    throw new Error('فشل في إنشاء الحساب');
-                }
             } catch (error) {
-                console.error('خطأ في إنشاء الحساب:', error);
+                console.error('خطأ في حفظ الحساب:', error);
                 Swal.fire({
                     title: 'خطأ',
-                    text: 'حدث خطأ أثناء إنشاء الحساب! تأكد من أن الخادم يعمل.',
+                    text: 'حدث خطأ أثناء إنشاء الحساب!',
                     icon: 'error',
                     confirmButtonColor: '#005eff'
                 });
