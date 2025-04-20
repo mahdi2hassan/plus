@@ -119,8 +119,7 @@
             background: var(--color-white);
             padding: 30px;
             border-radius: 10px;
-            box-shadow	-webkit-box-sizing: border-box;
-            box-sizing: border-box;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
             text-align: center;
         }
         .login-container h1 {
@@ -216,6 +215,20 @@
         .back-link:hover {
             color: var(--first-color-hover);
             text-decoration: underline;
+        }
+        .spinner {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--first-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         footer {
             text-align: center;
@@ -325,6 +338,7 @@
         <main class="login-section">
             <div class="login-container">
                 <h1>تسجيل دخول الأدمن</h1>
+                <div class="spinner" id="spinner"></div>
                 <form id="loginForm">
                     <div class="form-group">
                         <label for="email">البريد الإلكتروني</label>
@@ -362,9 +376,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module">
         // استيراد Firebase SDK
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
-        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.17.0/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.17.0/firebase-auth.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.17.0/firebase-firestore.js';
 
         // تهيئة Firebase
         const firebaseConfig = {
@@ -396,17 +410,30 @@
         const submitBtn = document.getElementById('submitBtn');
         const emailError = document.getElementById('emailError');
         const passwordError = document.getElementById('passwordError');
+        const spinner = document.getElementById('spinner');
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
+            const password = document.getElementById('password').value.trim();
 
             // إعادة تعيين رسائل الخطأ
             emailError.style.display = 'none';
             passwordError.style.display = 'none';
 
-            // تعطيل زر الإرسال
+            // التحقق من إدخال الحقول
+            if (!email || !password) {
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى إدخال البريد الإلكتروني وكلمة المرور!',
+                    icon: 'warning',
+                    confirmButtonColor: '#005eff'
+                });
+                return;
+            }
+
+            // إظهار المؤشر
+            spinner.style.display = 'block';
             submitBtn.disabled = true;
             submitBtn.textContent = 'جارٍ تسجيل الدخول...';
 
@@ -414,10 +441,13 @@
                 // تسجيل الدخول باستخدام Firebase Auth
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
+                console.log('تم تسجيل الدخول:', user.uid, user.email);
 
                 // التحقق من صلاحيات الأدمن
-                const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+                const adminDocRef = doc(db, 'admins', user.uid);
+                const adminDoc = await getDoc(adminDocRef);
                 if (!adminDoc.exists() || !adminDoc.data().isAdmin) {
+                    console.error('المستخدم ليس أدمن:', user.uid);
                     throw new Error('unauthorized');
                 }
 
@@ -430,7 +460,7 @@
                     window.location.href = 'data.html';
                 });
             } catch (error) {
-                console.error('خطأ في تسجيل الدخول:', error);
+                console.error('خطأ في تسجيل الدخول:', error.code, error.message);
                 let errorMessage = 'حدث خطأ أثناء تسجيل الدخول!';
                 switch (error.code) {
                     case 'auth/invalid-email':
@@ -446,11 +476,16 @@
                         passwordError.style.display = 'block';
                         break;
                     case 'auth/too-many-requests':
-                        errorMessage = 'تم حظر الحساب مؤقتًا بسبب محاولات تسجيل دخول متكررة. حاول لاحقًا.';
+                        errorMessage = 'تم حظر الحساب مؤقتًا بسبب محاولات تسجيل دخول متكررة. حاول لاحقًا أو أعد تعيين كلمة المرور.';
+                        break;
+                    case 'auth/invalid-credential':
+                        errorMessage = 'بيانات الاعتماد غير صحيحة! تحقق من البريد الإلكتروني وكلمة المرور.';
                         break;
                     default:
                         if (error.message === 'unauthorized') {
                             errorMessage = 'ليس لديك صلاحيات الأدمن!';
+                        } else {
+                            errorMessage = `خطأ غير متوقع: ${error.message}`;
                         }
                         break;
                 }
@@ -461,9 +496,17 @@
                     confirmButtonColor: '#005eff'
                 });
             } finally {
-                // إعادة تمكين زر الإرسال
+                // إخفاء المؤشر
+                spinner.style.display = 'none';
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'تسجيل الدخول';
+            }
+        });
+
+        // إرسال النموذج عند الضغط على Enter
+        loginForm.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
             }
         });
 
@@ -483,7 +526,20 @@
                 return;
             }
 
-            // تعطيل زر إعادة التعيين
+            // التحقق من صيغة البريد الإلكتروني
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى إدخال بريد إلكتروني صالح!',
+                    icon: 'warning',
+                    confirmButtonColor: '#005eff'
+                });
+                return;
+            }
+
+            // إظهار المؤشر
+            spinner.style.display = 'block';
             resetPasswordBtn.disabled = true;
             resetPasswordBtn.textContent = 'جارٍ الإرسال...';
 
@@ -496,7 +552,7 @@
                     confirmButtonColor: '#005eff'
                 });
             } catch (error) {
-                console.error('خطأ في إعادة تعيين كلمة المرور:', error);
+                console.error('خطأ في إعادة تعيين كلمة المرور:', error.code, error.message);
                 let errorMessage = 'حدث خطأ أثناء إرسال رابط إعادة تعيين كلمة المرور!';
                 switch (error.code) {
                     case 'auth/invalid-email':
@@ -509,6 +565,7 @@
                         errorMessage = 'تم إرسال طلبات كثيرة جدًا. حاول لاحقًا.';
                         break;
                     default:
+                        errorMessage = `خطأ غير متوقع: ${error.message}`;
                         break;
                 }
                 Swal.fire({
@@ -518,7 +575,8 @@
                     confirmButtonColor: '#005eff'
                 });
             } finally {
-                // إعادة تمكين زر إعادة التعيين
+                // إخفاء المؤشر
+                spinner.style.display = 'none';
                 resetPasswordBtn.disabled = false;
                 resetPasswordBtn.textContent = 'إعادة تعيين كلمة المرور';
             }
