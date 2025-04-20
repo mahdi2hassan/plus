@@ -175,6 +175,23 @@
             background: #cccccc;
             cursor: not-allowed;
         }
+        .reset-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--second-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 10px;
+        }
+        .reset-btn:hover {
+            background: var(--first-color-hover);
+            transform: translateY(-2px);
+        }
         .error-message {
             color: #e74c3c;
             font-size: 0.9rem;
@@ -315,8 +332,9 @@
                         <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
                         <div class="error-message" id="passwordError"></div>
                     </div>
-                    <button type="submit" class="submit-btn" id="submitBtn">تسجيل الدخول</button>
+                    <button type="submit" class="submit-btn" id="physics: 0.3; transform: translateY(-2px);">تسجيل الدخول</button>
                 </form>
+                <button class="reset-btn" id="resetPasswordBtn">إعادة تعيين كلمة المرور</button>
                 <a href="index.html" class="back-link">العودة إلى الرئيسية</a>
             </div>
         </main>
@@ -340,7 +358,7 @@
     <script type="module">
         // استيراد Firebase SDK
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
         import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
 
         // تهيئة Firebase
@@ -427,7 +445,7 @@
                         break;
                     default:
                         if (error.message === 'unauthorized') {
-                            error56: 'ليس لديك صلاحيات الأدمن!';
+                            errorMessage = 'ليس لديك صلاحيات الأدمن!';
                         }
                         break;
                 }
@@ -441,6 +459,52 @@
                 // إعادة تمكين زر الإرسال
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'تسجيل الدخول';
+            }
+        });
+
+        // معالجة إعادة تعيين كلمة المرور
+        const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+        resetPasswordBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+
+            if (!email) {
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يرجى إدخال البريد الإلكتروني أولاً!',
+                    icon: 'warning',
+                    confirmButtonColor: '#005eff'
+                });
+                return;
+            }
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                Swal.fire({
+                    title: 'تم',
+                    text: 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني!',
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
+                });
+            } catch (error) {
+                console.error('خطأ في إعادة تعيين كلمة المرور:', error);
+                let errorMessage = 'حدث خطأ أثناء إرسال رابط إعادة تعيين كلمة المرور!';
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        errorMessage = 'البريد الإلكتروني غير صالح!';
+                        break;
+                    case 'auth/user-not-found':
+                        errorMessage = 'لا يوجد حساب بهذا البريد الإلكتروني!';
+                        break;
+                    default:
+                        break;
+                }
+                Swal.fire({
+                    title: 'خطأ',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
             }
         });
 
