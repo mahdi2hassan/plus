@@ -119,7 +119,8 @@
             background: var(--color-white);
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px var(--first-shadow-color);
+            box-shadow	-webkit-box-sizing: border-box;
+            box-sizing: border-box;
             text-align: center;
         }
         .login-container h1 {
@@ -191,6 +192,10 @@
         .reset-btn:hover {
             background: var(--first-color-hover);
             transform: translateY(-2px);
+        }
+        .reset-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
         }
         .error-message {
             color: #e74c3c;
@@ -332,7 +337,7 @@
                         <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
                         <div class="error-message" id="passwordError"></div>
                     </div>
-                    <button type="submit" class="submit-btn" id="physics: 0.3; transform: translateY(-2px);">تسجيل الدخول</button>
+                    <button type="submit" class="submit-btn" id="submitBtn">تسجيل الدخول</button>
                 </form>
                 <button class="reset-btn" id="resetPasswordBtn">إعادة تعيين كلمة المرور</button>
                 <a href="index.html" class="back-link">العودة إلى الرئيسية</a>
@@ -478,6 +483,10 @@
                 return;
             }
 
+            // تعطيل زر إعادة التعيين
+            resetPasswordBtn.disabled = true;
+            resetPasswordBtn.textContent = 'جارٍ الإرسال...';
+
             try {
                 await sendPasswordResetEmail(auth, email);
                 Swal.fire({
@@ -496,6 +505,9 @@
                     case 'auth/user-not-found':
                         errorMessage = 'لا يوجد حساب بهذا البريد الإلكتروني!';
                         break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'تم إرسال طلبات كثيرة جدًا. حاول لاحقًا.';
+                        break;
                     default:
                         break;
                 }
@@ -505,6 +517,10 @@
                     icon: 'error',
                     confirmButtonColor: '#005eff'
                 });
+            } finally {
+                // إعادة تمكين زر إعادة التعيين
+                resetPasswordBtn.disabled = false;
+                resetPasswordBtn.textContent = 'إعادة تعيين كلمة المرور';
             }
         });
 
