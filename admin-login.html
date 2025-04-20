@@ -10,41 +10,39 @@
         body {
             font-family: 'Tajawal', sans-serif;
             background: #f5f6fa;
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
         .login-container {
             background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
             max-width: 400px;
+            width: 100%;
+            text-align: center;
         }
         .login-container h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: #005eff;
-            text-align: center;
             margin-bottom: 20px;
         }
         .form-group {
             margin-bottom: 15px;
+            text-align: right;
         }
         .form-group label {
             display: block;
             font-size: 1.1rem;
-            margin-bottom: 5px;
         }
         .form-group input {
             width: 100%;
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
-            font-size: 1rem;
         }
         .submit-btn {
             width: 100%;
@@ -54,8 +52,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.3s;
         }
         .submit-btn:hover {
             background: #0047cc;
@@ -65,10 +61,10 @@
 <body>
     <div class="login-container">
         <h1>تسجيل دخول الأدمن</h1>
-        <form id="adminLoginForm">
+        <form id="loginForm">
             <div class="form-group">
-                <label for="username">اسم المستخدم</label>
-                <input type="text" id="username" required>
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" required>
             </div>
             <div class="form-group">
                 <label for="password">كلمة المرور</label>
@@ -78,27 +74,43 @@
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"></script>
     <script>
-        document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeZ9I6rjoZD-rxOwbOAuiafp5Tl2iNCDw",
+            authDomain: "plusinmath-web.firebaseapp.com",
+            projectId: "plusinmath-web",
+            storageBucket: "plusinmath-web.firebasestorage.app",
+            messagingSenderId: "444492731461",
+            appId: "1:444492731461:web:05ce3ece9c5b23bcdabf2c",
+            measurementId: "G-TEQSJ77X0Z"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // معالجة تسجيل الدخول
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // بيانات تسجيل دخول وهمية للاختبار
-            if (username === 'admin' && password === 'admin123') {
-                localStorage.setItem('adminLoggedIn', 'true');
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
                 Swal.fire({
                     title: 'تم',
                     text: 'تم تسجيل الدخول بنجاح!',
                     icon: 'success',
                     confirmButtonColor: '#005eff'
                 }).then(() => {
-                    window.location.href = 'admin.html';
+                    window.location.href = 'data.html';
                 });
-            } else {
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول:', error);
                 Swal.fire({
                     title: 'خطأ',
-                    text: 'اسم المستخدم أو كلمة المرور غير صحيحة!',
+                    text: 'البريد الإلكتروني أو كلمة المرور غير صحيحة!',
                     icon: 'error',
                     confirmButtonColor: '#005eff'
                 });

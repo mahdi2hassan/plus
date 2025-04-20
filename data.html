@@ -6,36 +6,20 @@
     <title>Plus In Math - إدارة الحسابات</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
-        :root {
-            --first-color: #005eff;
-            --first-color-hover: #0047cc;
-            --second-color: #4a90e2;
-            --body-color: #f5f6fa;
-            --color-white: #fff;
-            --text-color-second: #333;
-            --first-shadow-color: rgba(0, 0, 0, 0.1);
-            --gradient-bg: linear-gradient(135deg, #005eff, #4a90e2);
-        }
         body {
             font-family: 'Tajawal', sans-serif;
-            background: var(--body-color);
-            color: var(--text-color-second);
+            background: #f5f6fa;
             margin: 0;
-            padding: 0;
-            line-height: 1.6;
         }
         .container {
             max-width: 1200px;
             margin: auto;
-            background: var(--color-white);
+            background: #fff;
             border-radius: 10px;
-            box-shadow: 0 4px 8px var(--first-shadow-color);
         }
         header {
-            background: var(--gradient-bg);
+            background: linear-gradient(135deg, #005eff, #4a90e2);
             height: 150px;
             border-radius: 10px 10px 0 0;
             display: flex;
@@ -44,111 +28,45 @@
         }
         .nav-logo .logo-text {
             font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--color-white);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            animation: fadeInPulse 2s ease-in-out;
-        }
-        @keyframes fadeInPulse {
-            0% { opacity: 0; transform: scale(0.8); }
-            50% { transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
+            color: #fff;
         }
         nav {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             padding: 10px 20px;
-            background: var(--color-white);
-            box-shadow: 0 2px 4px var(--first-shadow-color);
-        }
-        .nav-logo a .logo-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--first-color);
-            position: relative;
-            transition: transform 0.3s, text-shadow 0.3s;
-        }
-        .nav-logo a .logo-text:hover {
-            transform: scale(1.1);
-            text-shadow: 0 0 10px var(--first-color);
-        }
-        .nav-logo a .logo-text::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--first-color);
-            transition: width 0.3s;
-        }
-        .nav-logo a .logo-text:hover::after {
-            width: 100%;
-        }
-        .nav-menu {
-            display: flex;
-            gap: 20px;
+            background: #fff;
         }
         .nav-menu ul {
             list-style: none;
             display: flex;
             gap: 15px;
-            margin: 0;
-            padding: 0;
         }
         .nav-menu a {
-            color: var(--text-color-second);
+            color: #333;
             text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 500;
-            transition: color 0.3s;
         }
         .nav-menu a:hover, .nav-menu a.active-link {
-            color: var(--first-color);
+            color: #005eff;
         }
         .nav-menu-btn {
             display: none;
             font-size: 1.5rem;
-            cursor: pointer;
             background: none;
             border: none;
-            color: var(--text-color-second);
         }
         .accounts-section {
             padding: 20px;
         }
         .accounts-section h1 {
             font-size: 2rem;
-            font-weight: 700;
-            color: var(--first-color);
+            color: #005eff;
             text-align: center;
-            margin-bottom: 20px;
-        }
-        .export-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            margin-left: 10px;
-            padding: 10px 20px;
-            background: var(--first-color);
-            color: var(--color-white);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.3s, transform 0.2s;
-        }
-        .export-btn:hover {
-            background: var(--first-color-hover);
-            transform: translateY(-2px);
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            background: var(--color-white);
-            border-radius: 8px;
-            box-shadow: 0 4px 8px var(--first-shadow-color);
+            background: #fff;
         }
         th, td {
             padding: 12px;
@@ -156,141 +74,29 @@
             border-bottom: 1px solid #ddd;
         }
         th {
-            background: var(--first-color);
-            color: var(--color-white);
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        td {
-            font-size: 1rem;
-            color: var(--text-color-second);
+            background: #005eff;
+            color: #fff;
         }
         td img {
             max-width: 80px;
-            max-height: 80px;
-            border-radius: 5px;
-            object-fit: cover;
         }
         .btn {
             padding: 8px 15px;
-            background: var(--first-color);
-            color: var(--color-white);
+            background: #005eff;
+            color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.3s, transform 0.2s;
-        }
-        .btn:hover {
-            background: var(--first-color-hover);
-            transform: translateY(-2px);
         }
         .btn-danger {
             background: #e74c3c;
-        }
-        .btn-danger:hover {
-            background: #c0392b;
         }
         select {
             padding: 8px;
             border-radius: 5px;
             border: 1px solid #ddd;
-            background: var(--color-white);
-            color: var(--text-color-second);
-            font-family: 'Tajawal', sans-serif;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: border-color 0.3s;
-        }
-        select:focus {
-            outline: none;
-            border-color: var(--first-color);
-        }
-        .back-link {
-            display: inline-block;
-            margin: 20px 0;
-            color: var(--first-color);
-            font-size: 1.1rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: color 0.3s, text-decoration 0.3s;
-        }
-        .back-link:hover {
-            color: var(--first-color-hover);
-            text-decoration: underline;
-        }
-        .exams-section {
-            margin-top: 40px;
-        }
-        .exams-section h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--first-color);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background: var(--first-color);
-            color: var(--color-white);
-            border-radius: 0 0 10px 10px;
-        }
-        .top-footer .logo-text {
-            font-size: 1.5rem;
-            font-weight: 700;
-            transition: transform 0.3s, text-shadow 0.3s;
-        }
-        .top-footer .logo-text:hover {
-            transform: scale(1.1);
-            text-shadow: 0 0 10px var(--color-white);
-        }
-        .footer-menu {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 0;
-            margin: 20px 0;
-        }
-        .footer-menu a {
-            color: var(--color-white);
-            text-decoration: none;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        .footer-menu a:hover {
-            color: var(--second-color);
-        }
-        .footer-social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .footer-social-icons .icon {
-            color: var(--color-white);
-            font-size: 1.5rem;
-            transition: color 0.3s;
-        }
-        .footer-social-icons .icon:hover {
-            color: var(--second-color);
-        }
-        .bottom-footer p {
-            font-size: 0.9rem;
-            font-weight: 400;
         }
         @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-            }
-            header {
-                height: 120px;
-            }
-            .nav-logo .logo-text {
-                font-size: 2rem;
-            }
             .nav-menu {
                 display: none;
             }
@@ -299,47 +105,14 @@
                 position: absolute;
                 top: 60px;
                 right: 20px;
-                background: var(--color-white);
+                background: #fff;
                 padding: 10px;
-                border-radius: 5px;
-                box-shadow: 0 2px 4px var(--first-shadow-color);
             }
             .nav-menu ul {
                 flex-direction: column;
-                gap: 10px;
             }
             .nav-menu-btn {
                 display: block;
-            }
-            .accounts-section h1, .exams-section h2 {
-                font-size: 1.5rem;
-            }
-            .export-btn {
-                width: 100%;
-                text-align: center;
-                margin-left: 0;
-                margin-bottom: 10px;
-            }
-            table {
-                font-size: 0.9rem;
-            }
-            th, td {
-                padding: 8px;
-            }
-            td img {
-                max-width: 60px;
-                max-height: 60px;
-            }
-            select, .btn {
-                width: 100%;
-                margin: 5px 0;
-            }
-        }
-        @media (max-width: 600px) {
-            table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
             }
         }
     </style>
@@ -360,7 +133,6 @@
                     <li class="nav_list"><a href="index.html" class="nav-link">الرئيسية</a></li>
                     <li class="nav_list"><a href="data.html" class="nav-link active-link">إدارة الحسابات</a></li>
                     <li class="nav_list"><a href="courses.html" class="nav-link">إدارة المقررات</a></li>
-                    <li class="nav_list"><a href="exams.html" class="nav-link">الاختبارات الإلكترونية</a></li>
                     <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
                 </ul>
             </div>
@@ -368,11 +140,6 @@
         </nav>
         <main class="accounts-section">
             <h1>إدارة الحسابات</h1>
-            <div>
-                <button class="export-btn" onclick="exportToExcel()">تصدير الدرجات إلى Excel</button>
-                <button class="export-btn" onclick="exportExamsToExcel()">تصدير الاختبارات إلى Excel</button>
-                <button class="export-btn" onclick="toggleAccountView()"></button>
-            </div>
             <table id="accountsTable">
                 <thead>
                     <tr>
@@ -390,119 +157,70 @@
                 </thead>
                 <tbody id="accountsBody"></tbody>
             </table>
-            <div class="exams-section">
-                <h2>الاختبارات الإلكترونية</h2>
-            <table id="examsTable">
-                <thead>
-                    <tr>
-                        <th>معرف الاختبار</th>
-                        <th>العنوان</th>
-                        <th>الصف</th>
-                        <th>عدد الأسئلة</th>
-                        <th>إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="examsBody"></tbody>
-            </table>
-            </div>
-            <a href="admin.html" class="back-link">العودة إلى لوحة الأدمن</a>
         </main>
-        <footer>
-            <div class="top-footer"><span class="logo-text">Plus In Math</span></div>
-            <ul class="footer-menu">
-                <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
-                <li class="footer_menu_list"><a href="data.html">إدارة الحسابات</a></li>
-                <li class="footer_menu_list"><a href="courses.html">إدارة المقررات</a></li>
-                <li class="footer_menu_list"><a href="exams.html">الاختبارات الإلكترونية</a></li>
-            </ul>
-            <div class="footer-social-icons">
-                <a target="_blank" href="https://wa.me/+201558870907" class="icon" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
-                <a target="_blank" href="https://t.me/mahdi2hassan/" class="icon" aria-label="تيليجرام"><i class="fab fa-telegram"></i></a>
-                <a target="_blank" href="https://www.facebook.com/plusinmath" class="icon" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
-                <a target="_blank" href="https://www.instagram.com/mahdi2hassan/" class="icon" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
-            </div>
-            <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
-        </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"></script>
     <script>
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeZ9I6rjoZD-rxOwbOAuiafp5Tl2iNCDw",
+            authDomain: "plusinmath-web.firebaseapp.com",
+            projectId: "plusinmath-web",
+            storageBucket: "plusinmath-web.firebasestorage.app",
+            messagingSenderId: "444492731461",
+            appId: "1:444492731461:web:05ce3ece9c5b23bcdabf2c",
+            measurementId: "G-TEQSJ77X0Z"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
         // التحقق من تسجيل دخول الأدمن
-        const isAdminLoggedIn = localStorage.getItem('adminLoggedIn');
-        if (!isAdminLoggedIn) {
-            Swal.fire({
-                title: 'خطأ',
-                text: 'يرجى تسجيل الدخول كأدمن!',
-                icon: 'error',
-                confirmButtonColor: '#005eff'
-            }).then(() => {
-                window.location.href = 'admin-login.html';
-            });
-        }
-
-        // تحميل البيانات من localStorage
-        let accounts = [];
-        let studentCodes = [];
-        let courses = [];
-        let videos = [];
-        let questions = [];
-        let documents = [];
-        let exams = [];
-
-        function loadData() {
-            try {
-                accounts = JSON.parse(localStorage.getItem('accounts')) || [];
-                studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
-                courses = JSON.parse(localStorage.getItem('courses')) || [];
-                videos = JSON.parse(localStorage.getItem('videos')) || [];
-                questions = JSON.parse(localStorage.getItem('questions')) || [];
-                documents = JSON.parse(localStorage.getItem('documents')) || [];
-                exams = JSON.parse(localStorage.getItem('exams')) || [];
-                console.log('الحسابات المجلوبة:', accounts); // للتصحيح
-            } catch (error) {
-                console.error('خطأ في تحليل البيانات:', error);
+        auth.onAuthStateChanged(user => {
+            if (!user) {
                 Swal.fire({
                     title: 'خطأ',
-                    text: 'حدث خطأ في تحميل البيانات!',
+                    text: 'يرجى تسجيل الدخول كأدمن!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                }).then(() => {
+                    window.location.href = 'admin-login.html';
+                });
+            }
+        });
+
+        // تحميل الحسابات
+        let accounts = [];
+        async function fetchAccounts() {
+            try {
+                const snapshot = await db.collection('accounts').orderBy('createdAt', 'desc').get();
+                accounts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderAccounts();
+            } catch (error) {
+                console.error('خطأ في جلب الحسابات:', error);
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'حدث خطأ في تحميل الحسابات!',
                     icon: 'error',
                     confirmButtonColor: '#005eff'
                 });
             }
         }
 
-        // متغير لتحديد ما إذا كان سيتم عرض الطلبات المعلقة فقط
-        let showPendingOnly = true;
-
-        // تحديث نص زر التبديل
-        function updateToggleButtonText() {
-            const toggleButton = document.querySelector('button[onclick="toggleAccountView()"]');
-            toggleButton.textContent = showPendingOnly ? 'عرض جميع الحسابات' : 'عرض الطلبات المعلقة فقط';
-        }
-
-        // تبديل بين عرض الطلبات المعلقة وجميع الحسابات
-        function toggleAccountView() {
-            showPendingOnly = !showPendingOnly;
-            updateToggleButtonText();
-            renderAccounts();
-        }
-
         // عرض الحسابات
         function renderAccounts() {
             const accountsBody = document.getElementById('accountsBody');
             accountsBody.innerHTML = '';
-            // تصفية الحسابات
-            const filteredAccounts = showPendingOnly ? accounts.filter(account => account.pending === true) : accounts;
-
-            if (filteredAccounts.length === 0) {
-                accountsBody.innerHTML = `<tr><td colspan="10" style="text-align: center;">${
-                    showPendingOnly ? 'لا توجد طلبات معلقة.' : 'لا توجد حسابات.'
-                }</td></tr>`;
+            if (accounts.length === 0) {
+                accountsBody.innerHTML = `<tr><td colspan="10" style="text-align: center;">لا توجد حسابات.</td></tr>`;
                 return;
             }
 
-            filteredAccounts.forEach((account, index) => {
+            accounts.forEach(account => {
                 const status = account.pending ? 'معلق' : (account.active ? 'مفعل' : 'غير مفعل');
-                const accountStatus = account.pending ? 'معلق' : (account.active ? 'قبول' : 'رفض');
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${account.code}</td>
@@ -514,108 +232,60 @@
                     <td><img src="${account.receiptImage || ''}" alt="إيصال الدفع" onerror="this.style.display='none'"></td>
                     <td>${status}</td>
                     <td>
-                        <select onchange="updateAccountStatus(${index}, this.value)">
+                        <select onchange="updateAccountStatus('${account.id}', this.value)">
                             <option value="pending" ${account.pending ? 'selected' : ''}>معلق</option>
                             <option value="accept" ${!account.pending && account.active ? 'selected' : ''}>قبول</option>
                             <option value="reject" ${!account.pending && !account.active ? 'selected' : ''}>رفض</option>
                         </select>
                     </td>
-                    <td><button class="btn btn-danger" onclick="deleteAccount(${index})">حذف الحساب</button></td>
+                    <td><button class="btn btn-danger" onclick="deleteAccount('${account.id}')">حذف الحساب</button></td>
                 `;
                 accountsBody.appendChild(tr);
             });
         }
 
-        // عرض الاختبارات
-        function renderExams() {
-            const examsBody = document.getElementById('examsBody');
-            examsBody.innerHTML = '';
-            exams.forEach((exam, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${exam.id}</td>
-                    <td>${exam.title}</td>
-                    <td>${exam.grade}</td>
-                    <td>${exam.questionIds ? exam.questionIds.length : 0}</td>
-                    <td>
-                        <button class="btn" onclick="shareExam('${exam.id}', '${exam.title}')" aria-label="مشاركة اختبار ${exam.title}">
-                            <i class="fas fa-share-alt"></i> مشاركة
-                        </button>
-                    </td>
-                `;
-                examsBody.appendChild(tr);
-            });
-        }
-
         // تحديث حالة الحساب
-        async function updateAccountStatus(index, status) {
-            const account = accounts[index];
-            const code = account.code;
-            let confirmMessage = '';
-            let successMessage = '';
-
+        async function updateAccountStatus(id, status) {
+            const account = accounts.find(acc => acc.id === id);
+            let updateData = {};
             if (status === 'accept') {
-                confirmMessage = `هل أنت متأكد من قبول حساب ${account.name} (كود: ${account.code})؟`;
-                successMessage = `تم قبول حساب ${account.name} بنجاح.`;
-                account.active = true;
-                account.pending = false;
-                studentCodes = studentCodes.map(sc => sc.code === code ? { ...sc, active: true, pending: false } : sc);
+                updateData = { pending: false, active: true };
             } else if (status === 'reject') {
-                confirmMessage = `هل أنت متأكد من رفض حساب ${account.name} (كود: ${account.code})؟`;
-                successMessage = `تم رفض حساب ${account.name} بنجاح.`;
-                account.active = false;
-                account.pending = false;
-                studentCodes = studentCodes.map(sc => sc.code === code ? { ...sc, active: false, pending: false } : sc);
+                updateData = { pending: false, active: false };
             } else {
-                confirmMessage = `هل أنت متأكد من تعليق حساب ${account.name} (كود: ${account.code})؟`;
-                successMessage = `تم تعليق حساب ${account.name} بنجاح.`;
-                account.active = false;
-                account.pending = true;
-                studentCodes = studentCodes.map(sc => sc.code === code ? { ...sc, active: false, pending: true } : sc);
+                updateData = { pending: true, active: false };
             }
 
-            const result = await Swal.fire({
-                title: 'تأكيد الإجراء',
-                text: confirmMessage,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#005eff',
-                cancelButtonColor: '#e74c3c',
-                confirmButtonText: 'نعم',
-                cancelButtonText: 'إلغاء'
-            });
-
-            if (result.isConfirmed) {
-                try {
-                    localStorage.setItem('accounts', JSON.stringify(accounts));
-                    localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
-                    renderAccounts();
-                    Swal.fire({
-                        title: 'تم',
-                        text: successMessage,
-                        icon: 'success',
-                        confirmButtonColor: '#005eff'
-                    });
-                } catch (error) {
-                    console.error('خطأ أثناء تحديث الحالة:', error);
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: 'حدث خطأ أثناء تحديث حالة الحساب!',
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                }
-            } else {
-                renderAccounts();
+            try {
+                await db.collection('accounts').doc(id).update(updateData);
+                await db.collection('studentCodes').doc(account.code).update({
+                    active: updateData.active,
+                    pending: updateData.pending
+                });
+                await fetchAccounts();
+                Swal.fire({
+                    title: 'تم',
+                    text: `تم تحديث حالة حساب ${account.name} بنجاح.`,
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
+                });
+            } catch (error) {
+                console.error('خطأ أثناء تحديث الحالة:', error);
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'حدث خطأ أثناء تحديث حالة الحساب!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
             }
         }
 
         // حذف الحساب
-        async function deleteAccount(index) {
-            const account = accounts[index];
+        async function deleteAccount(id) {
+            const account = accounts.find(acc => acc.id === id);
             const result = await Swal.fire({
                 title: 'تأكيد الحذف',
-                text: `هل أنت متأكد من حذف حساب ${account.name} (كود: ${account.code})؟ سيتم حذف جميع المحتوى المرتبط.`,
+                text: `هل أنت متأكد من حذف حساب ${account.name}؟`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#e74c3c',
@@ -626,23 +296,9 @@
 
             if (result.isConfirmed) {
                 try {
-                    const code = account.code;
-                    accounts.splice(index, 1);
-                    studentCodes = studentCodes.filter(sc => sc.code !== code);
-                    courses = courses.filter(course => course.studentCode !== code);
-                    videos = videos.filter(video => video.studentCode !== code);
-                    questions = questions.filter(question => question.studentCode !== code);
-                    documents = documents.filter(doc => doc.studentCode !== code);
-                    exams = exams.filter(exam => exam.studentCode !== code);
-                    localStorage.setItem('accounts', JSON.stringify(accounts));
-                    localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
-                    localStorage.setItem('courses', JSON.stringify(courses));
-                    localStorage.setItem('videos', JSON.stringify(videos));
-                    localStorage.setItem('questions', JSON.stringify(questions));
-                    localStorage.setItem('documents', JSON.stringify(documents));
-                    localStorage.setItem('exams', JSON.stringify(exams));
-                    renderAccounts();
-                    renderExams();
+                    await db.collection('accounts').doc(id).delete();
+                    await db.collection('studentCodes').doc(account.code).delete();
+                    await fetchAccounts();
                     Swal.fire({
                         title: 'تم',
                         text: `تم حذف حساب ${account.name} بنجاح.`,
@@ -661,194 +317,35 @@
             }
         }
 
-        // تصدير الدرجات إلى Excel
-        function exportToExcel() {
-            const data = accounts.map(account => ({
-                'كود الطالب': account.code,
-                'الاسم': account.name,
-                'الصف': account.grade,
-                'رقم الهاتف': account.phone,
-                'المحافظة': account.governorate,
-                'المنطقة': account.area,
-                'الحالة': account.pending ? 'معلق' : (account.active ? 'مفعل' : 'غير مفعل'),
-                'الدرجة': account.gradeScore || 'غير متوفر'
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(data);
-            const header = ['كود الطالب', 'الاسم', 'الصف', 'رقم الهاتف', 'المحافظة', 'المنطقة', 'الحالة', 'الدرجة'];
-            ws['!cols'] = header.map(() => ({ wch: 20 }));
-            for (let i = 0; i < header.length; i++) {
-                const cell = XLSX.utils.encode_cell({ r: 0, c: i });
-                ws[cell].s = {
-                    fill: { fgColor: { rgb: '005eff' } },
-                    font: { color: { rgb: 'FFFFFF' }, bold: true },
-                    alignment: { horizontal: 'center', vertical: 'center' },
-                    border: {
-                        top: { style: 'thin', color: { rgb: '000000' } },
-                        bottom: { style: 'thin', color: { rgb: '000000' } },
-                        left: { style: 'thin', color: { rgb: '000000' } },
-                        right: { style: 'thin', color: { rgb: '000000' } }
-                    }
-                };
-            }
-            for (let r = 1; r <= accounts.length; r++) {
-                for (let c = 0; c < header.length; c++) {
-                    const cell = XLSX.utils.encode_cell({ r, c });
-                    if (ws[cell]) {
-                        ws[cell].s = {
-                            alignment: { horizontal: 'center', vertical: 'center' },
-                            border: {
-                                top: { style: 'thin', color: { rgb: '000000' } },
-                                bottom: { style: 'thin', color: { rgb: '000000' } },
-                                left: { style: 'thin', color: { rgb: '000000' } },
-                                right: { style: 'thin', color: { rgb: '000000' } }
-                            }
-                        };
-                    }
-                }
-            }
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Students Grades');
-            XLSX.writeFile(wb, 'Students_Grades.xlsx');
-            Swal.fire({
-                title: 'تم',
-                text: 'تم تصدير درجات الطلاب إلى ملف Excel!',
-                icon: 'success',
-                confirmButtonColor: '#005eff'
-            });
-        }
-
-        // تصدير الاختبارات إلى Excel
-        function exportExamsToExcel() {
-            const data = exams.map(exam => ({
-                'معرف الاختبار': exam.id,
-                'العنوان': exam.title,
-                'الصف': exam.grade,
-                'عدد الأسئلة': exam.questionIds ? exam.questionIds.length : 0,
-                'كود الطالب': exam.studentCode || 'جميع الطلاب',
-                'خيار الطلاب': exam.studentOption || 'الكل',
-                'الطلاب المستثنون': exam.exceptStudents ? exam.exceptStudents.join(', ') : 'لا يوجد'
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(data);
-            const header = ['معرف الاختبار', 'العنوان', 'الصف', 'عدد الأسئلة', 'كود الطالب', 'خيار الطلاب', 'الطلاب المستثنون'];
-            ws['!cols'] = header.map(() => ({ wch: 20 }));
-            for (let i = 0; i < header.length; i++) {
-                const cell = XLSX.utils.encode_cell({ r: 0, c: i });
-                ws[cell].s = {
-                    fill: { fgColor: { rgb: '005eff' } },
-                    font: { color: { rgb: 'FFFFFF' }, bold: true },
-                    alignment: { horizontal: 'center', vertical: 'center' },
-                    border: {
-                        top: { style: 'thin', color: { rgb: '000000' } },
-                        bottom: { style: 'thin', color: { rgb: '000000' } },
-                        left: { style: 'thin', color: { rgb: '000000' } },
-                        right: { style: 'thin', color: { rgb: '000000' } }
-                    }
-                };
-            }
-            for (let r = 1; r <= exams.length; r++) {
-                for (let c = 0; c < header.length; c++) {
-                    const cell = XLSX.utils.encode_cell({ r, c });
-                    if (ws[cell]) {
-                        ws[cell].s = {
-                            alignment: { horizontal: 'center', vertical: 'center' },
-                            border: {
-                                top: { style: 'thin', color: { rgb: '000000' } },
-                                bottom: { style: 'thin', color: { rgb: '000000' } },
-                                left: { style: 'thin', color: { rgb: '000000' } },
-                                right: { style: 'thin', color: { rgb: '000000' } }
-                            }
-                        };
-                    }
-                }
-            }
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Exams');
-            XLSX.writeFile(wb, 'Exams_List.xlsx');
-            Swal.fire({
-                title: 'تم',
-                text: 'تم تصدير الاختبارات إلى ملف Excel!',
-                icon: 'success',
-                confirmButtonColor: '#005eff'
-            });
-        }
-
-        // مشاركة الاختبار
-        async function shareExam(examId, examTitle) {
-            const baseUrl = window.location.origin || 'https://your-domain.com'; // استبدل بـ النطاق الفعلي
-            const examUrl = `${baseUrl}/exam.html?examId=${examId}`;
-            const shareText = `اختبار: ${examTitle}\nالرابط: ${examUrl}`;
-
-            await Swal.fire({
-                title: 'مشاركة الاختبار',
-                html: `
-                    <p>رابط الاختبار: <a href="${examUrl}" target="_blank">${examUrl}</a></p>
-                    <button class="btn" onclick="copyToClipboard('${examUrl}')">
-                        <i class="fas fa-copy"></i> نسخ الرابط
-                    </button>
-                    <button class="btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent(shareText)}')">
-                        <i class="fab fa-whatsapp"></i> مشاركة عبر واتساب
-                    </button>
-                    <button class="btn" onclick="window.open('https://t.me/share/url?url=${encodeURIComponent(examUrl)}&text=${encodeURIComponent(examTitle)}')">
-                        <i class="fab fa-telegram"></i> مشاركة عبر تليجرام
-                    </button>
-                `,
-                showConfirmButton: false,
-                showCancelButton: true,
-                cancelButtonText: 'إغلاق',
-                cancelButtonColor: '#e74c3c',
-                customClass: {
-                    popup: 'swal2-share-popup'
-                }
-            });
-        }
-
-        // نسخ الرابط إلى الحافظة
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
+        // تسجيل الخروج
+        function logout() {
+            auth.signOut().then(() => {
                 Swal.fire({
                     title: 'تم',
-                    text: 'تم نسخ رابط الاختبار إلى الحافظة!',
+                    text: 'تم تسجيل الخروج بنجاح.',
                     icon: 'success',
-                    confirmButtonColor: '#005eff',
-                    timer: 1500
+                    confirmButtonColor: '#005eff'
+                }).then(() => {
+                    window.location.href = 'admin-login.html';
                 });
-            }).catch(err => {
-                console.error('خطأ أثناء النسخ:', err);
+            }).catch(error => {
                 Swal.fire({
                     title: 'خطأ',
-                    text: 'حدث خطأ أثناء نسخ الرابط!',
+                    text: 'حدث خطأ أثناء تسجيل الخروج!',
                     icon: 'error',
                     confirmButtonColor: '#005eff'
                 });
             });
         }
 
-        // تسجيل الخروج
-        function logout() {
-            localStorage.removeItem('adminLoggedIn');
-            Swal.fire({
-                title: 'تم',
-                text: 'تم تسجيل الخروج بنجاح.',
-                icon: 'success',
-                confirmButtonColor: '#005eff'
-            }).then(() => {
-                window.location.href = 'admin-login.html';
-            });
-        }
-
-        // إدارة قائمة التنقل للشاشات الصغيرة
+        // إدارة قائمة التنقل
         document.querySelector('.nav-menu-btn').addEventListener('click', () => {
             document.getElementById('navMenu').classList.toggle('responsive');
         });
 
-        // تحميل البيانات وعرض الحسابات والاختبارات عند تحميل الصفحة
+        // تحميل الحسابات عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            renderAccounts();
-            renderExams();
-            updateToggleButtonText();
+            fetchAccounts();
         });
     </script>
 </body>
