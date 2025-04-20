@@ -6,7 +6,6 @@
     <title>Plus In Math - الرئيسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
         :root {
@@ -86,10 +85,6 @@
         .nav-logo a .logo-text:hover::after {
             width: 100%;
         }
-        .nav-menu {
-            display: flex;
-            gap: 20px;
-        }
         .nav-menu ul {
             list-style: none;
             display: flex;
@@ -125,6 +120,7 @@
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 10px;
+            color: var(--first-color);
         }
         .top-header p {
             font-size: 1.2rem;
@@ -209,21 +205,21 @@
         .course-card a:hover {
             background: var(--first-color-hover);
         }
+        .loading {
+            text-align: center Flags: 1
+            padding: 20px;
+            color: var(--first-color);
+        }
         footer {
             text-align: center;
             padding: 20px;
-            background: var(--first-color);
-            color: var(--color-white);
-            border-radius: 0 0 10px 10px;
+            background: var(--color-white);
+            border-top: 1px solid #ddd;
         }
         .top-footer .logo-text {
-            font-size: 1.5rem;
-            font-weight: 700;
-            transition: transform 0.3s, text-shadow 0.3s;
-        }
-        .top-footer .logo-text:hover {
-            transform: scale(1.1);
-            text-shadow: 0 0 10px var(--color-white);
+            font-size: 1.8rem;
+            color: var(--first-color);
+            margin-bottom: 10px;
         }
         .footer-menu {
             list-style: none;
@@ -231,35 +227,34 @@
             justify-content: center;
             gap: 20px;
             padding: 0;
-            margin: 20px 0;
+            margin: 15px 0;
         }
         .footer-menu a {
-            color: var(--color-white);
+            color: var(--text-color-second);
             text-decoration: none;
             font-size: 1rem;
-            font-weight: 500;
-            transition: color 0.3s;
         }
         .footer-menu a:hover {
-            color: var(--second-color);
+            color: var(--first-color);
         }
         .footer-social-icons {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin: 20px 0;
+            margin-bottom: 15px;
         }
         .footer-social-icons .icon {
-            color: var(--color-white);
             font-size: 1.5rem;
+            color: var(--first-color);
             transition: color 0.3s;
         }
         .footer-social-icons .icon:hover {
-            color: var(--second-color);
+            color: var(--first-color-hover);
         }
         .bottom-footer p {
             font-size: 0.9rem;
-            font-weight: 400;
+            color: #666;
+            margin: 0;
         }
         @media (max-width: 768px) {
             .container {
@@ -304,9 +299,6 @@
             .course-container {
                 grid-template-columns: 1fr;
             }
-            .top-footer .logo-text {
-                font-size: 1.2rem;
-            }
         }
     </style>
 </head>
@@ -322,11 +314,7 @@
                 <a href="index.html"><span class="logo-text">Plus In Math</span></a>
             </div>
             <div class="nav-menu" id="navMenu">
-                <ul class="nav_menu_list">
-                    <li class="nav_list"><a href="index.html" class="nav-link active-link">الرئيسية</a></li>
-                    <li class="nav_list"><a href="login.html" class="nav-link">تسجيل الدخول</a></li>
-                    <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
-                </ul>
+                <ul class="nav_menu_list" id="navMenuList"></ul>
             </div>
             <button class="nav-menu-btn" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i></button>
         </nav>
@@ -340,7 +328,9 @@
                     <button class="new-account-btn" onclick="window.location.href='register.html'">حساب جديد</button>
                     <a href="https://www.mediafire.com/folder/hqkokukbao3vl/Plus+360+App" target="_blank" class="app-download-btn"><i class="fas fa-download"></i> تحميل التطبيق</a>
                 </div>
-                <div class="course-container" id="courseContainer"></div>
+                <div class="course-container" id="courseContainer">
+                    <p class="loading">جارٍ تحميل المقررات...</p>
+                </div>
             </section>
         </main>
         <footer>
@@ -360,31 +350,98 @@
         </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        // إدارة قائمة التنقل للشاشات الصغيرة
-        document.querySelector('.nav-menu-btn').addEventListener('click', () => {
-            document.getElementById('navMenu').classList.toggle('responsive');
-        });
+    <script type="module">
+        // استيراد Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+        import { getFirestore, collection, getDocs, query, orderBy, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
 
-        // وظيفة تسجيل الخروج
-        function logout() {
-            localStorage.removeItem('userCode');
-            localStorage.removeItem('adminLoggedIn');
-            Swal.fire({
-                title: 'تم',
-                text: 'تم تسجيل الخروج بنجاح.',
-                icon: 'success',
-                confirmButtonColor: '#005eff'
-            }).then(() => {
-                window.location.href = 'login.html';
-            });
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeZ9I6rjoZD-rxOwbOAuiafp5Tl2iNCDw",
+            authDomain: "plusinmath-web.firebaseapp.com",
+            projectId: "plusinmath-web",
+            storageBucket: "plusinmath-web.firebasestorage.app",
+            messagingSenderId: "444492731461",
+            appId: "1:444492731461:web:05ce3ece9c5b23bcdabf2c",
+            measurementId: "G-TEQSJ77X0Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // تحديث قائمة التنقل بناءً على حالة المستخدم
+        function updateNavMenu(isAdmin, isLoggedIn) {
+            const navMenuList = document.getElementById('navMenuList');
+            navMenuList.innerHTML = `
+                <li class="nav_list"><a href="index.html" class="nav-link ${window.location.pathname.includes('index.html') ? 'active-link' : ''}">الرئيسية</a></li>
+                ${isLoggedIn ? (isAdmin ? `
+                    <li class="nav_list"><a href="data.html" class="nav-link">إدارة الحسابات</a></li>
+                    <li class="nav_list"><a href="courses.html" class="nav-link">إدارة المقررات</a></li>
+                    <li class="nav_list"><a href="exams.html" class="nav-link">الاختبارات الإلكترونية</a></li>
+                    <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
+                ` : `
+                    <li class="nav_list"><a href="#" class="nav-link" onclick="logout()">تسجيل الخروج</a></li>
+                `) : `
+                    <li class="nav_list"><a href="login.html" class="nav-link">تسجيل الدخول</a></li>
+                    <li class="nav_list"><a href="register.html" class="nav-link">إنشاء حساب</a></li>
+                `}
+            `;
         }
 
-        // عرض جميع المقررات
-        function renderCourses() {
-            const courseContainer = document.getElementById('courseContainer');
-            const courses = JSON.parse(localStorage.getItem('courses')) || [];
+        // التحقق من حالة تسجيل الدخول
+        let currentUser = null;
+        onAuthStateChanged(auth, async user => {
+            currentUser = user;
+            let isAdmin = false;
+            if (user) {
+                const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+                isAdmin = adminDoc.exists() && adminDoc.data().isAdmin;
+            }
+            updateNavMenu(isAdmin, !!user);
+            fetchCourses();
+        });
 
+        // تحميل المقررات
+        async function fetchCourses() {
+            try {
+                const courseContainer = document.getElementById('courseContainer');
+                courseContainer.innerHTML = '<p class="loading">جارٍ تحميل المقررات...</p>';
+
+                const q = query(collection(db, 'courses'), orderBy('createdAt', 'desc'));
+                const snapshot = await getDocs(q);
+                const courses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // فلترة المقررات بناءً على كود الطالب
+                let filteredCourses = courses;
+                if (currentUser) {
+                    const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                    if (userDoc.exists()) {
+                        const userCode = userDoc.data().studentCode;
+                        filteredCourses = courses.filter(course => 
+                            !course.studentCode || course.studentCode === userCode
+                        );
+                    }
+                }
+
+                renderCourses(filteredCourses);
+            } catch (error) {
+                console.error('خطأ في تحميل المقررات:', error);
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'حدث خطأ أثناء تحميل المقررات!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
+                document.getElementById('courseContainer').innerHTML = 
+                    '<p style="text-align: center; font-size: 1.2rem;">حدث خطأ أثناء تحميل المقررات.</p>';
+            }
+        }
+
+        // عرض المقررات
+        function renderCourses(courses) {
+            const courseContainer = document.getElementById('courseContainer');
             courseContainer.innerHTML = '';
 
             if (courses.length === 0) {
@@ -396,16 +453,55 @@
                 const card = document.createElement('div');
                 card.className = 'course-card';
                 card.innerHTML = `
-                    <h3>${course.name}</h3>
+                    <h3>${course.title}</h3>
                     <p>${course.grade}</p>
-                    <a href="${course.url}" aria-label="الذهاب إلى مقرر ${course.name}">عرض المقرر</a>
+                    <p>${course.description || 'لا يوجد وصف متاح'}</p>
+                    <a href="course-details.html?id=${course.id}" aria-label="الذهاب إلى مقرر ${course.title}">عرض المقرر</a>
                 `;
                 courseContainer.appendChild(card);
             });
         }
 
+        // تسجيل الخروج
+        window.logout = function() {
+            signOut(auth).then(() => {
+                Swal.fire({
+                    title: 'تم',
+                    text: 'تم تسجيل الخروج بنجاح.',
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
+                }).then(() => {
+                    window.location.href = 'login.html';
+                });
+            }).catch(error => {
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'حدث خطأ أثناء تسجيل الخروج!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                });
+            });
+        };
+
+        // إدارة قائمة التنقل
+        document.querySelector('.nav-menu-btn').addEventListener('click', () => {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('responsive');
+        });
+
+        // إغلاق القائمة عند النقر خارجها
+        document.addEventListener('click', (e) => {
+            const navMenu = document.getElementById('navMenu');
+            const navBtn = document.querySelector('.nav-menu-btn');
+            if (!navMenu.contains(e.target) && !navBtn.contains(e.target)) {
+                navMenu.classList.remove('responsive');
+            }
+        });
+
         // تحميل المقررات عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', renderCourses);
+        document.addEventListener('DOMContentLoaded', () => {
+            // سيتم تحميل البيانات عند التحقق من حالة المستخدم
+        });
     </script>
 </body>
 </html>

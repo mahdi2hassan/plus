@@ -96,6 +96,11 @@
             border-radius: 5px;
             border: 1px solid #ddd;
         }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #005eff;
+        }
         @media (max-width: 768px) {
             .nav-menu {
                 display: none;
@@ -107,6 +112,7 @@
                 right: 20px;
                 background: #fff;
                 padding: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             }
             .nav-menu ul {
                 flex-direction: column;
@@ -155,15 +161,19 @@
                         <th>إجراءات</th>
                     </tr>
                 </thead>
-                <tbody id="accountsBody"></tbody>
+                <tbody id="accountsBody">
+                    <tr><td colspan="10" class="loading">جارٍ تحميل الحسابات...</td></tr>
+                </tbody>
             </table>
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"></script>
-    <script>
+    <script type="module">
+        // استيراد Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
+        import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+
         // تهيئة Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCeZ9I6rjoZD-rxOwbOAuiafp5Tl2iNCDw",
@@ -174,12 +184,13 @@
             appId: "1:444492731461:web:05ce3ece9c5b23bcdabf2c",
             measurementId: "G-TEQSJ77X0Z"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
         // التحقق من تسجيل دخول الأدمن
-        auth.onAuthStateChanged(user => {
+        onAuthStateChanged(auth, user => {
             if (!user) {
                 Swal.fire({
                     title: 'خطأ',
@@ -196,7 +207,8 @@
         let accounts = [];
         async function fetchAccounts() {
             try {
-                const snapshot = await db.collection('accounts').orderBy('createdAt', 'desc').get();
+                const q = query(collection(db, 'accounts'), orderBy('createdAt', 'desc'));
+                const snapshot = await getDocs(q);
                 accounts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderAccounts();
             } catch (error) {
@@ -223,13 +235,13 @@
                 const status = account.pending ? 'معلق' : (account.active ? 'مفعل' : 'غير مفعل');
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${account.code}</td>
-                    <td>${account.name}</td>
-                    <td>${account.grade}</td>
-                    <td>${account.phone}</td>
-                    <td>${account.governorate}</td>
-                    <td>${account.area}</td>
-                    <td><img src="${account.receiptImage || ''}" alt="إيصال الدفع" onerror="this.style.display='none'"></td>
+                    <td>${account.code || 'غير متوفر'}</td>
+                    <td>${account.name || 'غير متوفر'}</td>
+                    <td>${account.grade || 'غير متوفر'}</td>
+                    <td>${account.phone || 'غير متوفر'}</td>
+                    <td>${account.governorate || 'غير متوفر'}</td>
+                    <td>${account.area || 'غير متوفر'}</td>
+                    <td><img src="${account.receiptImage || ''}" alt="إيصال الدفع" style="${!account.receiptImage ? 'display:none' : ''}" onerror="this.style.display='none'"></td>
                     <td>${status}</td>
                     <td>
                         <select onchange="updateAccountStatus('${account.id}', this.value)">
@@ -247,6 +259,8 @@
         // تحديث حالة الحساب
         async function updateAccountStatus(id, status) {
             const account = accounts.find(acc => acc.id === id);
+            if (!account) return;
+
             let updateData = {};
             if (status === 'accept') {
                 updateData = { pending: false, active: true };
@@ -257,11 +271,12 @@
             }
 
             try {
-                await db.collection('accounts').doc(id).update(updateData);
-                await db.collection('studentCodes').doc(account.code).update({
-                    active: updateData.active,
-                    pending: updateData.pending
-                });
+                const accountRef = doc(db, 'accounts', id);
+                const codeRef = doc(db, 'studentCodes', account.code);
+                await Promise.all([
+                    updateDoc(accountRef, updateData),
+                    updateDoc(codeRef, { active: updateData.active, pending: updateData.pending })
+                ]);
                 await fetchAccounts();
                 Swal.fire({
                     title: 'تم',
@@ -283,6 +298,8 @@
         // حذف الحساب
         async function deleteAccount(id) {
             const account = accounts.find(acc => acc.id === id);
+            if (!account) return;
+
             const result = await Swal.fire({
                 title: 'تأكيد الحذف',
                 text: `هل أنت متأكد من حذف حساب ${account.name}؟`,
@@ -296,8 +313,12 @@
 
             if (result.isConfirmed) {
                 try {
-                    await db.collection('accounts').doc(id).delete();
-                    await db.collection('studentCodes').doc(account.code).delete();
+                    const accountRef = doc(db, 'accounts', id);
+                    const codeRef = doc(db, 'studentCodes', account.code);
+                    await Promise.all([
+                        deleteDoc(accountRef),
+                        deleteDoc(codeRef)
+                    ]);
                     await fetchAccounts();
                     Swal.fire({
                         title: 'تم',
@@ -318,8 +339,8 @@
         }
 
         // تسجيل الخروج
-        function logout() {
-            auth.signOut().then(() => {
+        window.logout = function() {
+            signOut(auth).then(() => {
                 Swal.fire({
                     title: 'تم',
                     text: 'تم تسجيل الخروج بنجاح.',
@@ -340,7 +361,17 @@
 
         // إدارة قائمة التنقل
         document.querySelector('.nav-menu-btn').addEventListener('click', () => {
-            document.getElementById('navMenu').classList.toggle('responsive');
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('responsive');
+        });
+
+        // إغلاق القائمة عند النقر خارجها
+        document.addEventListener('click', (e) => {
+            const navMenu = document.getElementById('navMenu');
+            const navBtn = document.querySelector('.nav-menu-btn');
+            if (!navMenu.contains(e.target) && !navBtn.contains(e.target)) {
+                navMenu.classList.remove('responsive');
+            }
         });
 
         // تحميل الحسابات عند تحميل الصفحة

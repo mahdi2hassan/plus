@@ -63,25 +63,32 @@
             text-align: center;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         .form-group label {
             display: block;
             font-size: 1.1rem;
+            margin-bottom: 5px;
         }
         .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
+            font-size: 1rem;
         }
         .submit-btn {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background: #005eff;
             color: #fff;
             border: none;
             border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
         }
         table {
             width: 100%;
@@ -98,12 +105,31 @@
             background: #005eff;
             color: #fff;
         }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
         .btn-danger {
             background: #e74c3c;
             color: #fff;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+        }
+        .btn-edit {
+            background: #f1c40f;
+            color: #fff;
+        }
+        .videos-section {
+            margin-top: 20px;
+        }
+        .videos-section h2 {
+            font-size: 1.5rem;
+            color: #005eff;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #005eff;
         }
         @media (max-width: 768px) {
             .nav-menu {
@@ -116,6 +142,7 @@
                 right: 20px;
                 background: #fff;
                 padding: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             }
             .nav-menu ul {
                 flex-direction: column;
@@ -150,6 +177,7 @@
         <main class="courses-section">
             <h1>إدارة المقررات</h1>
             <form id="courseForm">
+                <input type="hidden" id="courseId">
                 <div class="form-group">
                     <label for="courseTitle">عنوان المقرر</label>
                     <input type="text" id="courseTitle" required>
@@ -171,7 +199,11 @@
                     <label for="studentCode">كود الطالب (اختياري)</label>
                     <input type="text" id="studentCode" placeholder="اتركه فارغاً لجميع الطلاب">
                 </div>
-                <button type="submit" class="submit-btn">إضافة المقرر</button>
+                <div class="form-group">
+                    <label for="videoUrl">رابط الفيديو (اختياري)</label>
+                    <input type="url" id="videoUrl" placeholder="أدخل رابط فيديو (مثل YouTube)">
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">إضافة المقرر</button>
             </form>
             <table id="coursesTable">
                 <thead>
@@ -181,18 +213,23 @@
                         <th>الصف</th>
                         <th>الوصف</th>
                         <th>كود الطالب</th>
+                        <th>الفيديوهات</th>
                         <th>إجراءات</th>
                     </tr>
                 </thead>
-                <tbody id="coursesBody"></tbody>
+                <tbody id="coursesBody">
+                    <tr><td colspan="7" class="loading">جارٍ تحميل المقررات...</td></tr>
+                </tbody>
             </table>
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"></script>
-    <script>
+    <script type="module">
+        // استيراد Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+
         // تهيئة Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCeZ9I6rjoZD-rxOwbOAuiafp5Tl2iNCDw",
@@ -203,16 +240,30 @@
             appId: "1:444492731461:web:05ce3ece9c5b23bcdabf2c",
             measurementId: "G-TEQSJ77X0Z"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
         // التحقق من تسجيل دخول الأدمن
-        auth.onAuthStateChanged(user => {
+        onAuthStateChanged(auth, async user => {
             if (!user) {
                 Swal.fire({
                     title: 'خطأ',
                     text: 'يرجى تسجيل الدخول كأدمن!',
+                    icon: 'error',
+                    confirmButtonColor: '#005eff'
+                }).then(() => {
+                    window.location.href = 'admin-login.html';
+                });
+                return;
+            }
+            // التحقق من صلاحيات الأدمن
+            const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+            if (!adminDoc.exists() || !adminDoc.data().isAdmin) {
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'ليس لديك صلاحيات الأدمن!',
                     icon: 'error',
                     confirmButtonColor: '#005eff'
                 }).then(() => {
@@ -225,7 +276,8 @@
         let courses = [];
         async function fetchCourses() {
             try {
-                const snapshot = await db.collection('courses').orderBy('createdAt', 'desc').get();
+                const q = query(collection(db, 'courses'), orderBy('createdAt', 'desc'));
+                const snapshot = await getDocs(q);
                 courses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderCourses();
             } catch (error) {
@@ -244,65 +296,160 @@
             const coursesBody = document.getElementById('coursesBody');
             coursesBody.innerHTML = '';
             if (courses.length === 0) {
-                coursesBody.innerHTML = `<tr><td colspan="6" style="text-align: center;">لا توجد مقررات.</td></tr>`;
+                coursesBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">لا توجد مقررات.</td></tr>`;
                 return;
             }
 
             courses.forEach(course => {
+                const videos = Array.isArray(course.videos) ? course.videos : [];
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${course.id}</td>
-                    <td>${course.title}</td>
-                    <td>${course.grade}</td>
+                    <td>${course.title || 'غير متوفر'}</td>
+                    <td>${course.grade || 'غير متوفر'}</td>
                     <td>${course.description || 'غير متوفر'}</td>
                     <td>${course.studentCode || 'جميع الطلاب'}</td>
-                    <td><button class="btn-danger" onclick="deleteCourse('${course.id}')">حذف المقرر</button></td>
+                    <td>
+                        ${videos.length > 0 ? videos.map(v => `<a href="${v}" target="_blank">فيديو</a>`).join(', ') : 'لا توجد فيديوهات'}
+                        <button class="btn" onclick="addVideoPrompt('${course.id}')"><i class="fa-solid fa-plus"></i></button>
+                    </td>
+                    <td>
+                        <button class="btn btn-edit" onclick="editCourse('${course.id}')">تحرير</button>
+                        <button class="btn btn-danger" onclick="deleteCourse('${course.id}')">حذف</button>
+                    </td>
                 `;
                 coursesBody.appendChild(tr);
             });
         }
 
-        // إضافة مقرر جديد
-        document.getElementById('courseForm').addEventListener('submit', async (e) => {
+        // إضافة/تحديث مقرر
+        const courseForm = document.getElementById('courseForm');
+        const submitBtn = document.getElementById('submitBtn');
+        courseForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const title = document.getElementById('courseTitle').value;
+            const courseId = document.getElementById('courseId').value;
+            const title = document.getElementById('courseTitle').value.trim();
             const grade = document.getElementById('courseGrade').value;
-            const description = document.getElementById('courseDescription').value;
-            const studentCode = document.getElementById('studentCode').value;
+            const description = document.getElementById('courseDescription').value.trim();
+            const studentCode = document.getElementById('studentCode').value.trim();
+            const videoUrl = document.getElementById('videoUrl').value.trim();
 
-            const newCourse = {
+            const courseData = {
                 title,
                 grade,
-                description,
+                description: description || null,
                 studentCode: studentCode || null,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                videos: videoUrl ? [videoUrl] : [],
+                createdAt: new Date()
             };
 
+            submitBtn.disabled = true;
+            submitBtn.textContent = courseId ? 'جارٍ التحديث...' : 'جارٍ الإضافة...';
+
             try {
-                await db.collection('courses').add(newCourse);
-                Swal.fire({
-                    title: 'تم',
-                    text: `تم إضافة المقرر "${title}" بنجاح!`,
-                    icon: 'success',
-                    confirmButtonColor: '#005eff'
-                }).then(() => {
-                    document.getElementById('courseForm').reset();
-                    fetchCourses();
-                });
+                if (courseId) {
+                    // تحديث المقرر
+                    const courseRef = doc(db, 'courses', courseId);
+                    const existingCourse = courses.find(c => c.id === courseId);
+                    const updatedVideos = Array.isArray(existingCourse.videos) ? [...existingCourse.videos] : [];
+                    if (videoUrl && !updatedVideos.includes(videoUrl)) {
+                        updatedVideos.push(videoUrl);
+                    }
+                    courseData.videos = updatedVideos;
+                    await updateDoc(courseRef, courseData);
+                    Swal.fire({
+                        title: 'تم',
+                        text: `تم تحديث المقرر "${title}" بنجاح!`,
+                        icon: 'success',
+                        confirmButtonColor: '#005eff'
+                    });
+                } else {
+                    // إضافة مقرر جديد
+                    await addDoc(collection(db, 'courses'), courseData);
+                    Swal.fire({
+                        title: 'تم',
+                        text: `تم إضافة المقرر "${title}" بنجاح!`,
+                        icon: 'success',
+                        confirmButtonColor: '#005eff'
+                    });
+                }
+                courseForm.reset();
+                document.getElementById('courseId').value = '';
+                submitBtn.textContent = 'إضافة المقرر';
+                await fetchCourses();
             } catch (error) {
-                console.error('خطأ في إضافة المقرر:', error);
+                console.error('خطأ في إضافة/تحديث المقرر:', error);
                 Swal.fire({
                     title: 'خطأ',
-                    text: 'حدث خطأ أثناء إضافة المقرر!',
+                    text: 'حدث خطأ أثناء معالجة المقرر!',
                     icon: 'error',
                     confirmButtonColor: '#005eff'
                 });
+            } finally {
+                submitBtn.disabled = false;
             }
         });
 
-        // حذف المقرر
-        async function deleteCourse(id) {
+        // تحرير المقرر
+        window.editCourse = function(id) {
             const course = courses.find(c => c.id === id);
+            if (!course) return;
+            document.getElementById('courseId').value = course.id;
+            document.getElementById('courseTitle').value = course.title || '';
+            document.getElementById('courseGrade').value = course.grade || '';
+            document.getElementById('courseDescription').value = course.description || '';
+            document.getElementById('studentCode').value = course.studentCode || '';
+            document.getElementById('videoUrl').value = '';
+            submitBtn.textContent = 'تحديث المقرر';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // إضافة فيديو
+        window.addVideoPrompt = async function(courseId) {
+            const { value: videoUrl } = await Swal.fire({
+                title: 'إضافة فيديو',
+                input: 'url',
+                inputPlaceholder: 'أدخل رابط الفيديو (مثل YouTube)',
+                showCancelButton: true,
+                confirmButtonText: 'إضافة',
+                cancelButtonText: 'إلغاء',
+                confirmButtonColor: '#005eff',
+                cancelButtonColor: '#e74c3c',
+                inputValidator: (value) => {
+                    if (!value) return 'يرجى إدخال رابط الفيديو!';
+                    if (!value.match(/^https?:\/\/.+/)) return 'رابط غير صالح!';
+                }
+            });
+
+            if (videoUrl) {
+                try {
+                    const courseRef = doc(db, 'courses', courseId);
+                    const course = courses.find(c => c.id === courseId);
+                    const updatedVideos = Array.isArray(course.videos) ? [...course.videos, videoUrl] : [videoUrl];
+                    await updateDoc(courseRef, { videos: updatedVideos });
+                    Swal.fire({
+                        title: 'تم',
+                        text: 'تم إضافة الفيديو بنجاح!',
+                        icon: 'success',
+                        confirmButtonColor: '#005eff'
+                    });
+                    await fetchCourses();
+                } catch (error) {
+                    console.error('خطأ في إضافة الفيديو:', error);
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'حدث خطأ أثناء إضافة الفيديو!',
+                        icon: 'error',
+                        confirmButtonColor: '#005eff'
+                    });
+                }
+            }
+        };
+
+        // حذف المقرر
+        window.deleteCourse = async function(id) {
+            const course = courses.find(c => c.id === id);
+            if (!course) return;
             const result = await Swal.fire({
                 title: 'تأكيد الحذف',
                 text: `هل أنت متأكد من حذف المقرر "${course.title}"؟`,
@@ -316,14 +463,14 @@
 
             if (result.isConfirmed) {
                 try {
-                    await db.collection('courses').doc(id).delete();
+                    await deleteDoc(doc(db, 'courses', id));
                     Swal.fire({
                         title: 'تم',
                         text: `تم حذف المقرر "${course.title}" بنجاح.`,
                         icon: 'success',
                         confirmButtonColor: '#005eff'
                     });
-                    fetchCourses();
+                    await fetchCourses();
                 } catch (error) {
                     console.error('خطأ أثناء الحذف:', error);
                     Swal.fire({
@@ -334,11 +481,11 @@
                     });
                 }
             }
-        }
+        };
 
         // تسجيل الخروج
-        function logout() {
-            auth.signOut().then(() => {
+        window.logout = function() {
+            signOut(auth).then(() => {
                 Swal.fire({
                     title: 'تم',
                     text: 'تم تسجيل الخروج بنجاح.',
@@ -355,11 +502,21 @@
                     confirmButtonColor: '#005eff'
                 });
             });
-        }
+        };
 
         // إدارة قائمة التنقل
         document.querySelector('.nav-menu-btn').addEventListener('click', () => {
-            document.getElementById('navMenu').classList.toggle('responsive');
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('responsive');
+        });
+
+        // إغلاق القائمة عند النقر خارجها
+        document.addEventListener('click', (e) => {
+            const navMenu = document.getElementById('navMenu');
+            const navBtn = document.querySelector('.nav-menu-btn');
+            if (!navMenu.contains(e.target) && !navBtn.contains(e.target)) {
+                navMenu.classList.remove('responsive');
+            }
         });
 
         // تحميل المقررات عند تحميل الصفحة

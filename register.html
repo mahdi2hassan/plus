@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plus 360 - إنشاء حساب جديد</title>
+    <title>Plus In Math - إنشاء حساب جديد</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
         :root {
             --first-color: #005eff;
             --first-color-hover: #0047cc;
+            --second-color: #4a90e2;
             --body-color: #f5f6fa;
             --color-white: #fff;
             --text-color-second: #333;
             --first-shadow-color: rgba(0, 0, 0, 0.1);
+            --gradient-bg: linear-gradient(135deg, #005eff, #4a90e2);
         }
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
             background: var(--body-color);
             color: var(--text-color-second);
             margin: 0;
             padding: 50px;
+            line-height: 1.6;
         }
         .form-container {
             max-width: 500px;
@@ -33,15 +37,28 @@
         h2 {
             text-align: center;
             margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--first-color);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 5px;
         }
         input, select {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
-            border: 2px solid var(--text-color-second);
+            margin: 5px 0;
+            border: 1px solid #ddd;
             border-radius: 5px;
-            background: var(--color-white);
-            color: var(--text-color-second);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
         }
         button {
             width: 100%;
@@ -51,15 +68,23 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s;
         }
         button:hover {
             background: var(--first-color-hover);
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
         }
         .error {
-            color: #FF4D4F;
+            color: #e74c3c;
             text-align: center;
             margin: 10px 0;
+            font-size: 0.9rem;
             display: none;
         }
         .back-link {
@@ -68,16 +93,12 @@
             margin-top: 20px;
             color: var(--first-color);
             text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
         }
         .back-link:hover {
             color: var(--first-color-hover);
             text-decoration: underline;
-        }
-        .dark-mode {
-            --body-color: #1a1a1a;
-            --color-white: #2c2c2c;
-            --text-color-second: #e0e0e0;
-            --first-shadow-color: rgba(255, 255, 255, 0.1);
         }
         @media (max-width: 768px) {
             body {
@@ -86,81 +107,197 @@
             .form-container {
                 padding: 15px;
             }
+            h2 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="form-container">
         <h2>إنشاء حساب جديد</h2>
-        <form onsubmit="return registerStudent()">
-            <input type="text" id="studentName" placeholder="الاسم الكامل" required>
-            <input type="text" id="studentCode" placeholder="كود الطالب" required>
-            <select id="grade" required>
-                <option value="">اختر الصف الدراسي</option>
-                <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
-                <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
-                <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
-                <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
-                <option value="الصف الثاني الثانوي علمي">الصف الثاني الثانوي علمي</option>
-                <option value="الصف الثاني الثانوي أدبي">الصف الثاني الثانوي أدبي</option>
-                <option value="الصف الثالث الثانوي علمي">الصف الثالث الثانوي علمي</option>
-                <option value="الصف الثالث الثانوي أدبي">الصف الثالث الثانوي أدبي</option>
-            </select>
-            <input type="tel" id="phone" placeholder="رقم الهاتف" required>
-            <input type="text" id="governorate" placeholder="المحافظة" required>
-            <input type="text" id="area" placeholder="المنطقة" required>
-            <input type="file" id="receiptImage" accept="image/*" required>
-            <p id="errorMessage" class="error">كود الطالب موجود بالفعل!</p>
-            <button type="submit">إنشاء الحساب</button>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="studentName">الاسم الكامل</label>
+                <input type="text" id="studentName" placeholder="أدخل الاسم الكامل" required>
+            </div>
+            <div class="form-group">
+                <label for="studentCode">كود الطالب</label>
+                <input type="text" id="studentCode" placeholder="أدخل كود الطالب" required>
+            </div>
+            <div class="form-group">
+                <label for="grade">الصف الدراسي</label>
+                <select id="grade" required>
+                    <option value="">اختر الصف الدراسي</option>
+                    <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                    <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                    <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                    <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                    <option value="الصف الثاني الثانوي علمي">الصف الثاني الثانوي علمي</option>
+                    <option value="الصف الثاني الثانوي أدبي">الصف الثاني الثانوي أدبي</option>
+                    <option value="الصف الثالث الثانوي علمي">الصف الثالث الثانوي علمي</option>
+                    <option value="الصف الثالث الثانوي أدبي">الصف الثالث الثانوي أدبي</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="phone">رقم الهاتف</label>
+                <input type="tel" id="phone" placeholder="أدخل رقم الهاتف" pattern="[0-9]{10,12}" required>
+            </div>
+            <div class="form-group">
+                <label for="governorate">المحافظة</label>
+                <input type="text" id="governorate" placeholder="أدخل المحافظة" required>
+            </div>
+            <div class="form-group">
+                <label for="area">المنطقة</label>
+                <input type="text" id="area" placeholder="أدخل المنطقة" required>
+            </div>
+            <div class="form-group">
+                <label for="receiptImage">صورة إيصال الدفع</label>
+                <input type="file" id="receiptImage" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" placeholder="أدخل البريد الإلكتروني" required>
+            </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" placeholder="أدخل كلمة المرور" minlength="6" required>
+            </div>
+            <p id="errorMessage" class="error"></p>
+            <button type="submit" id="registerBtn">إنشاء الحساب</button>
         </form>
         <a href="index.html" class="back-link">العودة إلى الرئيسية</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function registerStudent() {
-            const name = document.getElementById('studentName').value;
-            const code = document.getElementById('studentCode').value;
+    <script type="module">
+        // استيراد Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+        import { getFirestore, collection, addDoc, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js';
+
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeZ9I6rjoZD-rxOwbOAuiafp5Tl2iNCDw",
+            authDomain: "plusinmath-web.firebaseapp.com",
+            projectId: "plusinmath-web",
+            storageBucket: "plusinmath-web.firebasestorage.app",
+            messagingSenderId: "444492731461",
+            appId: "1:444492731461:web:05ce3ece9c5b23bcdabf2c",
+            measurementId: "G-TEQSJ77X0Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // التعامل مع إرسال النموذج
+        const registerForm = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
+        const errorMessage = document.getElementById('errorMessage');
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('studentName').value.trim();
+            const code = document.getElementById('studentCode').value.trim();
             const grade = document.getElementById('grade').value;
-            const phone = document.getElementById('phone').value;
-            const governorate = document.getElementById('governorate').value;
-            const area = document.getElementById('area').value;
+            const phone = document.getElementById('phone').value.trim();
+            const governorate = document.getElementById('governorate').value.trim();
+            const area = document.getElementById('area').value.trim();
             const receiptImage = document.getElementById('receiptImage').files[0];
-            const errorMessage = document.getElementById('errorMessage');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
 
-            let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
-            let studentCodes = JSON.parse(localStorage.getItem('studentCodes')) || [];
-
-            if (studentCodes.some(sc => sc.code === code)) {
-                errorMessage.style.display = 'block';
-                return false;
+            // التحقق من الحقول
+            if (!name || !code || !grade || !phone || !governorate || !area || !receiptImage || !email || !password) {
+                showError('يرجى ملء جميع الحقول!');
+                return;
             }
 
-            if (receiptImage) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageData = e.target.result;
-                    accounts.push({
-                        code,
-                        name,
-                        grade,
-                        phone,
-                        governorate,
-                        area,
-                        receiptImage: imageData,
-                        active: false,
-                        pending: true,
-                        timestamp: Date.now()
-                    });
-                    studentCodes.push({ code, active: false, pending: true });
-                    localStorage.setItem('accounts', JSON.stringify(accounts));
-                    localStorage.setItem('studentCodes', JSON.stringify(studentCodes));
-                    Swal.fire('تم الإنشاء', 'تم إنشاء الحساب بنجاح، يرجى انتظار الموافقة.', 'success').then(() => {
-                        window.location.href = 'index.html';
-                    });
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'جارٍ التسجيل...';
+
+            try {
+                // التحقق من تكرار كود الطالب
+                const codeQuery = query(collection(db, 'studentCodes'), where('code', '==', code));
+                const codeSnapshot = await getDocs(codeQuery);
+                if (!codeSnapshot.empty) {
+                    showError('كود الطالب موجود بالفعل!');
+                    registerBtn.disabled = false;
+                    registerBtn.textContent = 'إنشاء الحساب';
+                    return;
+                }
+
+                // إنشاء حساب المستخدم في Firebase Authentication
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // رفع صورة الإيصال إلى Firebase Storage
+                const storageRef = ref(storage, `receipts/${user.uid}_${receiptImage.name}`);
+                await uploadBytes(storageRef, receiptImage);
+                const receiptImageUrl = await getDownloadURL(storageRef);
+
+                // حفظ بيانات الطالب في Firestore
+                const studentData = {
+                    studentCode: code,
+                    name,
+                    grade,
+                    phone,
+                    governorate,
+                    area,
+                    receiptImage: receiptImageUrl,
+                    active: false,
+                    pending: true,
+                    timestamp: new Date()
                 };
-                reader.readAsDataURL(receiptImage);
+                await addDoc(collection(db, 'users'), {
+                    ...studentData,
+                    uid: user.uid
+                });
+
+                // حفظ كود الطالب في مجموعة منفصلة
+                await addDoc(collection(db, 'studentCodes'), {
+                    code,
+                    uid: user.uid,
+                    active: false,
+                    pending: true,
+                    timestamp: new Date()
+                });
+
+                Swal.fire({
+                    title: 'تم الإنشاء',
+                    text: 'تم إنشاء الحساب بنجاح، يرجى انتظار موافقة الأدمن.',
+                    icon: 'success',
+                    confirmButtonColor: '#005eff'
+                }).then(() => {
+                    window.location.href = 'index.html';
+                });
+            } catch (error) {
+                console.error('خطأ في التسجيل:', error);
+                let errorMsg = 'حدث خطأ أثناء إنشاء الحساب!';
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMsg = 'البريد الإلكتروني مستخدم بالفعل!';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMsg = 'البريد الإلكتروني غير صالح!';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMsg = 'كلمة المرور ضعيفة جدًا!';
+                }
+                showError(errorMsg);
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'إنشاء الحساب';
             }
-            return false;
+        });
+
+        // عرض رسالة الخطأ
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
         }
     </script>
 </body>

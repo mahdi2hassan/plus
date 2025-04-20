@@ -6,15 +6,265 @@
     <title>Plus In Math - تسجيل حساب جديد</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <style>
-        .signup-section { padding: 20px; max-width: 600px; margin: auto; }
-        .signup-section h1 { font-size: 2rem; color: #005eff; text-align: center; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 1.1rem; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; font-size: 1rem; }
-        .form-group input[type="file"] { padding: 3px; }
-        .submit-btn { width: 100%; padding: 10px; background: #005eff; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
-        .submit-btn:hover { background: #0047cc; }
+        :root {
+            --first-color: #005eff;
+            --first-color-hover: #0047cc;
+            --second-color: #4a90e2;
+            --body-color: #f5f6fa;
+            --color-white: #fff;
+            --text-color-second: #333;
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+            --gradient-bg: linear-gradient(135deg, #005eff, #4a90e2);
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--body-color);
+            color: var(--text-color-second);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--first-shadow-color);
+        }
+        header {
+            background: var(--gradient-bg);
+            height: 150px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-logo .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInPulse 2s ease-in-out;
+        }
+        @keyframes fadeInPulse {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--color-white);
+            box-shadow: 0 2px 4px var(--first-shadow-color);
+        }
+        .nav-logo a .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--first-color);
+            position: relative;
+            transition: transform 0.3s, text-shadow 0.3s;
+        }
+        .nav-logo a .logo-text:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--first-color);
+        }
+        .nav-logo a .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--first-color);
+            transition: width 0.3s;
+        }
+        .nav-logo a .logo-text:hover::after {
+            width: 100%;
+        }
+        .nav-menu ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-menu a {
+            color: var(--text-color-second);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-menu a:hover, .nav-menu a.active-link {
+            color: var(--first-color);
+        }
+        .nav-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-color-second);
+        }
+        .signup-section {
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .signup-section h1 {
+            font-size: 2rem;
+            color: var(--first-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            font-family: 'Tajawal', sans-serif;
+            box-sizing: border-box;
+        }
+        .form-group input[type="file"] {
+            padding: 3px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--first-color);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .submit-btn:hover {
+            background: var(--first-color-hover);
+            transform: translateY(-2px);
+        }
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--first-color);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover {
+            color: var(--first-color-hover);
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--color-white);
+            border-top: 1px solid #ddd;
+        }
+        .top-footer .logo-text {
+            font-size: 1.8rem;
+            color: var(--first-color);
+            margin-bottom: 10px;
+        }
+        .footer-menu {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 0;
+            margin: 15px 0;
+        }
+        .footer-menu a {
+            color: var(--text-color-second);
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .footer-menu a:hover {
+            color: var(--first-color);
+        }
+        .footer-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .footer-social-icons .icon {
+            font-size: 1.5rem;
+            color: var(--first-color);
+            transition: color 0.3s;
+        }
+        .footer-social-icons .icon:hover {
+            color: var(--first-color-hover);
+        }
+        .bottom-footer p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            header {
+                height: 120px;
+            }
+            .nav-logo .logo-text {
+                font-size: 2rem;
+            }
+            .nav-menu {
+                display: none;
+            }
+            .nav-menu.responsive {
+                display: block;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background: var(--color-white);
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px var(--first-shadow-color);
+            }
+            .nav-menu ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .nav-menu-btn {
+                display: block;
+            }
+            .signup-section {
+                padding: 15px;
+            }
+            .signup-section h1 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -31,6 +281,7 @@
             <div class="nav-menu" id="navMenu">
                 <ul class="nav_menu_list">
                     <li class="nav_list"><a href="index.html" class="nav-link">الرئيسية</a></li>
+                    <li class="nav_list"><a href="login.html" class="nav-link">تسجيل الدخول</a></li>
                 </ul>
             </div>
             <button class="nav-menu-btn" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i></button>
@@ -39,43 +290,80 @@
             <h1>تسجيل حساب جديد</h1>
             <form id="signupForm">
                 <div class="form-group">
-                    <label for="name">الاسم</label>
-                    <input type="text" id="name" required>
+                    <label for="name">الاسم الكامل</label>
+                    <input type="text" id="name" placeholder="أدخل الاسم الكامل" required>
                 </div>
                 <div class="form-group">
-                    <label for="grade">الصف</label>
+                    <label for="studentCode">كود الطالب</label>
+                    <input type="text" id="studentCode" placeholder="أدخل كود الطالب" required>
+                </div>
+                <div class="form-group">
+                    <label for="grade">الصف الدراسي</label>
                     <select id="grade" required>
-                        <option value="">اختر الصف</option>
+                        <option value="">اختر الصف الدراسي</option>
                         <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
                         <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
                         <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                        <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                        <option value="الصف الثاني الثانوي علمي">الصف الثاني الثانوي علمي</option>
+                        <option value="الصف الثاني الثانوي أدبي">الصف الثاني الثانوي أدبي</option>
+                        <option value="الصف الثالث الثانوي علمي">الصف الثالث الثانوي علمي</option>
+                        <option value="الصف الثالث الثانوي أدبي">الصف الثالث الثانوي أدبي</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="phone">رقم الهاتف</label>
-                    <input type="tel" id="phone" required>
+                    <input type="tel" id="phone" placeholder="أدخل رقم الهاتف" pattern="[0-9]{10,12}" required>
                 </div>
                 <div class="form-group">
                     <label for="governorate">المحافظة</label>
-                    <input type="text" id="governorate" required>
+                    <input type="text" id="governorate" placeholder="أدخل المحافظة" required>
                 </div>
                 <div class="form-group">
                     <label for="area">المنطقة</label>
-                    <input type="text" id="area" required>
+                    <input type="text" id="area" placeholder="أدخل المنطقة" required>
                 </div>
                 <div class="form-group">
-                    <label for="receiptImage">إيصال الدفع</label>
-                    <input type="file" id="receiptImage" accept="image/*">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" placeholder="أدخل البريد الإلكتروني" required>
                 </div>
-                <button type="submit" class="submit-btn">إنشاء الحساب</button>
+                <div class="form-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label for="receiptImage">صورة إيصال الدفع</label>
+                    <input type="file" id="receiptImage" accept="image/*" required>
+                </div>
+                <p id="errorMessage" class="error"></p>
+                <button type="submit" class="submit-btn" id="submitBtn">إنشاء الحساب</button>
             </form>
+            <a href="index.html" class="back-link">العودة إلى الرئيسية</a>
         </main>
+        <footer>
+            <div class="top-footer"><span class="logo-text">Plus In Math</span></div>
+            <ul class="footer-menu">
+                <li class="footer_menu_list"><a href="index.html">الرئيسية</a></li>
+                <li class="footer_menu_list"><a href="login.html">تسجيل الدخول</a></li>
+                <li class="footer_menu_list"><a href="https://www.mediafire.com/folder/hqkokukbao3vl/Plus+360+App" target="_blank">تحميل التطبيق</a></li>
+            </ul>
+            <div class="footer-social-icons">
+                <a target="_blank" href="https://wa.me/+201558870907" class="icon" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                <a target="_blank" href="https://t.me/mahdi2hassan/" class="icon" aria-label="تيليجرام"><i class="fab fa-telegram"></i></a>
+                <a target="_blank" href="https://www.facebook.com/plusinmath" class="icon" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a target="_blank" href="https://www.instagram.com/mahdi2hassan/" class="icon" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="bottom-footer"><p>جميع الحقوق محفوظة © 2025</p></div>
+        </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js"></script>
-    <script>
+    <script type="module">
+        // استيراد Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+        import { getFirestore, collection, addDoc, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js';
+
         // تهيئة Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCeZ9I6rjoZD-rxOwbOAuiafp5Tl2iNCDw",
@@ -86,94 +374,134 @@
             appId: "1:444492731461:web:05ce3ece9c5b23bcdabf2c",
             measurementId: "G-TEQSJ77X0Z"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const storage = firebase.storage();
 
-        // إنشاء كود طالب فريد
-        function generateStudentCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let code = '';
-            for (let i = 0; i < 6; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return code;
-        }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
 
-        // معالجة إنشاء الحساب
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        // التعامل مع إرسال النموذج
+        const signupForm = document.getElementById('signupForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorMessage = document.getElementById('errorMessage');
+
+        signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('name').value;
-            const grade = document.getElementById('grade').value;
-            const phone = document.getElementById('phone').value;
-            const governorate = document.getElementById('governorate').value;
-            const area = document.getElementById('area').value;
-            const receiptImageInput = document.getElementById('receiptImage');
-            let receiptImageUrl = '';
 
-            // رفع إيصال الدفع
-            if (receiptImageInput.files.length > 0) {
-                const file = receiptImageInput.files[0];
-                const storageRef = storage.ref(`receipts/${Date.now()}_${file.name}`);
-                try {
-                    const snapshot = await storageRef.put(file);
-                    receiptImageUrl = await snapshot.ref.getDownloadURL();
-                    console.log('تم رفع الصورة بنجاح:', receiptImageUrl);
-                } catch (error) {
-                    console.error('خطأ في رفع الصورة:', error);
-                    Swal.fire({
-                        title: 'خطأ',
-                        text: `حدث خطأ أثناء تحميل إيصال الدفع: ${error.message}`,
-                        icon: 'error',
-                        confirmButtonColor: '#005eff'
-                    });
-                    return;
-                }
+            const name = document.getElementById('name').value.trim();
+            const studentCode = document.getElementById('studentCode').value.trim();
+            const grade = document.getElementById('grade').value;
+            const phone = document.getElementById('phone').value.trim();
+            const governorate = document.getElementById('governorate').value.trim();
+            const area = document.getElementById('area').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const receiptImage = document.getElementById('receiptImage').files[0];
+
+            // التحقق من الحقول
+            if (!name || !studentCode || !grade || !phone || !governorate || !area || !email || !password || !receiptImage) {
+                showError('يرجى ملء جميع الحقول!');
+                return;
             }
 
-            const code = generateStudentCode();
-            const newAccount = {
-                code,
-                name,
-                grade,
-                phone,
-                governorate,
-                area,
-                receiptImage: receiptImageUrl,
-                pending: true,
-                active: false,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جارٍ التسجيل...';
 
             try {
-                await db.collection('accounts').add(newAccount);
-                await db.collection('studentCodes').doc(code).set({
-                    code,
+                // التحقق من تكرار كود الطالب
+                const codeQuery = query(collection(db, 'studentCodes'), where('code', '==', studentCode));
+                const codeSnapshot = await getDocs(codeQuery);
+                if (!codeSnapshot.empty) {
+                    showError('كود الطالب موجود بالفعل!');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'إنشاء الحساب';
+                    return;
+                }
+
+                // إنشاء حساب المستخدم في Firebase Authentication
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // رفع صورة الإيصال إلى Firebase Storage
+                const storageRef = ref(storage, `receipts/${user.uid}_${receiptImage.name}`);
+                await uploadBytes(storageRef, receiptImage);
+                const receiptImageUrl = await getDownloadURL(storageRef);
+
+                // حفظ بيانات الطالب في Firestore
+                const studentData = {
+                    studentCode,
+                    name,
+                    grade,
+                    phone,
+                    governorate,
+                    area,
+                    email,
+                    receiptImage: receiptImageUrl,
                     active: false,
-                    pending: true
+                    pending: true,
+                    timestamp: new Date()
+                };
+                await addDoc(collection(db, 'users'), {
+                    ...studentData,
+                    uid: user.uid
                 });
+
+                // حفظ كود الطالب في مجموعة منفصلة
+                await addDoc(collection(db, 'studentCodes'), {
+                    code: studentCode,
+                    uid: user.uid,
+                    active: false,
+                    pending: true,
+                    timestamp: new Date()
+                });
+
                 Swal.fire({
-                    title: 'تم',
-                    text: `تم إنشاء الحساب بنجاح! كود الطالب: ${code}`,
+                    title: 'تم الإنشاء',
+                    text: `تم إنشاء الحساب بنجاح! كود الطالب: ${studentCode}. يرجى انتظار موافقة الأدمن.`,
                     icon: 'success',
                     confirmButtonColor: '#005eff'
                 }).then(() => {
-                    document.getElementById('signupForm').reset();
+                    window.location.href = 'index.html';
                 });
             } catch (error) {
-                console.error('خطأ في حفظ الحساب:', error);
-                Swal.fire({
-                    title: 'خطأ',
-                    text: 'حدث خطأ أثناء إنشاء الحساب!',
-                    icon: 'error',
-                    confirmButtonColor: '#005eff'
-                });
+                console.error('خطأ في التسجيل:', error);
+                let errorMsg = 'حدث خطأ أثناء إنشاء الحساب!';
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMsg = 'البريد الإلكتروني مستخدم بالفعل!';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMsg = 'البريد الإلكتروني غير صالح!';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMsg = 'كلمة المرور ضعيفة جدًا!';
+                }
+                showError(errorMsg);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إنشاء الحساب';
             }
         });
 
+        // عرض رسالة الخطأ
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
         // إدارة قائمة التنقل
         document.querySelector('.nav-menu-btn').addEventListener('click', () => {
-            document.getElementById('navMenu').classList.toggle('responsive');
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('responsive');
+        });
+
+        // إغلاق القائمة عند النقر خارجها
+        document.addEventListener('click', (e) => {
+            const navMenu = document.getElementById('navMenu');
+            const navBtn = document.querySelector('.nav-menu-btn');
+            if (!navMenu.contains(e.target) && !navBtn.contains(e.target)) {
+                navMenu.classList.remove('responsive');
+            }
         });
     </script>
 </body>
