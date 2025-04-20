@@ -11,7 +11,6 @@
         :root {
             --first-color: #005eff;
             --first-color-hover: #003bb5;
-            --second-color: #4a90e2;
             --body-color: #f7f9fc;
             --color-white: #fff;
             --text-color-second: #2d3748;
@@ -34,7 +33,7 @@
             align-items: center;
         }
         .container {
-            max-width: 450px;
+            max-width: 400px;
             width: 90%;
             background: var(--color-white);
             border-radius: 12px;
@@ -51,7 +50,7 @@
             font-size: 2rem;
             font-weight: 700;
             color: var(--color-white);
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            text-shadow: 1px 1uoja-px 3px rgba(0, 0, 0, 0.2);
             animation: fadeInPulse 1.5s ease-in-out;
         }
         @keyframes fadeInPulse {
@@ -114,7 +113,6 @@
         .form-group {
             margin-bottom: 20px;
             text-align: right;
-            position: relative;
         }
         .form-group label {
             display: block;
@@ -137,18 +135,11 @@
             border-color: var(--first-color);
             box-shadow: 0 0 5px rgba(0, 94, 255, 0.3);
         }
-        .form-group .toggle-password {
-            position: absolute;
-            left: 12px;
-            top: 65%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #6b7280;
-            font-size: 1.1rem;
-        }
-        .submit-btn, .reset-btn {
+        .submit-btn {
             width: 100%;
             padding: 12px;
+            background: var(--first-color);
+            color: var(--color-white);
             border: none;
             border-radius: 8px;
             font-size: 1rem;
@@ -156,24 +147,11 @@
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
         }
-        .submit-btn {
-            background: var(--first-color);
-            color: var(--color-white);
-            margin-bottom: 10px;
-        }
         .submit-btn:hover {
             background: var(--first-color-hover);
             transform: translateY(-2px);
         }
-        .reset-btn {
-            background: var(--second-color);
-            color: var(--color-white);
-        }
-        .reset-btn:hover {
-            background: var(--first-color-hover);
-            transform: translateY(-2px);
-        }
-        .submit-btn:disabled, .reset-btn:disabled {
+        .submit-btn:disabled {
             background: #d1d5db;
             cursor: not-allowed;
         }
@@ -312,22 +290,15 @@
                 <div class="spinner" id="spinner"></div>
                 <form id="loginForm">
                     <div class="form-group">
-                        <label for="email">البريد الإلكتروني</label>
-                        <input type="email" id="email" placeholder="أدخل البريد الإلكتروني" required>
-                        <div class="error-message" id="emailError"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">كلمة المرور</label>
-                        <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
-                        <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
-                        <div class="error-message" id="passwordError"></div>
+                        <label for="adminCode">كود الأدمن</label>
+                        <input type="text" id="adminCode" placeholder="أدخل كود الأدمن" required>
+                        <div class="error-message" id="codeError"></div>
                     </div>
                     <button type="submit" class="submit-btn" id="submitBtn">تسجيل الدخول</button>
                 </form>
-                <button class="reset-btn" id="resetPasswordBtn">إعادة تعيين كلمة المرور</button>
                 <a href="index.html" class="back-link">العودة إلى الرئيسية</a>
             </div>
-        </main>
+ inthe-main>
         <footer>
             <div class="top-footer"><span class="logo-text">Plus In Math</span></div>
             <ul class="footer-menu">
@@ -345,64 +316,33 @@
         </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="module">
-        // استيراد Firebase SDK
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.17.0/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.17.0/firebase-auth.js';
-        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.17.0/firebase-firestore.js';
-
-        // تهيئة Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyCeZ9I6rjoZD-rxOwbOAuiafp5Tl2iNCDw",
-            authDomain: "plusinmath-web.firebaseapp.com",
-            projectId: "plusinmath-web",
-            storageBucket: "plusinmath-web.firebasestorage.app",
-            messagingSenderId: "444492731461",
-            appId: "1:444492731461:web:05ce3ece9c5b23bcdabf2c",
-            measurementId: "G-TEQSJ77X0Z"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // بيانات التحقق المحلية
-        const localAdmin = {
-            email: 'plusinmath@gmail.com',
-            password: '01007586279'
-        };
-
-        // إظهار/إخفاء كلمة المرور
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
-        togglePassword.addEventListener('click', () => {
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            togglePassword.classList.toggle('fa-eye');
-            togglePassword.classList.toggle('fa-eye-slash');
-        });
+    <script>
+        // قائمة أكواد الأدمن
+        const adminCodes = [
+            '010007586279',
+            '011053652279',
+            'mahdi2hassan',
+            'ma7di2hassan'
+        ];
 
         // معالجة تسجيل الدخول
         const loginForm = document.getElementById('loginForm');
         const submitBtn = document.getElementById('submitBtn');
-        const emailError = document.getElementById('emailError');
-        const passwordError = document.getElementById('passwordError');
+        const codeError = document.getElementById('codeError');
         const spinner = document.getElementById('spinner');
 
-        loginForm.addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
+            const adminCode = document.getElementById('adminCode').value.trim();
 
             // إعادة تعيين رسائل الخطأ
-            emailError.style.display = 'none';
-            passwordError.style.display = 'none';
+            codeError.style.display = 'none';
 
-            // التحقق من إدخال الحقول
-            if (!email || !password) {
+            // التحقق من إدخال الكود
+            if (!adminCode) {
                 Swal.fire({
                     title: 'خطأ',
-                    text: 'يرجى إدخال البريد الإلكتروني وكلمة المرور!',
+                    text: 'يرجى إدخال كود الأدمن!',
                     icon: 'warning',
                     confirmButtonColor: '#005eff'
                 });
@@ -414,164 +354,37 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'جارٍ تسجيل الدخول...';
 
-            try {
-                // التحقق المحلي أولاً
-                if (email === localAdmin.email && password === localAdmin.password) {
-                    console.log('تم تسجيل الدخول محليًا:', email);
-                    Swal.fire({
-                        title: 'تم',
-                        text: 'تم تسجيل الدخول بنجاح!',
-                        icon: 'success',
-                        confirmButtonColor: '#005eff'
-                    }).then(() => {
-                        window.location.href = 'data.html';
-                    });
-                    return;
-                }
-
-                // التحقق باستخدام Firebase إذا فشل التحقق المحلي
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-                console.log('تم تسجيل الدخول عبر Firebase:', user.uid, user.email);
-
-                // التحقق من صلاحيات الأدمن
-                const adminDocRef = doc(db, 'admins', user.uid);
-                const adminDoc = await getDoc(adminDocRef);
-                if (!adminDoc.exists() || !adminDoc.data().isAdmin) {
-                    console.error('المستخدم ليس أدمن:', user.uid);
-                    throw new Error('unauthorized');
-                }
-
+            // التحقق من الكود
+            if (adminCodes.includes(adminCode)) {
                 Swal.fire({
                     title: 'تم',
                     text: 'تم تسجيل الدخول بنجاح!',
                     icon: 'success',
                     confirmButtonColor: '#005eff'
                 }).then(() => {
-                    window.location.href = 'data.html';
+                    window.location.href = 'admin.html';
                 });
-            } catch (error) {
-                console.error('خطأ في تسجيل الدخول:', error.code, error.message);
-                let errorMessage = 'حدث خطأ أثناء تسجيل الدخول!';
-                switch (error.code) {
-                    case 'auth/invalid-email':
-                        emailError.textContent = 'البريد الإلكتروني غير صالح!';
-                        emailError.style.display = 'block';
-                        break;
-                    case 'auth/user-not-found':
-                        emailError.textContent = 'لا يوجد حساب بهذا البريد الإلكتروني!';
-                        emailError.style.display = 'block';
-                        break;
-                    case 'auth/wrong-password':
-                        passwordError.textContent = 'كلمة المرور غير صحيحة!';
-                        passwordError.style.display = 'block';
-                        break;
-                    case 'auth/too-many-requests':
-                        errorMessage = 'تم حظر الحساب مؤقتًا بسبب محاولات تسجيل دخول متكررة. حاول لاحقًا أو أعد تعيين كلمة المرور.';
-                        break;
-                    case 'auth/invalid-credential':
-                        errorMessage = 'بيانات الاعتماد غير صحيحة! تحقق من البريد الإلكتروني وكلمة المرور.';
-                        break;
-                    default:
-                        if (error.message === 'unauthorized') {
-                            errorMessage = 'ليس لديك صلاحيات الأدمن!';
-                        } else if (email !== localAdmin.email || password !== localAdmin.password) {
-                            errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحين!';
-                        } else {
-                            errorMessage = `خطأ غير متوقع: ${error.message}`;
-                        }
-                        break;
-                }
+            } else {
+                codeError.textContent = 'كود الأدمن غير صحيح!';
+                codeError.style.display = 'block';
                 Swal.fire({
                     title: 'خطأ',
-                    text: errorMessage,
+                    text: 'كود الأدمن غير صحيح!',
                     icon: 'error',
                     confirmButtonColor: '#005eff'
                 });
-            } finally {
-                // إخفاء المؤشر
-                spinner.style.display = 'none';
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'تسجيل الدخول';
             }
+
+            // إخفاء المؤشر
+            spinner.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'تسجيل الدخول';
         });
 
         // إرسال النموذج عند الضغط على Enter
         loginForm.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 loginForm.dispatchEvent(new Event('submit'));
-            }
-        });
-
-        // معالجة إعادة تعيين كلمة المرور
-        const resetPasswordBtn = document.getElementById('resetPasswordBtn');
-        resetPasswordBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value.trim();
-
-            if (!email) {
-                Swal.fire({
-                    title: 'خطأ',
-                    text: 'يرجى إدخال البريد الإلكتروني أولاً!',
-                    icon: 'warning',
-                    confirmButtonColor: '#005eff'
-                });
-                return;
-            }
-
-            // التحقق من صيغة البريد الإلكتروني
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                Swal.fire({
-                    title: 'خطأ',
-                    text: 'يرجى إدخال بريد إلكتروني صالح!',
-                    icon: 'warning',
-                    confirmButtonColor: '#005eff'
-                });
-                return;
-            }
-
-            // إظهار المؤشر
-            spinner.style.display = 'block';
-            resetPasswordBtn.disabled = true;
-            resetPasswordBtn.textContent = 'جارٍ الإرسال...';
-
-            try {
-                await sendPasswordResetEmail(auth, email);
-                Swal.fire({
-                    title: 'تم',
-                    text: 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني!',
-                    icon: 'success',
-                    confirmButtonColor: '#005eff'
-                });
-            } catch (error) {
-                console.error('خطأ في إعادة تعيين كلمة المرور:', error.code, error.message);
-                let errorMessage = 'حدث خطأ أثناء إرسال رابط إعادة تعيين كلمة المرور!';
-                switch (error.code) {
-                    case 'auth/invalid-email':
-                        errorMessage = 'البريد الإلكتروني غير صالح!';
-                        break;
-                    case 'auth/user-not-found':
-                        errorMessage = 'لا يوجد حساب بهذا البريد الإلكتروني!';
-                        break;
-                    case 'auth/too-many-requests':
-                        errorMessage = 'تم إرسال طلبات كثيرة جدًا. حاول لاحقًا.';
-                        break;
-                    default:
-                        errorMessage = `خطأ غير متوقع: ${error.message}`;
-                        break;
-                }
-                Swal.fire({
-                    title: 'خطأ',
-                    text: errorMessage,
-                    icon: 'error',
-                    confirmButtonColor: '#005eff'
-                });
-            } finally {
-                // إخفاء المؤشر
-                spinner.style.display = 'none';
-                resetPasswordBtn.disabled = false;
-                resetPasswordBtn.textContent = 'إعادة تعيين كلمة المرور';
             }
         });
 
